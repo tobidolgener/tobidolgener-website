@@ -34,7 +34,7 @@
   /* ── CSS ── */
   var css = [
     /* wrap */
-    '.cw-wrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;align-items:center;gap:8px;}',
+    '.cw-wrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;align-items:center;gap:14px;}',
     /* option items */
     '.cw-item{display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-8px) scale(0.85);transition:opacity 0.25s ease,transform 0.25s ease;pointer-events:none;}',
     '.cw-wrap.cw-open .cw-item{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}',

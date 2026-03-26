@@ -364,6 +364,12 @@
       .product-section-inner { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
       .scroll-indicator { display: none; }
       footer { padding: 24px; }
+      /* staircase: reduce indent so all 5 steps stay visible */
+      .stair-step:nth-child(1) { margin-left: 0; }
+      .stair-step:nth-child(2) { margin-left: 20px; }
+      .stair-step:nth-child(3) { margin-left: 40px; }
+      .stair-step:nth-child(4) { margin-left: 60px; }
+      .stair-step:nth-child(5) { margin-left: 80px; }
     }
   </style>
 </head>
