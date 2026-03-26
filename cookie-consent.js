@@ -193,8 +193,8 @@
       detailsToggle.querySelector('.cp-chevron').style.display = '';
     });
 
-    /* footer link */
-    injectFooterLink();
+    /* footer link – disabled: Cookie-Einstellungen ist jetzt in der Nav */
+    // injectFooterLink();
 
     /* show if no consent yet */
     if (!localStorage.getItem(STORAGE_KEY)) {
