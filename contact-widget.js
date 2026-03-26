@@ -14,7 +14,7 @@
 
   /* ── BUTTON CONFIG (bottom → top) ── */
   var BTNS = [
-    { label: 'Schreib mir', href: 'mailto:hallo@tobidolgener.com', color: '#ff5e00', icon: 'chat',      target: '_self'  },
+    { label: 'Schreib mir', href: '#', color: '#ff5e00', icon: 'chat', target: '_self', onclick: 'if(window.openContactForm)openContactForm();return false;' },
     { label: 'WhatsApp',    href: 'https://wa.me/4915225210226',                      color: '#25D366', icon: 'whatsapp',  target: '_blank' },
     { label: 'Instagram',   href: 'https://www.instagram.com/pathfindersberlin/',     color: '#E1306C', icon: 'instagram', target: '_blank' },
     { label: 'TikTok',      href: 'https://www.tiktok.com/@pathfinders_denkfabrik',  color: '#010101', icon: 'tiktok',    target: '_blank' },
@@ -71,8 +71,9 @@
     // reversed so DOM order is top→bottom but visually bottom→top via flex-col
     for (var i = BTNS.length - 1; i >= 0; i--) {
       var b = BTNS[i];
+      var onclick = b.onclick ? ' onclick="' + b.onclick + '"' : '';
       items += '<div class="cw-item">'
-        + '<a class="cw-btn" href="' + b.href + '" target="' + b.target + '" rel="noopener" style="background:' + b.color + '" aria-label="' + b.label + '">'
+        + '<a class="cw-btn" href="' + b.href + '" target="' + b.target + '" rel="noopener" style="background:' + b.color + '" aria-label="' + b.label + '"' + onclick + '>'
         + SVG[b.icon]
         + '</a>'
         + '<span class="cw-label">' + b.label + '</span>'

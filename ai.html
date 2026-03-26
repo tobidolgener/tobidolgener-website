@@ -695,8 +695,19 @@
     // Reveal hero on load
     document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
   </script>
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
   <script src="/nav.js"></script>
   <script src="/cookie-consent.js"></script>
-  <script src="/contact-widget.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=2"></script>
 </body>
 </html>
