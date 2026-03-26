@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datenschutz – Tobi Dolgener</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(13,37,64,0.97);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+    .nav-menu { display: flex; gap: 8px; list-style: none; }
+    .nav-menu a {
+      display: block; padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px); background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(13,37,64,0.5); }
+
+    /* ── CONTENT ── */
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 48px 100px;
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900; letter-spacing: -0.03em;
+      color: #fff; margin-bottom: 64px;
+    }
+
+    /* Section block */
+    .ds-section {
+      margin-bottom: 52px;
+    }
+
+    .ds-section h2 {
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--orange); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ds-section h2 .num {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.12em; opacity: 0.6;
+    }
+
+    .ds-section p, .ds-section address {
+      font-size: 0.9rem; color: var(--muted);
+      line-height: 1.85; font-style: normal;
+      margin-bottom: 12px;
+    }
+    .ds-section p:last-child { margin-bottom: 0; }
+
+    .ds-section a {
+      color: var(--orange); text-decoration: none;
+      border-bottom: 1px solid rgba(255,94,0,0.3);
+      transition: border-color 0.2s;
+      word-break: break-all;
+    }
+    .ds-section a:hover { border-color: var(--orange); }
+
+    /* Sub-list for tools / social */
+    .ds-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 16px;
+      margin-top: 4px;
+    }
+    .ds-list li {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.75;
+      padding-left: 16px; position: relative;
+    }
+    .ds-list li::before {
+      content: '';
+      position: absolute; left: 0; top: 10px;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--orange);
+    }
+    .ds-list li strong { color: var(--text); font-weight: 600; }
+    .ds-list li a {
+      color: var(--orange); text-decoration: none;
+      border-bottom: 1px solid rgba(255,94,0,0.3);
+      font-size: 0.82rem; word-break: break-all;
+    }
+    .ds-list li a:hover { border-color: var(--orange); }
+
+    .divider {
+      height: 1px; background: var(--border); margin-bottom: 52px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+    }
+    .footer-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+    footer a { color: var(--dimmer); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    footer a:hover { color: var(--muted); }
+
+    @media (max-width: 640px) {
+      nav, footer { padding: 16px 24px; }
+      main { padding: 48px 24px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html">Training &amp; Speaking</a></li>
+      <li><a href="/coaching.html">Coaching</a></li>
+      <li><a href="/ai.html">AI Automation</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1 class="page-title">Datenschutzerklärung</h1>
+
+    <!-- 1 -->
+    <div class="ds-section">
+      <h2><span class="num">01</span> Verantwortlicher</h2>
+      <p>Verantwortlich für die Datenverarbeitung auf dieser Website sowie auf allen unter tobidolgener.com präsentierten Leistungsbereichen – Training & Speaking, Coaching und AI Automation – ist:</p>
+      <address>
+        Pathfinders Berlin e.K.<br />
+        Learning and Development Coaching<br />
+        Inhaber: Tobias Frank Dolgener<br />
+        Akazienstraße 3A, 10823 Berlin<br />
+        Handelsregister Berlin-Charlottenburg, HRA 60380 B
+      </address>
+      <p>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
+      <p>E-Mail: <a href="mailto:tobi@pathfinders.berlin">tobi@pathfinders.berlin</a></p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 2 -->
+    <div class="ds-section">
+      <h2><span class="num">02</span> Allgemeine Hinweise zur Datenverarbeitung</h2>
+      <p>Wir nehmen den Schutz Ihrer personenbezogenen Daten ernst. Personenbezogene Daten werden vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften (DSGVO, BDSG) sowie dieser Datenschutzerklärung behandelt. Die Datenübertragung im Internet kann Sicherheitslücken aufweisen. Ein lückenloser Schutz vor dem Zugriff durch Dritte ist nicht möglich.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 3 -->
+    <div class="ds-section">
+      <h2><span class="num">03</span> Hosting</h2>
+      <p>Diese Website wird über Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, USA betrieben. Mit dem Hosting-Anbieter besteht ein Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO.</p>
+      <p>Weitere Informationen: <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener">netlify.com/privacy</a></p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 4 -->
+    <div class="ds-section">
+      <h2><span class="num">04</span> Kontaktaufnahme per E-Mail oder Kontaktformular</h2>
+      <p>Wenn Sie uns per E-Mail oder Kontaktformular kontaktieren, werden Ihre Angaben inklusive der von Ihnen angegebenen Kontaktdaten zur Bearbeitung der Anfrage gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
+      <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an effizienter Bearbeitung).</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 5 -->
+    <div class="ds-section">
+      <h2><span class="num">05</span> Automatisierter Sales-Funnel (AI Automation)</h2>
+      <p>Wenn Sie unser Formular im Bereich AI Automation nutzen oder eine Anfrage senden, werden Ihre Daten in unserem automatisierten Lead-System verarbeitet. Dabei können folgende Daten erhoben werden:</p>
+      <ul class="ds-list">
+        <li>Vor- und Nachname, Unternehmensname, Unternehmensgröße</li>
+        <li>E-Mail-Adresse</li>
+        <li>Angaben zu Kampagnenziel und Angebot</li>
+        <li>Freitextnachrichten</li>
+      </ul>
+      <p style="margin-top: 16px;">Die Verarbeitung erfolgt zur Prüfung der Eignung unseres Systems sowie zur strukturierten Weiterleitung innerhalb des Sales-Funnels.</p>
+      <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b und lit. f DSGVO.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 6 -->
+    <div class="ds-section">
+      <h2><span class="num">06</span> Eingesetzte Tools und Auftragsverarbeiter</h2>
+      <p>Zur technischen Umsetzung setzen wir folgende Dienstleister ein:</p>
+      <ul class="ds-list" style="margin-top: 16px;">
+        <li>
+          <strong>Google Workspace</strong> (Google Ireland Limited) – Verarbeitung von E-Mails und Formulardaten.<br />
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>
+        </li>
+        <li>
+          <strong>Make.com</strong> (Celonis, Tschechien) – Automatisierte Datenverarbeitung im Sales-Funnel.<br />
+          <a href="https://www.make.com/en/privacy-notice" target="_blank" rel="noopener">make.com/en/privacy-notice</a>
+        </li>
+        <li>
+          <strong>Google Gemini API</strong> – KI-gestützte Textverarbeitung.<br />
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>
+        </li>
+        <li>
+          <strong>Cloudinary</strong> – Technische Verarbeitung von Medieninhalten.<br />
+          <a href="https://cloudinary.com/privacy" target="_blank" rel="noopener">cloudinary.com/privacy</a>
+        </li>
+      </ul>
+      <p style="margin-top: 16px;">Mit allen genannten Anbietern bestehen Verträge zur Auftragsverarbeitung gemäß Art. 28 DSGVO.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 7 -->
+    <div class="ds-section">
+      <h2><span class="num">07</span> Cookies</h2>
+      <p>Diese Website verwendet technisch notwendige Cookies zur fehlerfreien Bereitstellung der Website. Analyse- oder Tracking-Cookies werden nur nach Ihrer ausdrücklichen Einwilligung gesetzt. Sie können Ihren Browser so einstellen, dass Cookies generell abgelehnt werden.</p>
+      <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse) bzw. Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 8 -->
+    <div class="ds-section">
+      <h2><span class="num">08</span> Social Media</h2>
+      <p>Diese Website enthält Links zu sozialen Netzwerken. Beim Anklicken eines Links wird eine direkte Verbindung zum jeweiligen Anbieter hergestellt. Wir haben keinen Einfluss auf die dort erfolgende Datenverarbeitung. Es gelten die jeweiligen Datenschutzbestimmungen der Anbieter.</p>
+      <ul class="ds-list" style="margin-top: 16px;">
+        <li>
+          <strong>LinkedIn</strong> (LinkedIn Ireland Unlimited Company, Wilton Plaza, Dublin 2, Irland)<br />
+          <a href="https://www.linkedin.com/legal/privacy-policy" target="_blank" rel="noopener">linkedin.com/legal/privacy-policy</a>
+        </li>
+        <li>
+          <strong>Instagram</strong> (Meta Platforms Ireland Ltd., 4 Grand Canal Square, Dublin 2, Irland)<br />
+          <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">privacycenter.instagram.com/policy</a>
+        </li>
+        <li>
+          <strong>TikTok</strong> (TikTok Technology Limited, 10 Earlsfort Terrace, Dublin 2, Irland)<br />
+          <a href="https://www.tiktok.com/legal/page/eea/privacy-policy/de" target="_blank" rel="noopener">tiktok.com – Datenschutzerklärung</a>
+        </li>
+        <li>
+          <strong>Facebook</strong> (Meta Platforms Ireland Ltd., 4 Grand Canal Square, Dublin 2, Irland)<br />
+          <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener">facebook.com/privacy/policy</a>
+        </li>
+        <li>
+          <strong>YouTube</strong> (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland)<br />
+          <a href="https://policies.google.com/privacy?hl=de" target="_blank" rel="noopener">policies.google.com/privacy</a>
+        </li>
+      </ul>
+      <p style="margin-top: 16px;">Wir weisen darauf hin, dass beim Besuch dieser Plattformen personenbezogene Daten in die USA oder andere Drittstaaten übertragen werden können. Die Übertragung erfolgt auf Basis der Standardvertragsklauseln der EU-Kommission.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 9 -->
+    <div class="ds-section">
+      <h2><span class="num">09</span> Datenweitergabe in Drittstaaten</h2>
+      <p>Einige der eingesetzten Tools übertragen Daten in die USA oder andere Drittstaaten. In diesen Ländern kann kein mit der EU vergleichbares Datenschutzniveau garantiert werden. Die Übertragung erfolgt auf Basis der Standardvertragsklauseln der EU-Kommission.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 10 -->
+    <div class="ds-section">
+      <h2><span class="num">10</span> Speicherdauer</h2>
+      <p>Personenbezogene Daten werden nur so lange gespeichert, wie dies für die Bearbeitung der Anfrage erforderlich ist oder gesetzliche Aufbewahrungsfristen bestehen.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 11 -->
+    <div class="ds-section">
+      <h2><span class="num">11</span> SSL-Verschlüsselung</h2>
+      <p>Diese Website nutzt eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie am https:// in der Adresszeile und dem Schloss-Symbol im Browser.</p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 12 -->
+    <div class="ds-section">
+      <h2><span class="num">12</span> Ihre Rechte</h2>
+      <p>Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie Widerspruch (Art. 21 DSGVO).</p>
+      <p>Zur Ausübung Ihrer Rechte wenden Sie sich an: <a href="mailto:tobi@pathfinders.berlin">tobi@pathfinders.berlin</a></p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 13 -->
+    <div class="ds-section">
+      <h2><span class="num">13</span> Beschwerderecht</h2>
+      <p>Sie haben das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren. Zuständig für Berlin ist die Berliner Beauftragte für Datenschutz und Informationsfreiheit:</p>
+      <p><a href="https://www.datenschutz-berlin.de" target="_blank" rel="noopener">datenschutz-berlin.de</a></p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- 14 -->
+    <div class="ds-section">
+      <h2><span class="num">14</span> Widerspruch gegen Werbe-E-Mails</h2>
+      <p>Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten zur Übersendung nicht angeforderter Werbung wird hiermit ausdrücklich widersprochen. Bei unverlangter Zusendung von Werbeinformationen behalten wir uns rechtliche Schritte vor.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+      <div style="display:flex;gap:20px;">
+        <a href="/impressum.html">Impressum</a>
+        <a href="/datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/contact-widget.js"></script>
+</body>
+</html>
