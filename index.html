@@ -296,9 +296,17 @@
 <body>
 
   <!-- VIDEO BG -->
-  <video autoplay muted loop playsinline style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
-    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/v1774546675/start_cjlc3s.mp4" type="video/mp4">
+  <video id="bg-video" autoplay muted loop playsinline
+    style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;"
+    preload="auto">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/f_mp4,q_auto/v1774546675/start_cjlc3s.mp4" type="video/mp4">
   </video>
+  <script>
+    const v = document.getElementById('bg-video');
+    v.addEventListener('error', (e) => console.error('Video error:', e));
+    v.load();
+    v.play().catch(e => console.error('Play failed:', e));
+  </script>
   <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:0;"></div>
 
   <!-- NAV -->
