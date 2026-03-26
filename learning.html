@@ -282,8 +282,8 @@
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
       .nav-menu { display: none; }
-      .inner, .hero-inner { padding-left: 24px; padding-right: 24px; }
-      .hero-inner { padding-bottom: 60px; }
+      .inner { padding: 60px 24px; }
+      .hero-inner { padding: 0 24px 60px; }
       .leistung-grid { grid-template-columns: 1fr; }
       .speaker-grid { grid-template-columns: 1fr; }
       .scroll-indicator { display: none; }
@@ -453,7 +453,7 @@
       <div class="cta-inner">
         <h2 class="reveal reveal-d1">Bereit für ein Training das wirklich wirkt?</h2>
         <p class="reveal reveal-d2">Lass uns gemeinsam schauen was dein Team oder deine Teilnehmer brauchen.</p>
-        <a href="mailto:hallo@tobidolgener.com" class="cta-btn reveal reveal-d3">
+        <a href="#" class="cta-btn reveal reveal-d3" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">
           Jetzt Gespräch anfragen
         </a>
       </div>

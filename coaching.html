@@ -318,14 +318,17 @@
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
       .nav-menu { display: none; }
-      .section, .testimonials-inner { padding: 72px 24px; }
-      #clients .inner { padding: 72px 24px; }
-      #cta .inner { padding: 72px 24px; grid-template-columns: 1fr; gap: 32px; }
+      .section, .testimonials-inner { padding: 60px 24px; }
+      #clients .inner { padding: 60px 24px; }
+      #cta .inner { padding: 60px 24px; grid-template-columns: 1fr; gap: 32px; }
       .hero-content { padding: 0 24px 64px; }
-      .testimonial-card { flex: 0 0 calc(100% - 0px); }
+      /* fix carousel: no gap so one full card shows */
+      .carousel-track { gap: 0; }
+      .testimonial-card { flex: 0 0 100%; }
       footer { padding: 24px; flex-direction: column; align-items: flex-start; }
-      /* prevent client cards from overflowing narrow screens */
-      .client-grid { grid-template-columns: 1fr; }
+      /* client cards: horizontal scroll snap carousel */
+      .client-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; gap: 16px; padding-bottom: 16px; grid-template-columns: unset; }
+      .client-card { flex: 0 0 85vw; scroll-snap-align: start; }
     }
   </style>
 </head>
@@ -483,7 +486,7 @@
         <h2>Bereit für deinen nächsten Schritt?</h2>
         <p>Lass uns in einem kostenlosen Erstgespräch herausfinden, wie ich dich begleiten kann.</p>
       </div>
-      <a href="mailto:hallo@tobidolgener.com" class="cta-btn reveal reveal-d1">
+      <a href="#" class="cta-btn reveal reveal-d1" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">
         Kostenloses Erstgespräch buchen
       </a>
     </div>
@@ -571,6 +574,14 @@
         timer = setInterval(next, interval);
       }
       function next() { goTo(current + perView() >= total ? 0 : current + 1); }
+
+      // Touch swipe support for carousel
+      let tx = 0;
+      track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const diff = tx - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) { goTo(diff > 0 ? current + 1 : current - 1); }
+      }, { passive: true });
 
       buildDots();
       timer = setInterval(next, interval);

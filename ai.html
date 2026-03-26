@@ -359,9 +359,9 @@
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
       .nav-menu { display: none; }
-      .inner, .hero-inner { padding-left: 24px; padding-right: 24px; }
-      .hero-inner { padding-bottom: 60px; }
-      .product-section-inner { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .inner { padding: 60px 24px; }
+      .hero-inner { padding: 0 24px 60px; }
+      .product-section-inner { grid-template-columns: 1fr; gap: 32px; padding: 60px 24px; }
       .scroll-indicator { display: none; }
       footer { padding: 24px; }
       /* staircase: reduce indent so all 5 steps stay visible */
@@ -370,6 +370,9 @@
       .stair-step:nth-child(3) { margin-left: 40px; }
       .stair-step:nth-child(4) { margin-left: 60px; }
       .stair-step:nth-child(5) { margin-left: 80px; }
+      /* product price row: keep price and button on same line */
+      .product-price-row { flex-wrap: nowrap; align-items: center; }
+      .product-price { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -497,7 +500,7 @@
         <div class="product-divider reveal reveal-d2"></div>
         <div class="product-price-row reveal reveal-d3">
           <div class="product-price">197 € <span>einmalig</span></div>
-          <a href="mailto:hallo@tobidolgener.com" class="product-btn">Jetzt starten</a>
+          <a href="#" class="product-btn" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">Jetzt starten</a>
         </div>
       </div>
     </div>
@@ -531,7 +534,7 @@
         <div class="product-divider reveal reveal-d2"></div>
         <div class="product-price-row reveal reveal-d3">
           <div class="product-price">897 € <span>einmalig</span></div>
-          <a href="mailto:hallo@tobidolgener.com" class="product-btn featured-btn">Jetzt starten</a>
+          <a href="#" class="product-btn featured-btn" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">Jetzt starten</a>
         </div>
       </div>
     </div>
@@ -563,7 +566,7 @@
         <div class="product-divider reveal reveal-d2"></div>
         <div class="product-price-row reveal reveal-d3">
           <div class="product-price">ab 4.900 € <span>Projektpreis</span></div>
-          <a href="mailto:hallo@tobidolgener.com" class="product-btn">Gespräch anfragen</a>
+          <a href="#" class="product-btn" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">Gespräch anfragen</a>
         </div>
       </div>
     </div>
@@ -622,7 +625,7 @@
           <div class="cta-check">Welches Potenzial vorhanden ist</div>
           <div class="cta-check">Wie die Implementierung ablaufen kann</div>
         </div>
-        <a href="mailto:hallo@tobidolgener.com" class="cta-btn reveal reveal-d3">
+        <a href="#" class="cta-btn reveal reveal-d3" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">
           Jetzt Termin vereinbaren
         </a>
       </div>
