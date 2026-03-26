@@ -37,8 +37,7 @@
   var css = [
     /* wrap */
     '.cw-wrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;align-items:center;gap:4px;}',
-    '.cw-sep{width:18px;height:18px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,94,0,0.45);flex-shrink:0;opacity:0;transition:opacity 0.25s ease;pointer-events:none;}',
-    '.cw-wrap.cw-open .cw-sep{opacity:1;}',
+    '.cw-sep{width:18px;height:18px;border-radius:50%;background:transparent;border:none;flex-shrink:0;pointer-events:none;}',
     /* option items */
     '.cw-item{display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-8px) scale(0.85);transition:opacity 0.25s ease,transform 0.25s ease;pointer-events:none;}',
     '.cw-wrap.cw-open .cw-item{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}',
