@@ -9,17 +9,19 @@
     tiktok: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.85 4.85 0 01-1.02-.09z"/></svg>',
     facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
     linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
   };
 
   /* ── BUTTON CONFIG (bottom → top) ── */
   var BTNS = [
-    { label: 'Schreib mir', href: '#', color: '#ff5e00', icon: 'chat', target: '_self', onclick: 'event.stopPropagation();if(window.openContactForm)openContactForm();return false;' },
-    { label: 'WhatsApp',    href: 'https://wa.me/4915225210226',                      color: '#25D366', icon: 'whatsapp',  target: '_blank' },
-    { label: 'Instagram',   href: 'https://www.instagram.com/pathfindersberlin/',     color: '#E1306C', icon: 'instagram', target: '_blank' },
-    { label: 'TikTok',      href: 'https://www.tiktok.com/@pathfinders_denkfabrik',  color: '#010101', icon: 'tiktok',    target: '_blank' },
-    { label: 'Facebook',    href: 'https://www.facebook.com/profile.php?id=61588410167429', color: '#1877F2', icon: 'facebook', target: '_blank' },
-    { label: 'LinkedIn',    href: 'https://www.linkedin.com/in/tobias-dolgener/',    color: '#0A66C2', icon: 'linkedin',  target: '_blank' }
+    { label: 'Schreib mir',    href: '#', color: '#ff5e00', icon: 'chat',     target: '_self', onclick: 'event.stopPropagation();if(window.openContactForm)openContactForm();return false;' },
+    { label: 'WhatsApp',       href: 'https://wa.me/4915225210226',                            color: '#25D366', icon: 'whatsapp',  target: '_blank' },
+    { label: 'Instagram',      href: 'https://www.instagram.com/pathfindersberlin/',           color: '#E1306C', icon: 'instagram', target: '_blank' },
+    { label: 'TikTok',         href: 'https://www.tiktok.com/@pathfinders_denkfabrik',        color: '#010101', icon: 'tiktok',    target: '_blank' },
+    { label: 'Facebook',       href: 'https://www.facebook.com/profile.php?id=61588410167429', color: '#1877F2', icon: 'facebook', target: '_blank' },
+    { label: 'LinkedIn',       href: 'https://www.linkedin.com/in/tobias-dolgener/',           color: '#0A66C2', icon: 'linkedin',  target: '_blank' },
+    { label: 'Termin buchen',  href: '#', color: '#FF6600', icon: 'calendar', target: '_self', onclick: 'event.stopPropagation();if(window.openBooking)openBooking();return false;' }
   ];
 
   /* ── SOCIAL FOOTER CONFIG ── */
@@ -41,12 +43,13 @@
     '.cw-item{display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-8px) scale(0.85);transition:opacity 0.25s ease,transform 0.25s ease;pointer-events:none;}',
     '.cw-wrap.cw-open .cw-item{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}',
     /* stagger delays when opening (bottom first) */
-    '.cw-wrap.cw-open .cw-item:nth-child(6){transition-delay:0s;}',
-    '.cw-wrap.cw-open .cw-item:nth-child(5){transition-delay:.05s;}',
-    '.cw-wrap.cw-open .cw-item:nth-child(4){transition-delay:.1s;}',
-    '.cw-wrap.cw-open .cw-item:nth-child(3){transition-delay:.15s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(7){transition-delay:0s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(6){transition-delay:.04s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(5){transition-delay:.08s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(4){transition-delay:.12s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(3){transition-delay:.16s;}',
     '.cw-wrap.cw-open .cw-item:nth-child(2){transition-delay:.2s;}',
-    '.cw-wrap.cw-open .cw-item:nth-child(1){transition-delay:.25s;}',
+    '.cw-wrap.cw-open .cw-item:nth-child(1){transition-delay:.24s;}',
     /* action buttons */
     '.cw-btn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.3);}',
     '.cw-btn svg{width:16px;height:16px;flex-shrink:0;}',

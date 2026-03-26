@@ -93,7 +93,18 @@
       'padding:0;text-align:left;letter-spacing:0.03em;transition:color 0.2s;',
     '}',
     '.nav-panel-legal a:hover,.nav-panel-legal button:hover{color:rgba(255,255,255,0.7);}',
-    '@media(max-width:640px){nav .nav-legal{display:none;}}'
+    '@media(max-width:640px){nav .nav-legal{display:none;}}',
+
+    /* Termin buchen button in panel */
+    '.nav-panel-booking{',
+      'display:inline-flex;align-items:center;gap:8px;',
+      'background:#FF6600;color:#fff;border:none;cursor:pointer;',
+      'padding:10px 20px;border-radius:8px;',
+      'font-size:0.85rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;',
+      'font-family:"Inter",sans-serif;transition:filter 0.2s;margin-bottom:32px;',
+    '}',
+    '.nav-panel-booking:hover{filter:brightness(1.12);}',
+    '.nav-panel-booking svg{width:16px;height:16px;flex-shrink:0;}'
   ].join('');
 
   function init() {
@@ -136,6 +147,16 @@
     closeBtn.setAttribute('aria-label', 'Menü schließen');
     closeBtn.innerHTML = '&#x2715;';
     panel.appendChild(closeBtn);
+
+    /* Termin buchen button at top */
+    var bookingBtn = document.createElement('button');
+    bookingBtn.className = 'nav-panel-booking';
+    bookingBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Termin buchen';
+    bookingBtn.addEventListener('click', function () {
+      closePanel();
+      setTimeout(function () { if (window.openBooking) openBooking(); }, 350);
+    });
+    panel.appendChild(bookingBtn);
 
     var panelLabel = document.createElement('div');
     panelLabel.className = 'nav-panel-label';
