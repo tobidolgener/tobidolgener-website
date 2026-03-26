@@ -114,14 +114,6 @@
       navLeft.className = 'nav-left';
       nav.insertBefore(navLeft, logo);
       navLeft.appendChild(logo);
-
-      var legal = document.createElement('div');
-      legal.className = 'nav-legal';
-      legal.innerHTML =
-        '<a href="/impressum.html">Impressum</a>' +
-        '<a href="/datenschutz.html">Datenschutz</a>' +
-        '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
-      navLeft.appendChild(legal);
     }
 
     /* ── 2. Hamburger button ── */
