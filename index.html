@@ -71,6 +71,7 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.9);
       text-decoration: none;
+      white-space: nowrap;
     }
 
     .nav-menu {
@@ -286,15 +287,22 @@
 
     /* ── MOBILE ── */
     @media (max-width: 640px) {
-      nav { padding: 20px 24px; }
+      nav { padding: 16px 20px; }
+      nav .nav-legal { display: none !important; }
 
-      .nav-menu {
-        display: none; /* hamburger for later */
-      }
+      .nav-menu { display: none; }
 
-      .hero { padding: 0 24px 200px; }
+      h1 { font-size: 3.2rem; line-height: 0.95; margin-bottom: 16px; }
 
-      .areas { grid-template-columns: 1fr; }
+      .hero-eyebrow { margin-bottom: 16px; }
+
+      .hero-claim { font-size: 0.95rem; margin-bottom: 28px; }
+
+      .hero { padding: 80px 20px 180px; }
+
+      .areas { grid-template-columns: 1fr; gap: 8px; }
+
+      .area-icon { display: none; }
 
       .scroll-hint { display: none; }
     }

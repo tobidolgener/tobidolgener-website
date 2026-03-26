@@ -3,7 +3,8 @@
 
   var css = [
     /* nav-left: logo + legal links */
-    'nav .nav-left{display:flex;align-items:center;gap:20px;}',
+    'nav .nav-left{display:flex;align-items:center;gap:20px;min-width:0;}',
+    'nav .nav-logo{white-space:nowrap!important;}',
     'nav .nav-legal{display:flex;gap:14px;align-items:center;}',
     'nav .nav-legal a, nav .nav-legal button{',
       'font-size:0.62rem;color:rgba(255,255,255,0.3);text-decoration:none;',
@@ -80,7 +81,8 @@
       'font-size:0.62rem;font-weight:600;letter-spacing:0.16em;',
       'text-transform:uppercase;color:rgba(255,255,255,0.2);',
       'margin-bottom:28px;',
-    '}'
+    '}',
+    '@media(max-width:640px){nav .nav-legal{display:none;}}'
   ].join('');
 
   function init() {
