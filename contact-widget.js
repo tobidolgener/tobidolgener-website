@@ -34,7 +34,7 @@
   /* ── CSS ── */
   var css = [
     /* wrap */
-    '.cw-wrap{position:fixed;bottom:14px;left:16px;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;gap:8px;}',
+    '.cw-wrap{position:fixed;top:72px;left:20px;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;gap:8px;}',
     /* option items */
     '.cw-item{display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px) scale(0.85);transition:opacity 0.25s ease,transform 0.25s ease;pointer-events:none;}',
     '.cw-wrap.cw-open .cw-item{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}',
@@ -62,7 +62,7 @@
     '.cw-footer-social a{display:flex;align-items:center;gap:6px;color:rgba(74,109,140,0.8);text-decoration:none;font-size:0.72rem;font-family:"Inter",sans-serif;transition:color 0.2s;}',
     '.cw-footer-social a:hover{color:#8aaec8;}',
     '.cw-footer-social svg{width:14px;height:14px;flex-shrink:0;}',
-    '@media(max-width:480px){.cw-wrap{bottom:20px;left:20px;}.cw-btn{width:40px;height:40px;}}'
+    '@media(max-width:480px){.cw-wrap{top:64px;left:16px;}.cw-btn{width:40px;height:40px;}}'
   ].join('');
 
   /* ── BUILD WIDGET HTML ── */
