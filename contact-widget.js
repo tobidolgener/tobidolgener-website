@@ -14,7 +14,7 @@
 
   /* ── BUTTON CONFIG (bottom → top) ── */
   var BTNS = [
-    { label: 'Schreib mir', href: '#', color: '#ff5e00', icon: 'chat', target: '_self', onclick: 'if(window.openContactForm)openContactForm();return false;' },
+    { label: 'Schreib mir', href: '#', color: '#ff5e00', icon: 'chat', target: '_self', onclick: 'event.stopPropagation();if(window.openContactForm)openContactForm();return false;' },
     { label: 'WhatsApp',    href: 'https://wa.me/4915225210226',                      color: '#25D366', icon: 'whatsapp',  target: '_blank' },
     { label: 'Instagram',   href: 'https://www.instagram.com/pathfindersberlin/',     color: '#E1306C', icon: 'instagram', target: '_blank' },
     { label: 'TikTok',      href: 'https://www.tiktok.com/@pathfinders_denkfabrik',  color: '#010101', icon: 'tiktok',    target: '_blank' },
