@@ -176,9 +176,19 @@
     closeBtn.addEventListener('click', closePanel);
     overlay.addEventListener('click', closePanel);
 
-    /* close on nav link click */
+    /* close on nav link click; intercept Kontakt → contact form */
     panel.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', closePanel);
+      a.addEventListener('click', function (e) {
+        if (a.href.indexOf('mailto:') !== -1 && a.textContent.trim() === 'Kontakt') {
+          e.preventDefault();
+          closePanel();
+          setTimeout(function () {
+            if (window.openContactForm) openContactForm();
+          }, 350);
+        } else {
+          closePanel();
+        }
+      });
     });
 
     /* ESC key */
