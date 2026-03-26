@@ -104,7 +104,8 @@
       'font-family:"Inter",sans-serif;transition:filter 0.2s;margin-bottom:32px;',
     '}',
     '.nav-panel-booking:hover{filter:brightness(1.12);}',
-    '.nav-panel-booking svg{width:16px;height:16px;flex-shrink:0;}'
+    '.nav-panel-booking svg{width:16px;height:16px;flex-shrink:0;}',
+    '@media(max-width:640px){.nav-panel-booking{display:none!important;}}'
   ].join('');
 
   function init() {
