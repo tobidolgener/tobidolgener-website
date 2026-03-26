@@ -82,6 +82,17 @@
       'text-transform:uppercase;color:rgba(255,255,255,0.2);',
       'margin-bottom:28px;',
     '}',
+    '.nav-panel-legal{',
+      'margin-top:40px;padding-top:24px;',
+      'border-top:1px solid rgba(255,255,255,0.08);',
+      'display:flex;flex-direction:column;gap:12px;',
+    '}',
+    '.nav-panel-legal a,.nav-panel-legal button{',
+      'font-size:0.75rem;color:rgba(255,255,255,0.35);text-decoration:none;',
+      'background:none;border:none;cursor:pointer;font-family:"Inter",sans-serif;',
+      'padding:0;text-align:left;letter-spacing:0.03em;transition:color 0.2s;',
+    '}',
+    '.nav-panel-legal a:hover,.nav-panel-legal button:hover{color:rgba(255,255,255,0.7);}',
     '@media(max-width:640px){nav .nav-legal{display:none;}}'
   ].join('');
 
@@ -143,6 +154,15 @@
     if (menu) {
       panel.appendChild(menu);
     }
+
+    /* legal links at bottom of panel */
+    var legalDiv = document.createElement('div');
+    legalDiv.className = 'nav-panel-legal';
+    legalDiv.innerHTML =
+      '<a href="/impressum.html">Impressum</a>' +
+      '<a href="/datenschutz.html">Datenschutz</a>' +
+      '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
+    panel.appendChild(legalDiv);
 
     document.body.appendChild(panel);
 
