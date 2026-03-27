@@ -74,19 +74,14 @@
       background: rgba(10,25,45,0.72);
       pointer-events: none;
     }
-    .snap-section.alt::before { background: rgba(13,37,64,0.80); }
+    .snap-section.alt::before  { background: rgba(13,37,64,0.80); }
     .snap-section.dark::before { background: rgba(6,15,28,0.88); }
+    .snap-section.warn::before { background: rgba(20,8,0,0.88); }
 
     /* ── INNER ── */
     .inner {
       position: relative; z-index: 1;
       max-width: 900px; margin: 0 auto;
-      padding: 100px 64px;
-      width: 100%;
-    }
-    .inner-wide {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto;
       padding: 100px 64px;
       width: 100%;
     }
@@ -111,18 +106,11 @@
       font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
       margin-bottom: 20px;
     }
-    h3 {
-      font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;
-    }
     .lead {
       font-size: 1.05rem; color: rgba(255,255,255,0.75);
       line-height: 1.8; max-width: 680px;
     }
     .muted { color: var(--muted); }
-    .note {
-      font-size: 0.82rem; color: var(--orange);
-      margin-top: 12px; font-weight: 500;
-    }
 
     /* ── REVEAL ── */
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -132,72 +120,21 @@
     .reveal-d3 { transition-delay: 0.36s; }
     .reveal-d4 { transition-delay: 0.48s; }
 
-    /* ── STUFEN CARDS ── */
-    .stufen-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-      margin-top: 40px;
-    }
-    .stufe-card {
-      background: rgba(15,45,77,0.55);
-      border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px 28px;
-      display: flex; flex-direction: column;
-      backdrop-filter: blur(12px);
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .stufe-card:hover { border-color: rgba(0,119,200,0.4); transform: translateY(-4px); }
-    .stufe-card.featured {
-      border-color: var(--orange);
-      background: rgba(255,94,0,0.06);
-    }
-    .stufe-num {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--orange);
-      margin-bottom: 8px;
-    }
-    .stufe-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 6px; }
-    .stufe-price {
-      font-size: 1.8rem; font-weight: 900; color: #fff;
-      margin-bottom: 16px; letter-spacing: -0.02em;
-    }
-    .stufe-price span { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
-    .stufe-text { font-size: 0.88rem; color: rgba(255,255,255,0.7); line-height: 1.7; flex: 1; }
-    .stufe-note {
-      margin-top: 16px; padding-top: 14px;
-      border-top: 1px solid var(--border);
-      font-size: 0.78rem; color: var(--orange); font-weight: 500;
-    }
-
-    /* ── CONTENT BLOCKS ── */
-    .content-block { margin-bottom: 28px; }
-    .content-block p {
-      font-size: 0.95rem; color: rgba(255,255,255,0.75);
-      line-height: 1.85; margin-bottom: 12px;
-    }
-    .content-block p:last-child { margin-bottom: 0; }
-    .warn-box {
-      margin-top: 24px; padding: 18px 22px;
-      background: rgba(255,94,0,0.08);
-      border: 1px solid rgba(255,94,0,0.3);
-      border-radius: 10px;
-      font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.7;
-    }
-    .warn-box strong { color: var(--orange); }
-
-    /* ── ACCORDION ── */
-    .accordion { margin-top: 32px; display: flex; flex-direction: column; gap: 10px; }
+    /* ── ACCORDION (shared) ── */
+    .accordion { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
     .acc-item {
       background: rgba(15,45,77,0.5);
       border: 1px solid var(--border);
       border-radius: 12px; overflow: hidden;
       backdrop-filter: blur(10px);
     }
+    .acc-item.featured { border-color: var(--orange); background: rgba(255,94,0,0.06); }
     .acc-trigger {
       width: 100%; background: none; border: none; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 18px 22px;
+      padding: 20px 24px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.92rem; font-weight: 600; color: var(--text);
+      font-size: 0.95rem; font-weight: 600; color: var(--text);
       text-align: left; gap: 12px;
     }
     .acc-trigger:hover { color: #fff; }
@@ -210,27 +147,73 @@
       margin-bottom: 4px;
     }
     .acc-item.open .acc-trigger { color: var(--orange); }
-    .acc-item.open .acc-chevron {
-      border-color: var(--orange);
-      transform: rotate(-135deg); margin-bottom: -4px;
+    .acc-item.open .acc-chevron { border-color: var(--orange); transform: rotate(-135deg); margin-bottom: -4px; }
+    .acc-body { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+    .acc-body-inner { padding: 0 24px 22px; }
+    .acc-body-inner p { font-size: 0.875rem; color: var(--muted); line-height: 1.85; margin-bottom: 10px; }
+    .acc-body-inner p:last-child { margin-bottom: 0; }
+    .acc-item.open .acc-body { max-height: 600px; }
+
+    /* Stufen-specific accordion styles */
+    .stufe-header { display: flex; align-items: center; gap: 16px; flex: 1; }
+    .stufe-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.4); border-radius: 100px;
+      padding: 3px 10px; white-space: nowrap; flex-shrink: 0;
     }
-    .acc-body {
-      overflow: hidden; max-height: 0;
-      transition: max-height 0.35s ease, padding 0.35s ease;
+    .stufe-header-price {
+      margin-left: auto; font-size: 1.1rem; font-weight: 800;
+      color: #fff; white-space: nowrap; flex-shrink: 0;
+      padding-right: 16px;
     }
-    .acc-body p {
-      padding: 0 22px 20px;
-      font-size: 0.875rem; color: var(--muted); line-height: 1.85;
+    .stufe-note-inline {
+      display: inline-block; margin-top: 12px; padding: 6px 14px;
+      background: rgba(255,94,0,0.1); border: 1px solid rgba(255,94,0,0.3);
+      border-radius: 100px; font-size: 0.78rem; color: var(--orange); font-weight: 500;
     }
-    .acc-item.open .acc-body { max-height: 400px; }
-    .acc-disclaimer {
-      margin-top: 20px; font-size: 0.8rem;
-      color: var(--dimmer); font-style: italic;
+
+    /* ── CONTENT BLOCKS ── */
+    .content-block { margin-bottom: 20px; }
+    .content-block p { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.85; margin-bottom: 12px; }
+    .content-block p:last-child { margin-bottom: 0; }
+    .feature-list {
+      margin-top: 20px; display: flex; flex-direction: column; gap: 10px;
     }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.75); line-height: 1.6;
+    }
+    .feature-item::before {
+      content: ''; width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+      background: rgba(255,94,0,0.15); border: 1.5px solid rgba(255,94,0,0.5);
+    }
+
+    /* ── WARN SECTION ── */
+    .warn-section-box {
+      background: rgba(255,94,0,0.07);
+      border: 1px solid rgba(255,94,0,0.35);
+      border-radius: 16px; padding: 32px 36px;
+      margin-top: 20px;
+    }
+    .warn-section-box h3 {
+      font-size: 1.15rem; font-weight: 700; color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .warn-section-box p {
+      font-size: 0.9rem; color: rgba(255,255,255,0.72); line-height: 1.85;
+      margin-bottom: 12px;
+    }
+    .warn-section-box p:last-child { margin-bottom: 0; }
+    .warn-section-box ul {
+      margin: 12px 0 12px 20px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.72); line-height: 1.85;
+    }
+    .warn-section-box ul li { margin-bottom: 6px; }
 
     /* ── CONFIRM BOX ── */
     .confirm-box {
-      margin-top: 36px;
+      margin-top: 32px;
       background: rgba(15,45,77,0.55);
       border: 1px solid var(--border);
       border-radius: 16px; padding: 32px 28px;
@@ -245,8 +228,7 @@
       cursor: pointer; accent-color: var(--orange);
     }
     .checkbox-wrap label {
-      font-size: 0.88rem; color: rgba(255,255,255,0.75);
-      line-height: 1.7; cursor: pointer;
+      font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.7; cursor: pointer;
     }
     .amazon-btn {
       display: inline-block;
@@ -255,15 +237,18 @@
       font-weight: 700; font-size: 0.95rem;
       text-decoration: none; border: none; cursor: pointer;
       font-family: 'Inter', sans-serif;
-      transition: background 0.2s, transform 0.2s, opacity 0.2s;
+      transition: background 0.2s, transform 0.2s;
     }
-    .amazon-btn:disabled, .amazon-btn.disabled {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.3);
+    .amazon-btn.disabled {
+      background: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.25);
       cursor: not-allowed; pointer-events: none;
     }
-    .amazon-btn:not(.disabled):hover {
-      background: #e05200; transform: translateY(-2px);
+    .amazon-btn:not(.disabled):hover { background: #e05200; transform: translateY(-2px); }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      margin-top: 20px; font-size: 0.8rem; color: var(--dimmer); font-style: italic;
     }
 
     /* ── SCROLL DOTS ── */
@@ -296,11 +281,12 @@
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
       .nav-menu { display: none; }
-      .inner, .inner-wide { padding: 80px 24px 60px; }
-      .stufen-grid { grid-template-columns: 1fr; gap: 16px; }
+      .inner { padding: 80px 24px 60px; }
       .scroll-indicator { display: none; }
       footer { padding: 24px; }
-      .acc-item.open .acc-body { max-height: 600px; }
+      .acc-item.open .acc-body { max-height: 800px; }
+      .stufe-header-price { display: none; }
+      .warn-section-box { padding: 22px 20px; }
     }
   </style>
 </head>
@@ -341,69 +327,131 @@
     </div>
   </section>
 
-  <!-- ── S2: DIE DREI STUFEN ── -->
+  <!-- ── S2: DIE DREI STUFEN (AKKORDEON) ── -->
   <section id="s2" class="snap-section alt">
-    <div class="inner-wide">
+    <div class="inner">
       <div class="reveal"><div class="label">So funktioniert der Einstieg</div></div>
       <h2 class="reveal reveal-d1">Die drei Stufen</h2>
-      <div class="stufen-grid">
+      <div class="accordion reveal reveal-d2">
 
-        <div class="stufe-card reveal reveal-d1">
-          <div class="stufe-num">Stufe 1</div>
-          <div class="stufe-title">Das Buch</div>
-          <div class="stufe-price">197 € <span>einmalig</span></div>
-          <div class="stufe-text">
-            Das Reichweitenwerk – die vollständige Schritt-für-Schritt-Anleitung zum Aufbau deines automatischen Social-Media- und Lead-Systems. Erhältlich auf Amazon.
+        <div class="acc-item">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Stufe 1</span>
+              Das Buch
+              <span class="stufe-header-price">197 €</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Das Reichweitenwerk – die vollständige Schritt-für-Schritt-Anleitung zum Aufbau deines automatischen Social-Media- und Lead-Systems. Erhältlich auf Amazon.</p>
+              <p>Du erhältst das gesamte Konzept, die Architektur und das Systemdenken hinter einem vollautomatischen Marketing- und Kommunikationssystem. Das Buch beschreibt Schritt für Schritt wie das System aufgebaut ist – von der Content-Automation über den Sales Funnel bis zur automatisierten Kommunikation.</p>
+              <span class="stufe-note-inline">Pflichtvoraussetzung für alle weiteren Stufen</span>
+            </div>
           </div>
-          <div class="stufe-note">Pflichtvoraussetzung für alle weiteren Stufen.</div>
         </div>
 
-        <div class="stufe-card featured reveal reveal-d2">
-          <div class="stufe-num">Stufe 2</div>
-          <div class="stufe-title">Framework-Paket</div>
-          <div class="stufe-price">700 € <span>einmalig</span></div>
-          <div class="stufe-text">
-            Alle fertigen Prompts, JSON-Blueprints für Make.com und die vollständigen Szenario-Vorlagen. Du baust nicht mehr alles selbst – du befüllst nur noch.
+        <div class="acc-item featured">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Stufe 2</span>
+              Framework-Paket
+              <span class="stufe-header-price">700 €</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Alle fertigen Prompts, JSON-Blueprints für Make.com und die vollständigen Szenario-Vorlagen. Du baust nicht mehr alles selbst – du befüllst nur noch.</p>
+              <p>Das Framework-Paket enthält die technische Vorlage die du im Buch beschrieben findest. Du erhältst fertige Szenarien für Make.com, strukturierte Prompt-Vorlagen für die KI-Inhalte und JSON-Blueprints die du direkt importieren kannst. Das spart dir Wochen an Konfigurationsarbeit.</p>
+              <span class="stufe-note-inline">Setzt das Buch (Stufe 1) voraus</span>
+            </div>
           </div>
-          <div class="stufe-note">Setzt das Buch voraus.</div>
         </div>
 
-        <div class="stufe-card reveal reveal-d3">
-          <div class="stufe-num">Stufe 3</div>
-          <div class="stufe-title">Persönliches Coaching</div>
-          <div class="stufe-price">ab 4.000 € <span>individuell</span></div>
-          <div class="stufe-text">
-            Ich setze das System gemeinsam mit dir auf. Persönlich, individuell, auf dein Unternehmen zugeschnitten.
+        <div class="acc-item">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Stufe 3</span>
+              Persönliches Coaching
+              <span class="stufe-header-price">ab 4.000 €</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Ich setze das System gemeinsam mit dir auf. Persönlich, individuell, auf dein Unternehmen zugeschnitten.</p>
+              <p>Im Coaching arbeiten wir direkt an deiner Situation: deine Zielgruppe, deine Inhalte, dein Angebot. Ich bringe das System zum Laufen und du weißt am Ende wie du es selbst bedienen und anpassen kannst. Das Coaching findet remote statt und umfasst mindestens 4.000 € Projektvolumen.</p>
+              <span class="stufe-note-inline">Mindestabnahme 4.000 € · Setzt Buch und Framework voraus</span>
+            </div>
           </div>
-          <div class="stufe-note">Mindestabnahme 4.000 €. Setzt Buch und Framework voraus.</div>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- ── S3: WAS DU BEKOMMST ── -->
+  <!-- ── S3: WAS DAS BUCH ENTHÄLT ── -->
   <section id="s3" class="snap-section">
     <div class="inner">
-      <div class="reveal"><div class="label">Was das Buch enthält</div></div>
-      <h2 class="reveal reveal-d1">Was du bekommst</h2>
+      <div class="reveal"><div class="label">Das Konzept</div></div>
+      <h2 class="reveal reveal-d1">Was du mit dem Buch bekommst</h2>
       <div class="content-block reveal reveal-d2">
-        <p>Dieses Buch ist eine Anleitung – keine Theorie. Es basiert auf dem Stand Dezember 2025.</p>
-        <p>Was du erwirbst ist die Architektur eines vollautomatischen Marketing- und Kommunikationssystems: das Gedankengut, das Wissen um Verkaufstechniken und Social Media, die Erfahrung rund um Automation und KI.</p>
-        <p>Das System umfasst: automatisches tägliches Posting auf Instagram, Facebook und LinkedIn, ein automatisches Kommunikationsmodell für WhatsApp und Social-Media-DMs, einen vollautomatischen Sales Funnel mit Qualifizierungsformular und ein automatisches Entscheidungsmodul das Interessenten qualifiziert und die richtigen Mails sendet.</p>
-      </div>
-      <div class="warn-box reveal reveal-d3">
-        <strong>Wichtiger Hinweis:</strong> Anbieter wie Make.com, Google und andere genannte Tools verändern ihre Bedienung regelmäßig. Die Architektur bleibt – einzelne Klickwege können sich ändern. Wenn du eine Einstellung nicht findest: frag Gemini. Er ist immer up to date.
+        <p>Dieses Buch ist eine Anleitung – keine Theorie. Es basiert auf dem Stand Dezember 2025 und beschreibt ein reales System das im Einsatz ist.</p>
+        <p>Was du erwirbst ist die Architektur eines vollautomatischen Marketing- und Kommunikationssystems: das Systemdenken, das Wissen um Verkaufstechniken und Social Media, die Erfahrung rund um Automation und KI – zusammengefasst in einer Schritt-für-Schritt-Anleitung die du umsetzen kannst.</p>
+        <p>Das Buch erklärt nicht nur was das System tut, sondern warum es so aufgebaut ist. Du verstehst die Logik hinter jedem Baustein – das macht dich unabhängig und befähigt dich das System selbst weiterzuentwickeln.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── S4: RECHTLICHE HINWEISE ── -->
-  <section id="s4" class="snap-section dark">
+  <!-- ── S4: WAS DAS SYSTEM KONKRET MACHT ── -->
+  <section id="s4" class="snap-section alt">
     <div class="inner">
-      <div class="reveal"><div class="label">Rechtliches</div></div>
+      <div class="reveal"><div class="label">Die Bestandteile</div></div>
+      <h2 class="reveal reveal-d1">Was das System konkret umfasst</h2>
+      <p class="lead reveal reveal-d2" style="margin-bottom: 0;">Das Buch beschreibt vier Kernmodule die zusammen ein vollständiges automatisches Marketing-System bilden:</p>
+      <div class="feature-list reveal reveal-d3">
+        <div class="feature-item">Automatisches tägliches Posting auf Instagram, Facebook und LinkedIn – ohne dass du täglich aktiv sein musst</div>
+        <div class="feature-item">Ein automatisches Kommunikationsmodell für WhatsApp und Social-Media-DMs – Anfragen werden erkannt und beantwortet</div>
+        <div class="feature-item">Einen vollautomatischen Sales Funnel mit Qualifizierungsformular – Interessenten qualifizieren sich selbst bevor du mit ihnen sprichst</div>
+        <div class="feature-item">Ein automatisches Entscheidungsmodul das Interessenten bewertet und die richtigen Follow-Up-Mails zur richtigen Zeit sendet</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: WICHTIGER HINWEIS (AUSFÜHRLICH) ── -->
+  <section id="s5" class="snap-section warn">
+    <div class="inner">
+      <div class="reveal"><div class="label">Bitte vollständig lesen</div></div>
+      <h2 class="reveal reveal-d1">Wichtige Hinweise vor dem Kauf</h2>
+      <div class="warn-section-box reveal reveal-d2">
+        <h3>Tools verändern sich – die Architektur bleibt</h3>
+        <p>Anbieter wie Make.com, Google, Instagram, Facebook, LinkedIn, Superchat und andere verändern ihre Benutzeroberflächen, Menüs und Einstellungen regelmäßig und ohne Vorankündigung. Das ist normal und liegt außerhalb meines Einflussbereichs.</p>
+        <p>Was im Buch beschrieben wird ist die Architektur und die Logik des Systems – nicht ein fixer Klickpfad. Wenn eine Einstellung an anderer Stelle liegt oder eine Menübezeichnung sich geändert hat: Das System funktioniert dennoch. Frag im Zweifelsfall Gemini – er kennt den aktuellen Stand der Tools.</p>
+        <p>Das Buch wird nicht laufend aktualisiert. Es ist eine Momentaufnahme vom Dezember 2025. Die grundlegende Architektur hat sich in dieser Form als stabil erwiesen.</p>
+      </div>
+      <div class="warn-section-box reveal reveal-d3" style="margin-top:16px;">
+        <h3>Kein Erfolgsversprechen – kein Umtausch</h3>
+        <p>Der Erfolg beim Einsatz dieses Systems hängt von Faktoren ab die vollständig außerhalb meines Einflussbereichs liegen:</p>
+        <ul>
+          <li>Der Qualität deines Angebots und deiner Positionierung</li>
+          <li>Der Zeit und Konsequenz die du in die Umsetzung investierst</li>
+          <li>Deiner Zielgruppe und dem Markt in dem du tätig bist</li>
+          <li>Deiner technischen Affinität und Bereitschaft zu lernen</li>
+        </ul>
+        <p>Ich übernehme keine Haftung für ausbleibende Ergebnisse. Das Buch vermittelt Wissen und Architektur – kein garantiertes Ergebnis.</p>
+        <p><strong>Nach dem Kauf ist ein Umtausch oder eine Erstattung ausgeschlossen.</strong> Digitale Inhalte können nicht zurückgegeben werden sobald der Zugang gewährt wurde. Bitte stelle sicher dass du diese Seite vollständig gelesen und verstanden hast bevor du kaufst.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: RECHTLICHE HINWEISE TEIL 1 ── -->
+  <section id="s6" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Rechtliches · Teil 1 von 2</div></div>
       <h2 class="reveal reveal-d1">Wichtige rechtliche Hinweise</h2>
-      <p class="muted reveal reveal-d2" style="margin-bottom:0; font-size:0.9rem;">Bitte lies diese Punkte sorgfältig.</p>
+      <p class="muted reveal reveal-d2" style="font-size:0.9rem;">Wenn du das System betreibst bist du selbst für die Einhaltung aller rechtlichen Vorgaben verantwortlich. Bitte lies diese Punkte sorgfältig.</p>
       <div class="accordion reveal reveal-d2">
 
         <div class="acc-item">
@@ -412,17 +460,23 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Wenn du ein Kontaktformular oder Qualifizierungsformular betreibst bist du verpflichtet Nutzer über die Verarbeitung ihrer Daten aufzuklären. Deine Datenschutzerklärung muss enthalten: Was du mit den Daten machst, wer sie verarbeitet, wie lange du sie speicherst und wie jemand die Löschung beantragen kann. Nutze einen seriösen Generator wie eRecht24 und lass die Erklärung von einem Anwalt prüfen.</p>
+            <div class="acc-body-inner">
+              <p>Wenn du ein Kontaktformular oder Qualifizierungsformular betreibst bist du verpflichtet Nutzer über die Verarbeitung ihrer Daten aufzuklären. Deine Datenschutzerklärung muss enthalten: Was du mit den Daten machst, wer sie verarbeitet (ggf. Auftragsverarbeiter), wie lange du sie speicherst und wie jemand die Löschung beantragen kann.</p>
+              <p>Nutze einen seriösen Generator wie eRecht24 oder Datenschutz.org und lass die Erklärung von einem Anwalt prüfen. Eine fehlende oder veraltete Datenschutzerklärung kann zu Abmahnungen führen.</p>
+            </div>
           </div>
         </div>
 
         <div class="acc-item">
           <button class="acc-trigger">
-            DSGVO Einwilligung
+            DSGVO-Einwilligung im Formular
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Vor dem Absenden eines Formulars muss der Nutzer aktiv einwilligen. Pflicht ist eine aktiv anzuklickende Checkbox – kein vorausgewähltes Häkchen.</p>
+            <div class="acc-body-inner">
+              <p>Vor dem Absenden eines Formulars muss der Nutzer aktiv einwilligen dass seine Daten verarbeitet werden. Das bedeutet: eine Checkbox die der Nutzer selbst anhaken muss – kein vorausgewähltes Häkchen, kein Opt-Out.</p>
+              <p>Die Checkbox muss auf die Datenschutzerklärung verlinken und klar formulieren wozu die Einwilligung erteilt wird. Dokumentiere diese Einwilligungen falls es zu Rückfragen kommt.</p>
+            </div>
           </div>
         </div>
 
@@ -432,7 +486,10 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Werbliche Mails und Follow-Up-Mails die nicht direkt zur ursprünglichen Anfrage gehören erfordern einen expliziten Opt-In. Füge im Formular eine separate freiwillige Checkbox ein.</p>
+            <div class="acc-body-inner">
+              <p>Werbliche Mails und Follow-Up-Mails die nicht direkt zur ursprünglichen Anfrage gehören erfordern einen expliziten Opt-In. Das betrifft alle automatisierten E-Mails die nicht direkt die Anfrage beantworten – etwa Nurturing-Sequenzen oder Newsletter.</p>
+              <p>Füge im Qualifizierungsformular eine separate freiwillige Checkbox ein mit dem genauen Inhalt der Kommunikation die du senden möchtest. Diese Checkbox darf nicht Pflichtfeld sein.</p>
+            </div>
           </div>
         </div>
 
@@ -442,9 +499,24 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Anrufe und WhatsApp-Nachrichten ohne ausdrückliche Einwilligung sind in Deutschland rechtlich problematisch. Erhoebe die Einwilligung im Formular mit einer eigenen Checkbox und dokumentiere sie sorgfältig.</p>
+            <div class="acc-body-inner">
+              <p>Anrufe und WhatsApp-Nachrichten zu Werbezwecken ohne ausdrückliche Einwilligung sind in Deutschland rechtlich problematisch und können Unterlassungsansprüche auslösen. Das gilt auch für automatisierte WhatsApp-Nachrichten über Superchat oder ähnliche Tools.</p>
+              <p>Erhebe die Einwilligung im Formular mit einer eigenen separaten Checkbox für Telefon und einer weiteren für WhatsApp. Dokumentiere wann und von wem die Einwilligung erteilt wurde – auch für spätere Nachweise.</p>
+            </div>
           </div>
         </div>
+
+      </div>
+      <p class="disclaimer reveal reveal-d3">Dieser Abschnitt ist kein Rechtsrat. Lass dich von einem zugelassenen Anwalt beraten.</p>
+    </div>
+  </section>
+
+  <!-- ── S7: RECHTLICHE HINWEISE TEIL 2 ── -->
+  <section id="s7" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Rechtliches · Teil 2 von 2</div></div>
+      <h2 class="reveal reveal-d1">Verträge, Speicherung &amp; Impressum</h2>
+      <div class="accordion reveal reveal-d2">
 
         <div class="acc-item">
           <button class="acc-trigger">
@@ -452,7 +524,10 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Wenn du Tools wie Make.com, Google, Superchat oder ElevenLabs nutzt und personenbezogene Daten verarbeitest brauchst du mit diesen Anbietern einen Auftragsverarbeitungsvertrag (AVV). Die meisten Anbieter stellen diesen automatisch bereit.</p>
+            <div class="acc-body-inner">
+              <p>Wenn du Tools wie Make.com, Google (Workspace, Forms, Drive), Superchat, ElevenLabs oder Cloudinary nutzt und dabei personenbezogene Daten verarbeitest brauchst du mit jedem dieser Anbieter einen Auftragsverarbeitungsvertrag (AVV).</p>
+              <p>Die meisten Anbieter stellen den AVV automatisch im Rahmen ihrer Nutzungsbedingungen bereit oder auf Anfrage zum Download. Prüfe in den Einstellungen deines Accounts ob ein AVV abgeschlossen wurde oder schließe ihn aktiv ab. Ohne AVV darfst du mit diesen Tools keine personenbezogenen Daten verarbeiten.</p>
+            </div>
           </div>
         </div>
 
@@ -462,7 +537,10 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Du darfst personenbezogene Daten nicht unbegrenzt speichern. Empfehlung: Ungeeignete Interessenten nach 6 Monaten löschen, Menschen die sich nicht mehr melden nach 12 Monaten.</p>
+            <div class="acc-body-inner">
+              <p>Du darfst personenbezogene Daten nicht unbegrenzt speichern. Die DSGVO verlangt eine klare Zweckbindung – wenn der Zweck entfällt müssen die Daten gelöscht werden.</p>
+              <p>Empfehlung für ein einfaches Löschkonzept: Interessenten die als ungeeignet eingestuft wurden nach 6 Monaten löschen. Interessenten die sich nicht mehr melden oder auf keine Kommunikation reagieren nach 12 Monaten löschen. Dokumentiere dein Löschkonzept schriftlich – das schützt dich bei Nachfragen der Datenschutzbehörde.</p>
+            </div>
           </div>
         </div>
 
@@ -472,29 +550,32 @@
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
-            <p>Jede gewerblich genutzte Website und jedes gewerblich genutzte Social-Media-Profil braucht ein vollständiges Impressum mit Name, Anschrift, Kontakt und ggf. Handelsregisternummer.</p>
+            <div class="acc-body-inner">
+              <p>Jede gewerblich genutzte Website und jedes gewerblich genutzte Social-Media-Profil braucht ein vollständiges Impressum. Das gilt auch für Instagram, Facebook, LinkedIn und TikTok-Profile die du im Rahmen dieses Systems nutzt.</p>
+              <p>Das Impressum muss enthalten: vollständiger Name oder Firmenname, Anschrift, Kontaktdaten (E-Mail und Telefon), bei Kapitalgesellschaften Handelsregisternummer und Geschäftsführer. Ein fehlendes oder unvollständiges Impressum ist ein häufiges Abmahnrisiko. Nutze einen Impressum-Generator und lass ihn prüfen.</p>
+            </div>
           </div>
         </div>
 
       </div>
-      <p class="acc-disclaimer reveal reveal-d3">Dieser Abschnitt ist kein Rechtsrat. Lass dich von einem zugelassenen Anwalt beraten.</p>
+      <p class="disclaimer reveal reveal-d3">Dieser Abschnitt ist kein Rechtsrat. Lass dich von einem zugelassenen Anwalt beraten.</p>
     </div>
   </section>
 
-  <!-- ── S5: MARKENHINWEIS ── -->
-  <section id="s5" class="snap-section alt">
+  <!-- ── S8: MARKENHINWEIS ── -->
+  <section id="s8" class="snap-section alt">
     <div class="inner">
       <div class="reveal"><div class="label">Hinweis zu Markennamen</div></div>
       <h2 class="reveal reveal-d1">Markenhinweis</h2>
       <div class="content-block reveal reveal-d2">
         <p>In diesem Buch werden Markennamen wie Make.com, Google, Instagram, Facebook, LinkedIn, TikTok, Superchat, ElevenLabs, Cloudinary und andere genannt. Diese Nennung erfolgt ausschließlich weil diese Tools für den beschriebenen Systemaufbau verwendet werden.</p>
-        <p>Es handelt sich nicht um Werbung, Empfehlung oder Partnerschaft mit den genannten Unternehmen. Alle genannten Marken sind Eigentum ihrer jeweiligen Inhaber.</p>
+        <p>Es handelt sich nicht um Werbung, Empfehlung oder Partnerschaft mit den genannten Unternehmen. Die Nutzung dieser Tools erfolgt auf eigene Verantwortung und unterliegt den jeweiligen Nutzungsbedingungen der Anbieter. Alle genannten Marken sind Eigentum ihrer jeweiligen Inhaber.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── S6: BESTÄTIGUNG + AMAZON ── -->
-  <section id="s6" class="snap-section">
+  <!-- ── S9: BESTÄTIGUNG + AMAZON ── -->
+  <section id="s9" class="snap-section">
     <div class="inner">
       <div class="reveal"><div class="label">Jetzt kaufen</div></div>
       <h2 class="reveal reveal-d1">Hast du alles gelesen und verstanden?</h2>
@@ -502,12 +583,12 @@
         Bevor du das Buch kaufst bestätige bitte dass du die folgenden Punkte gelesen und verstanden hast.
       </p>
       <div class="confirm-box reveal reveal-d3">
-        <label class="checkbox-wrap" for="confirmCheck">
+        <div class="checkbox-wrap">
           <input type="checkbox" id="confirmCheck" />
           <label for="confirmCheck">
-            Ja, ich habe alle Informationen auf dieser Seite gelesen und verstanden. Mir ist bewusst dass ein Umtausch oder eine Erstattung nach dem Kauf ausgeschlossen ist. Der Autor übernimmt keine Haftung für Erfolge jeglicher Art da der Erfolg von individuellen Faktoren abhängt die außerhalb seines Einflussbereichs liegen.
+            Ja, ich habe alle Informationen auf dieser Seite gelesen und verstanden. Mir ist bewusst dass ein Umtausch oder eine Erstattung nach dem Kauf ausgeschlossen ist. Der Autor übernimmt keine Haftung für Erfolge jeglicher Art da der Erfolg von individuellen Faktoren abhängt die außerhalb seines Einflussbereichs liegen. Ich verstehe dass sich Tool-Oberflächen ändern können und die Architektur des Systems davon unabhängig bleibt.
           </label>
-        </label>
+        </div>
         <a id="amazonBtn" href="https://www.amazon.de" target="_blank" rel="noopener" class="amazon-btn disabled">
           Jetzt auf Amazon kaufen – 197 €
         </a>
@@ -523,7 +604,7 @@
   </footer>
 
   <script>
-    const SECTIONS = ['s1','s2','s3','s4','s5','s6'];
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
     const navEl = document.getElementById('navbar');
     let currentIdx = 0;
     let isAnimating = false;
@@ -574,26 +655,24 @@
       if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
     });
 
-    // Accordion
+    // Accordion (all sections)
     document.querySelectorAll('.acc-trigger').forEach(btn => {
       btn.addEventListener('click', () => {
         const item = btn.parentElement;
         const isOpen = item.classList.contains('open');
-        document.querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+        // close siblings in same accordion only
+        item.closest('.accordion').querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
         if (!isOpen) item.classList.add('open');
       });
     });
 
     // Checkbox enables Amazon button
-    const check = document.getElementById('confirmCheck');
-    const amazonBtn = document.getElementById('amazonBtn');
-    check.addEventListener('change', () => {
-      if (check.checked) {
-        amazonBtn.classList.remove('disabled');
-        amazonBtn.style.pointerEvents = '';
+    document.getElementById('confirmCheck').addEventListener('change', function() {
+      const btn = document.getElementById('amazonBtn');
+      if (this.checked) {
+        btn.classList.remove('disabled');
       } else {
-        amazonBtn.classList.add('disabled');
-        amazonBtn.style.pointerEvents = 'none';
+        btn.classList.add('disabled');
       }
     });
 
