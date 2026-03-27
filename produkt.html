@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Das Reichweitenwerk – Tobi Dolgener</title>
+  <meta name="description" content="Das Reichweitenwerk – ein vollautomatisches Social-Media- und Lead-System. Alle Stufen und rechtlichen Informationen vor dem Kauf." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+    .nav-menu { display: flex; gap: 8px; list-style: none; }
+    .nav-menu a {
+      display: block; padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px); background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(13,37,64,0.5); }
+    .nav-menu a.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    /* ── SECTIONS ── */
+    .snap-section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+    }
+    .snap-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(10,25,45,0.72);
+      pointer-events: none;
+    }
+    .snap-section.alt::before { background: rgba(13,37,64,0.80); }
+    .snap-section.dark::before { background: rgba(6,15,28,0.88); }
+
+    /* ── INNER ── */
+    .inner {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      padding: 100px 64px;
+      width: 100%;
+    }
+    .inner-wide {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 100px 64px;
+      width: 100%;
+    }
+
+    /* ── LABEL + HEADINGS ── */
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.35);
+      background: rgba(255,94,0,0.08);
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;
+    }
+    .lead {
+      font-size: 1.05rem; color: rgba(255,255,255,0.75);
+      line-height: 1.8; max-width: 680px;
+    }
+    .muted { color: var(--muted); }
+    .note {
+      font-size: 0.82rem; color: var(--orange);
+      margin-top: 12px; font-weight: 500;
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.12s; }
+    .reveal-d2 { transition-delay: 0.24s; }
+    .reveal-d3 { transition-delay: 0.36s; }
+    .reveal-d4 { transition-delay: 0.48s; }
+
+    /* ── STUFEN CARDS ── */
+    .stufen-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      margin-top: 40px;
+    }
+    .stufe-card {
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      display: flex; flex-direction: column;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stufe-card:hover { border-color: rgba(0,119,200,0.4); transform: translateY(-4px); }
+    .stufe-card.featured {
+      border-color: var(--orange);
+      background: rgba(255,94,0,0.06);
+    }
+    .stufe-num {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 8px;
+    }
+    .stufe-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 6px; }
+    .stufe-price {
+      font-size: 1.8rem; font-weight: 900; color: #fff;
+      margin-bottom: 16px; letter-spacing: -0.02em;
+    }
+    .stufe-price span { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+    .stufe-text { font-size: 0.88rem; color: rgba(255,255,255,0.7); line-height: 1.7; flex: 1; }
+    .stufe-note {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--orange); font-weight: 500;
+    }
+
+    /* ── CONTENT BLOCKS ── */
+    .content-block { margin-bottom: 28px; }
+    .content-block p {
+      font-size: 0.95rem; color: rgba(255,255,255,0.75);
+      line-height: 1.85; margin-bottom: 12px;
+    }
+    .content-block p:last-child { margin-bottom: 0; }
+    .warn-box {
+      margin-top: 24px; padding: 18px 22px;
+      background: rgba(255,94,0,0.08);
+      border: 1px solid rgba(255,94,0,0.3);
+      border-radius: 10px;
+      font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.7;
+    }
+    .warn-box strong { color: var(--orange); }
+
+    /* ── ACCORDION ── */
+    .accordion { margin-top: 32px; display: flex; flex-direction: column; gap: 10px; }
+    .acc-item {
+      background: rgba(15,45,77,0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .acc-trigger {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 22px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem; font-weight: 600; color: var(--text);
+      text-align: left; gap: 12px;
+    }
+    .acc-trigger:hover { color: #fff; }
+    .acc-chevron {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.3s, border-color 0.3s;
+      margin-bottom: 4px;
+    }
+    .acc-item.open .acc-trigger { color: var(--orange); }
+    .acc-item.open .acc-chevron {
+      border-color: var(--orange);
+      transform: rotate(-135deg); margin-bottom: -4px;
+    }
+    .acc-body {
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+    }
+    .acc-body p {
+      padding: 0 22px 20px;
+      font-size: 0.875rem; color: var(--muted); line-height: 1.85;
+    }
+    .acc-item.open .acc-body { max-height: 400px; }
+    .acc-disclaimer {
+      margin-top: 20px; font-size: 0.8rem;
+      color: var(--dimmer); font-style: italic;
+    }
+
+    /* ── CONFIRM BOX ── */
+    .confirm-box {
+      margin-top: 36px;
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      backdrop-filter: blur(12px);
+    }
+    .checkbox-wrap {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 28px; cursor: pointer;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px;
+      cursor: pointer; accent-color: var(--orange);
+    }
+    .checkbox-wrap label {
+      font-size: 0.88rem; color: rgba(255,255,255,0.75);
+      line-height: 1.7; cursor: pointer;
+    }
+    .amazon-btn {
+      display: inline-block;
+      background: var(--orange); color: #fff;
+      padding: 16px 40px; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.2s, opacity 0.2s;
+    }
+    .amazon-btn:disabled, .amazon-btn.disabled {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.3);
+      cursor: not-allowed; pointer-events: none;
+    }
+    .amazon-btn:not(.disabled):hover {
+      background: #e05200; transform: translateY(-2px);
+    }
+
+    /* ── SCROLL DOTS ── */
+    .scroll-indicator {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s; padding: 0;
+    }
+    .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.95);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-menu { display: none; }
+      .inner, .inner-wide { padding: 80px 24px 60px; }
+      .stufen-grid { grid-template-columns: 1fr; gap: 16px; }
+      .scroll-indicator { display: none; }
+      footer { padding: 24px; }
+      .acc-item.open .acc-body { max-height: 600px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIDEO BG -->
+  <video autoplay muted loop playsinline
+    style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:-1;"
+    poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230d2540'/%3E%3C/svg%3E">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/f_mp4,q_auto/v1774613954/Logo_Video_u4kbha.mp4" type="video/mp4">
+  </video>
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:0;"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html">Training &amp; Speaking</a></li>
+      <li><a href="/coaching.html">Coaching</a></li>
+      <li><a href="/ai.html" class="active">AI Automation</a></li>
+      <li><a href="mailto:hallo@tobidolgener.com">Kontakt</a></li>
+    </ul>
+  </nav>
+
+  <!-- SCROLL DOTS -->
+  <div class="scroll-indicator" id="scrollDots"></div>
+
+  <!-- ── S1: DANKE ── -->
+  <section id="s1" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Das Reichweitenwerk</div></div>
+      <h1 class="reveal reveal-d1">Danke für dein<br/>Interesse.</h1>
+      <p class="lead reveal reveal-d2">
+        Du interessierst dich für das Reichweitenwerk – ein System das täglich für dich arbeitet.
+        Hier findest du alle Informationen die du brauchst bevor du eine Entscheidung triffst.
+        Bitte lies diese Seite vollständig durch.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: DIE DREI STUFEN ── -->
+  <section id="s2" class="snap-section alt">
+    <div class="inner-wide">
+      <div class="reveal"><div class="label">So funktioniert der Einstieg</div></div>
+      <h2 class="reveal reveal-d1">Die drei Stufen</h2>
+      <div class="stufen-grid">
+
+        <div class="stufe-card reveal reveal-d1">
+          <div class="stufe-num">Stufe 1</div>
+          <div class="stufe-title">Das Buch</div>
+          <div class="stufe-price">197 € <span>einmalig</span></div>
+          <div class="stufe-text">
+            Das Reichweitenwerk – die vollständige Schritt-für-Schritt-Anleitung zum Aufbau deines automatischen Social-Media- und Lead-Systems. Erhältlich auf Amazon.
+          </div>
+          <div class="stufe-note">Pflichtvoraussetzung für alle weiteren Stufen.</div>
+        </div>
+
+        <div class="stufe-card featured reveal reveal-d2">
+          <div class="stufe-num">Stufe 2</div>
+          <div class="stufe-title">Framework-Paket</div>
+          <div class="stufe-price">700 € <span>einmalig</span></div>
+          <div class="stufe-text">
+            Alle fertigen Prompts, JSON-Blueprints für Make.com und die vollständigen Szenario-Vorlagen. Du baust nicht mehr alles selbst – du befüllst nur noch.
+          </div>
+          <div class="stufe-note">Setzt das Buch voraus.</div>
+        </div>
+
+        <div class="stufe-card reveal reveal-d3">
+          <div class="stufe-num">Stufe 3</div>
+          <div class="stufe-title">Persönliches Coaching</div>
+          <div class="stufe-price">ab 4.000 € <span>individuell</span></div>
+          <div class="stufe-text">
+            Ich setze das System gemeinsam mit dir auf. Persönlich, individuell, auf dein Unternehmen zugeschnitten.
+          </div>
+          <div class="stufe-note">Mindestabnahme 4.000 €. Setzt Buch und Framework voraus.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S3: WAS DU BEKOMMST ── -->
+  <section id="s3" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Was das Buch enthält</div></div>
+      <h2 class="reveal reveal-d1">Was du bekommst</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>Dieses Buch ist eine Anleitung – keine Theorie. Es basiert auf dem Stand Dezember 2025.</p>
+        <p>Was du erwirbst ist die Architektur eines vollautomatischen Marketing- und Kommunikationssystems: das Gedankengut, das Wissen um Verkaufstechniken und Social Media, die Erfahrung rund um Automation und KI.</p>
+        <p>Das System umfasst: automatisches tägliches Posting auf Instagram, Facebook und LinkedIn, ein automatisches Kommunikationsmodell für WhatsApp und Social-Media-DMs, einen vollautomatischen Sales Funnel mit Qualifizierungsformular und ein automatisches Entscheidungsmodul das Interessenten qualifiziert und die richtigen Mails sendet.</p>
+      </div>
+      <div class="warn-box reveal reveal-d3">
+        <strong>Wichtiger Hinweis:</strong> Anbieter wie Make.com, Google und andere genannte Tools verändern ihre Bedienung regelmäßig. Die Architektur bleibt – einzelne Klickwege können sich ändern. Wenn du eine Einstellung nicht findest: frag Gemini. Er ist immer up to date.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: RECHTLICHE HINWEISE ── -->
+  <section id="s4" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Rechtliches</div></div>
+      <h2 class="reveal reveal-d1">Wichtige rechtliche Hinweise</h2>
+      <p class="muted reveal reveal-d2" style="margin-bottom:0; font-size:0.9rem;">Bitte lies diese Punkte sorgfältig.</p>
+      <div class="accordion reveal reveal-d2">
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Datenschutzerklärung
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Wenn du ein Kontaktformular oder Qualifizierungsformular betreibst bist du verpflichtet Nutzer über die Verarbeitung ihrer Daten aufzuklären. Deine Datenschutzerklärung muss enthalten: Was du mit den Daten machst, wer sie verarbeitet, wie lange du sie speicherst und wie jemand die Löschung beantragen kann. Nutze einen seriösen Generator wie eRecht24 und lass die Erklärung von einem Anwalt prüfen.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            DSGVO Einwilligung
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Vor dem Absenden eines Formulars muss der Nutzer aktiv einwilligen. Pflicht ist eine aktiv anzuklickende Checkbox – kein vorausgewähltes Häkchen.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Opt-In für E-Mail-Kommunikation
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Werbliche Mails und Follow-Up-Mails die nicht direkt zur ursprünglichen Anfrage gehören erfordern einen expliziten Opt-In. Füge im Formular eine separate freiwillige Checkbox ein.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Opt-In für Telefon und WhatsApp
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Anrufe und WhatsApp-Nachrichten ohne ausdrückliche Einwilligung sind in Deutschland rechtlich problematisch. Erhoebe die Einwilligung im Formular mit einer eigenen Checkbox und dokumentiere sie sorgfältig.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Auftragsverarbeitungsverträge (AVV)
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Wenn du Tools wie Make.com, Google, Superchat oder ElevenLabs nutzt und personenbezogene Daten verarbeitest brauchst du mit diesen Anbietern einen Auftragsverarbeitungsvertrag (AVV). Die meisten Anbieter stellen diesen automatisch bereit.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Speicherdauer und Löschkonzept
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Du darfst personenbezogene Daten nicht unbegrenzt speichern. Empfehlung: Ungeeignete Interessenten nach 6 Monaten löschen, Menschen die sich nicht mehr melden nach 12 Monaten.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Impressumspflicht
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <p>Jede gewerblich genutzte Website und jedes gewerblich genutzte Social-Media-Profil braucht ein vollständiges Impressum mit Name, Anschrift, Kontakt und ggf. Handelsregisternummer.</p>
+          </div>
+        </div>
+
+      </div>
+      <p class="acc-disclaimer reveal reveal-d3">Dieser Abschnitt ist kein Rechtsrat. Lass dich von einem zugelassenen Anwalt beraten.</p>
+    </div>
+  </section>
+
+  <!-- ── S5: MARKENHINWEIS ── -->
+  <section id="s5" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Hinweis zu Markennamen</div></div>
+      <h2 class="reveal reveal-d1">Markenhinweis</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>In diesem Buch werden Markennamen wie Make.com, Google, Instagram, Facebook, LinkedIn, TikTok, Superchat, ElevenLabs, Cloudinary und andere genannt. Diese Nennung erfolgt ausschließlich weil diese Tools für den beschriebenen Systemaufbau verwendet werden.</p>
+        <p>Es handelt sich nicht um Werbung, Empfehlung oder Partnerschaft mit den genannten Unternehmen. Alle genannten Marken sind Eigentum ihrer jeweiligen Inhaber.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: BESTÄTIGUNG + AMAZON ── -->
+  <section id="s6" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Jetzt kaufen</div></div>
+      <h2 class="reveal reveal-d1">Hast du alles gelesen und verstanden?</h2>
+      <p class="lead reveal reveal-d2" style="margin-bottom:0;">
+        Bevor du das Buch kaufst bestätige bitte dass du die folgenden Punkte gelesen und verstanden hast.
+      </p>
+      <div class="confirm-box reveal reveal-d3">
+        <label class="checkbox-wrap" for="confirmCheck">
+          <input type="checkbox" id="confirmCheck" />
+          <label for="confirmCheck">
+            Ja, ich habe alle Informationen auf dieser Seite gelesen und verstanden. Mir ist bewusst dass ein Umtausch oder eine Erstattung nach dem Kauf ausgeschlossen ist. Der Autor übernimmt keine Haftung für Erfolge jeglicher Art da der Erfolg von individuellen Faktoren abhängt die außerhalb seines Einflussbereichs liegen.
+          </label>
+        </label>
+        <a id="amazonBtn" href="https://www.amazon.de" target="_blank" rel="noopener" class="amazon-btn disabled">
+          Jetzt auf Amazon kaufen – 197 €
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+    </div>
+  </footer>
+
+  <script>
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6'];
+    const navEl = document.getElementById('navbar');
+    let currentIdx = 0;
+    let isAnimating = false;
+
+    // Build nav dots
+    const dotsWrap = document.getElementById('scrollDots');
+    SECTIONS.forEach((id, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.scroll-dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      navEl.classList.toggle('scrolled', idx > 0);
+      updateDots();
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY > 0) goTo(currentIdx + 1);
+      else              goTo(currentIdx - 1);
+    }, { passive: false });
+
+    // Touch
+    let touchY = 0;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+    }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // Accordion
+    document.querySelectorAll('.acc-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Checkbox enables Amazon button
+    const check = document.getElementById('confirmCheck');
+    const amazonBtn = document.getElementById('amazonBtn');
+    check.addEventListener('change', () => {
+      if (check.checked) {
+        amazonBtn.classList.remove('disabled');
+        amazonBtn.style.pointerEvents = '';
+      } else {
+        amazonBtn.classList.add('disabled');
+        amazonBtn.style.pointerEvents = 'none';
+      }
+    });
+
+    // Reveal hero on load
+    document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+  </script>
+
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
+  <script src="/nav.js?v=3"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=3"></script>
+</body>
+</html>
