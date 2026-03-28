@@ -671,9 +671,13 @@
       setTimeout(() => { isAnimating = false; }, 850);
     }
 
-    // Mouse wheel
+    // Mouse wheel – timestamp lock guarantees exactly one section per scroll
+    let lastWheelTime = 0;
     window.addEventListener('wheel', (e) => {
       e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelTime < 900) return;
+      lastWheelTime = now;
       if (e.deltaY > 0) goTo(currentIdx + 1);
       else              goTo(currentIdx - 1);
     }, { passive: false });
