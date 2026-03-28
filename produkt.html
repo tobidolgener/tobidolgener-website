@@ -339,13 +339,13 @@
             <div class="stufe-header">
               <span class="stufe-badge">Stufe 1</span>
               Das Buch
-              <span class="stufe-header-price">197 €</span>
+              <span class="stufe-header-price">299 €</span>
             </div>
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
             <div class="acc-body-inner">
-              <p>Das Reichweitenwerk – die vollständige Schritt-für-Schritt-Anleitung zum Aufbau deines automatischen Social-Media- und Lead-Systems. Erhältlich auf Amazon.</p>
+              <p>Das Reichweitenwerk – die vollständige Schritt-für-Schritt-Anleitung zum Aufbau deines automatischen Social-Media- und Lead-Systems.</p>
               <p>Du erhältst das gesamte Konzept, die Architektur und das Systemdenken hinter einem vollautomatischen Marketing- und Kommunikationssystem. Das Buch beschreibt Schritt für Schritt wie das System aufgebaut ist – von der Content-Automation über den Sales Funnel bis zur automatisierten Kommunikation.</p>
               <span class="stufe-note-inline">Pflichtvoraussetzung für alle weiteren Stufen</span>
             </div>
@@ -357,7 +357,7 @@
             <div class="stufe-header">
               <span class="stufe-badge">Stufe 2</span>
               Framework-Paket
-              <span class="stufe-header-price">700 €</span>
+              <span class="stufe-header-price">999 €</span>
             </div>
             <span class="acc-chevron"></span>
           </button>
@@ -375,15 +375,15 @@
             <div class="stufe-header">
               <span class="stufe-badge">Stufe 3</span>
               Persönliches Coaching
-              <span class="stufe-header-price">ab 4.000 €</span>
+              <span class="stufe-header-price">ab 4.999 €</span>
             </div>
             <span class="acc-chevron"></span>
           </button>
           <div class="acc-body">
             <div class="acc-body-inner">
               <p>Ich setze das System gemeinsam mit dir auf. Persönlich, individuell, auf dein Unternehmen zugeschnitten.</p>
-              <p>Im Coaching arbeiten wir direkt an deiner Situation: deine Zielgruppe, deine Inhalte, dein Angebot. Ich bringe das System zum Laufen und du weißt am Ende wie du es selbst bedienen und anpassen kannst. Das Coaching findet remote statt und umfasst mindestens 4.000 € Projektvolumen.</p>
-              <span class="stufe-note-inline">Mindestabnahme 4.000 € · Setzt Buch und Framework voraus</span>
+              <p>Im Coaching arbeiten wir direkt an deiner Situation: deine Zielgruppe, deine Inhalte, dein Angebot. Ich bringe das System zum Laufen und du weißt am Ende wie du es selbst bedienen und anpassen kannst. Das Coaching findet remote statt und umfasst mindestens 4.999 € Projektvolumen.</p>
+              <span class="stufe-note-inline">Mindestabnahme 4.999 € · Setzt Buch und Framework voraus</span>
             </div>
           </div>
         </div>
@@ -596,12 +596,22 @@
             Ja, ich habe alle Informationen auf dieser Seite gelesen und verstanden. Mir ist bewusst dass ein Umtausch oder eine Erstattung nach dem Kauf ausgeschlossen ist. Der Autor übernimmt keine Haftung für Erfolge jeglicher Art da der Erfolg von individuellen Faktoren abhängt die außerhalb seines Einflussbereichs liegen. Ich verstehe dass sich Tool-Oberflächen ändern können und die Architektur des Systems davon unabhängig bleibt.
           </label>
         </div>
-        <a id="amazonBtn" href="https://www.amazon.de" target="_blank" rel="noopener" class="amazon-btn disabled">
-          Jetzt auf Amazon kaufen – 197 €
-        </a>
+        <button id="buyBtn" class="amazon-btn disabled" type="button">
+          Starte jetzt – 299 €
+        </button>
       </div>
     </div>
   </section>
+
+  <!-- POPUP: Buch im Druck -->
+  <div id="druckPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:48px 40px; max-width:420px; width:90%; text-align:center; position:relative;">
+      <p style="font-size:2rem; margin:0 0 16px;">📦</p>
+      <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin:0 0 12px;">Das Buch ist im Druck</h3>
+      <p style="font-size:0.92rem; color:rgba(255,255,255,0.65); line-height:1.7; margin:0 0 28px;">Der Shop wird in Kürze freigeschaltet. Du kannst diese Seite bookmarken und in ein paar Tagen wiederkommen.</p>
+      <button onclick="document.getElementById('druckPopup').style.display='none';" style="background:var(--orange); color:#fff; border:none; border-radius:8px; padding:12px 32px; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Verstanden</button>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -673,14 +683,26 @@
       });
     });
 
-    // Checkbox enables Amazon button
+    // Checkbox enables buy button
     document.getElementById('confirmCheck').addEventListener('change', function() {
-      const btn = document.getElementById('amazonBtn');
+      const btn = document.getElementById('buyBtn');
       if (this.checked) {
         btn.classList.remove('disabled');
       } else {
         btn.classList.add('disabled');
       }
+    });
+
+    // Buy button opens popup
+    document.getElementById('buyBtn').addEventListener('click', function() {
+      if (this.classList.contains('disabled')) return;
+      const popup = document.getElementById('druckPopup');
+      popup.style.display = 'flex';
+    });
+
+    // Close popup on overlay click
+    document.getElementById('druckPopup').addEventListener('click', function(e) {
+      if (e.target === this) this.style.display = 'none';
     });
 
     // Reveal hero on load
