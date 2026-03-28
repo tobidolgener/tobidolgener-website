@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stufe 2 – Blueprints & KI-Coach · Tobi Dolgener</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+
+    /* ── SECTIONS ── */
+    .snap-section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+    }
+    .snap-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(10,25,45,0.72);
+      pointer-events: none;
+    }
+    .snap-section.alt::before  { background: rgba(13,37,64,0.80); }
+    .snap-section.dark::before { background: rgba(6,15,28,0.88); }
+    .snap-section.warn::before { background: rgba(20,8,0,0.88); }
+
+    /* ── INNER ── */
+    .inner {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      padding: 100px 64px;
+      width: 100%;
+    }
+
+    /* ── LABEL + HEADINGS ── */
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.35);
+      background: rgba(255,94,0,0.08);
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .lead {
+      font-size: 1.05rem; color: rgba(255,255,255,0.75);
+      line-height: 1.8; max-width: 680px;
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.12s; }
+    .reveal-d2 { transition-delay: 0.24s; }
+    .reveal-d3 { transition-delay: 0.36s; }
+    .reveal-d4 { transition-delay: 0.48s; }
+
+    /* ── CONTENT BLOCKS ── */
+    .content-block { margin-bottom: 20px; }
+    .content-block p {
+      font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.85; margin-bottom: 12px;
+    }
+    .content-block p:last-child { margin-bottom: 0; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 32px;
+      margin-top: 20px;
+    }
+    .info-box h3 {
+      font-size: 1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px;
+    }
+    .info-box p {
+      font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 8px;
+    }
+    .info-box p:last-child { margin-bottom: 0; }
+
+    /* ── WARN BOX ── */
+    .warn-box {
+      background: rgba(255,94,0,0.07);
+      border: 1px solid rgba(255,94,0,0.35);
+      border-radius: 16px; padding: 28px 32px;
+      margin-top: 20px;
+    }
+    .warn-box h3 {
+      font-size: 1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px;
+    }
+    .warn-box p {
+      font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 8px;
+    }
+    .warn-box p:last-child { margin-bottom: 0; }
+
+    /* ── PASSWORD SECTION ── */
+    .password-box {
+      margin-top: 28px;
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      backdrop-filter: blur(12px);
+    }
+    .password-input {
+      width: 100%;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .password-input::placeholder { color: var(--dimmer); }
+    .password-input.valid { border-color: #2ea043; }
+    .stripe-btn {
+      display: block; width: 100%;
+      background: var(--orange); color: #fff;
+      padding: 16px 40px; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem;
+      border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .stripe-btn:disabled {
+      background: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.25);
+      cursor: not-allowed;
+    }
+    .stripe-btn:not(:disabled):hover { background: #e05200; transform: translateY(-2px); }
+    .stripe-note {
+      margin-top: 14px;
+      font-size: 0.78rem; color: var(--dimmer); line-height: 1.7;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-block; margin-top: 20px;
+      font-size: 0.85rem; color: var(--muted);
+      text-decoration: none; border-bottom: 1px solid rgba(138,174,200,0.3);
+      padding-bottom: 2px; transition: color 0.2s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── SCROLL DOTS ── */
+    .scroll-indicator {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s; padding: 0;
+    }
+    .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.95);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .inner { padding: 80px 24px 60px; }
+      .scroll-indicator { display: none; }
+      footer { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BG -->
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--navy); z-index:-1;"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+  </nav>
+
+  <!-- SCROLL DOTS -->
+  <div class="scroll-indicator" id="scrollDots"></div>
+
+  <!-- ── S1: HERO ── -->
+  <section id="s1" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Stufe 2</div></div>
+      <h1 class="reveal reveal-d1">Blueprints &amp; KI-Coach</h1>
+      <p class="lead reveal reveal-d2">Auf geht's.</p>
+    </div>
+  </section>
+
+  <!-- ── S2: NUR FÜR BUCHKÄUFER ── -->
+  <section id="s2" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Voraussetzung</div></div>
+      <h2 class="reveal reveal-d1">Nur für Buchkäufer</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>Diese Seite ist ausschließlich für Menschen die das Reichweitenwerk (Stufe 1) bereits erworben haben. Ohne Buch macht das Framework-Paket keinen Sinn.</p>
+      </div>
+      <a href="/produkt" class="back-link reveal reveal-d3">← Zurück zu /produkt</a>
+    </div>
+  </section>
+
+  <!-- ── S3: EIGENTUMSRECHTE ── -->
+  <section id="s3" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Lizenz</div></div>
+      <h2 class="reveal reveal-d1">Deine Rechte – und unsere</h2>
+      <div class="info-box reveal reveal-d2">
+        <p>Persönliche, nicht übertragbare Lizenz für eigenes Unternehmen.</p>
+        <p>Urheberrechte verbleiben bei Pathfinders Berlin e.K.</p>
+        <p>Keine Weitergabe, kein Verkauf, keine Vervielfältigung.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: KI-DISCLAIMER ── -->
+  <section id="s4" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">KI-Hinweis</div></div>
+      <h2 class="reveal reveal-d1">Kein Versprechen für den KI-Coach</h2>
+      <div class="warn-box reveal reveal-d2">
+        <p>KI kann halluzinieren. Ausgaben kritisch prüfen.</p>
+        <p>Keine Haftung für Fehler auf Basis von KI-Ausgaben.</p>
+        <p>Gemini ist ein Google-Dienst – kein Einfluss auf Verfügbarkeit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: KEINE ERFOLGSGARANTIE ── -->
+  <section id="s5" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Haftungsausschluss</div></div>
+      <h2 class="reveal reveal-d1">Kein Erfolgsversprechen</h2>
+      <div class="warn-box reveal reveal-d2">
+        <p>Blueprints und KI-Coach sind Werkzeuge, keine Garantie.</p>
+        <p>Erfolg hängt von Positionierung, Angebot, Zielgruppe und Konsequenz ab.</p>
+        <p>Keine Erstattung nach dem Kauf.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: RECHTLICHE GRUNDREGELN ── -->
+  <section id="s6" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Recht</div></div>
+      <h2 class="reveal reveal-d1">Rechtliche Grundregeln</h2>
+      <div class="info-box reveal reveal-d2">
+        <p>DSGVO, Datenschutzerklärung, Opt-In, Impressum, AVV.</p>
+        <p>Blueprints enthalten keine Rechtsprüfung.</p>
+        <p>Anwaltsberatung empfohlen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S7: HAFTUNG & MARKEN ── -->
+  <section id="s7" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Haftung &amp; Marken</div></div>
+      <h2 class="reveal reveal-d1">Haftung &amp; Marken</h2>
+      <div class="info-box reveal reveal-d2">
+        <h3>Haftungsausschluss</h3>
+        <p>Keine Haftung für direkte oder indirekte Schäden die aus der Nutzung der Blueprints oder des KI-Coaches entstehen.</p>
+      </div>
+      <div class="info-box reveal reveal-d3">
+        <h3>Markenhinweis</h3>
+        <p>Make.com, Google, Instagram, Facebook, LinkedIn, TikTok, Superchat, ElevenLabs, Cloudinary – technisch notwendige Nennung, keine Partnerschaft. Alle Marken sind Eigentum ihrer jeweiligen Inhaber.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S8: PASSWORT FINDEN ── -->
+  <section id="s8" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Passwort</div></div>
+      <h2 class="reveal reveal-d1">Wo findest du das Passwort?</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>Das Passwort steht im Buch auf Seite 111 – im Hinweiskasten zum Thema JSON-Output. Es ist der Beispiel-Output als Codeblock.</p>
+        <p>Tippe ihn exakt ein inklusive aller Sonderzeichen.</p>
+      </div>
+      <p class="reveal reveal-d3" style="font-size:0.82rem; color:var(--dimmer); margin-top:8px;">Ohne Buch kein Zugang.</p>
+    </div>
+  </section>
+
+  <!-- ── S9: PASSWORT-EINGABE & STRIPE ── -->
+  <section id="s9" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Jetzt kaufen</div></div>
+      <h2 class="reveal reveal-d1">Bereit? Dann los.</h2>
+      <div class="password-box reveal reveal-d2">
+        <input
+          type="text"
+          id="passwordInput"
+          class="password-input"
+          placeholder="Passwort aus dem Buch (Seite 111)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="stripeBtn" class="stripe-btn" disabled>
+          Weiter zu Stufe 2 – 700 €
+        </button>
+        <p class="stripe-note">
+          Du wirst zu Stripe weitergeleitet. Sichere Zahlung.<br>
+          Einmalig 700 €. Nach der Zahlung erhältst du eine E-Mail mit deinem Download-Link.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+    </div>
+  </footer>
+
+  <script>
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+    const navEl = document.getElementById('navbar');
+    let currentIdx = 0;
+    let isAnimating = false;
+
+    // Build nav dots
+    const dotsWrap = document.getElementById('scrollDots');
+    SECTIONS.forEach((id, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.scroll-dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      navEl.classList.toggle('scrolled', idx > 0);
+      updateDots();
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY > 0) goTo(currentIdx + 1);
+      else              goTo(currentIdx - 1);
+    }, { passive: false });
+
+    // Touch
+    let touchY = 0;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+    }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // Password gate
+    const CORRECT = "{ public_id: '...', overlay_text: '...', caption: '...' }";
+    const input = document.getElementById('passwordInput');
+    const btn = document.getElementById('stripeBtn');
+
+    input.addEventListener('input', function() {
+      const match = this.value.trim() === CORRECT;
+      btn.disabled = !match;
+      this.classList.toggle('valid', match);
+    });
+
+    btn.addEventListener('click', function() {
+      if (!this.disabled) {
+        window.location.href = 'https://buy.stripe.com/eVq3cv7Tx8ZneZt4kVgnK01';
+      }
+    });
+
+    // Reveal hero on load
+    document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+  </script>
+
+</body>
+</html>

@@ -592,11 +592,19 @@
         <div class="checkbox-wrap">
           <input type="checkbox" id="confirmCheck" />
           <label for="confirmCheck">
-            Ja, ich habe alle Informationen auf dieser Seite gelesen und verstanden. Mir ist bewusst dass ein Umtausch oder eine Erstattung nach dem Kauf ausgeschlossen ist. Der Autor übernimmt keine Haftung für Erfolge jeglicher Art da der Erfolg von individuellen Faktoren abhängt die außerhalb seines Einflussbereichs liegen. Ich verstehe dass sich Tool-Oberflächen ändern können und die Architektur des Systems davon unabhängig bleibt.
+            Ja, ich habe alles gelesen und verstanden. Kein Umtausch, keine Haftung, keine Erfolgsgarantie.
           </label>
         </div>
         <button id="buyBtn" class="amazon-btn disabled" type="button">
           Starte jetzt – 299 €
+        </button>
+        <button id="stufe2Btn" class="buy-btn" type="button"
+          style="margin-top:1rem; background: transparent;
+          border: 1px solid rgba(46,117,182,0.5); color: #8ab4d4;
+          padding: 14px 32px; border-radius: 10px; font-weight: 700;
+          font-size: 0.9rem; cursor: pointer; font-family: 'Inter', sans-serif;
+          display: block; transition: border-color 0.2s, color 0.2s;">
+          Du hast das Buch schon? → Stufe 2
         </button>
       </div>
     </div>
@@ -702,6 +710,10 @@
     // Close popup on overlay click
     document.getElementById('druckPopup').addEventListener('click', function(e) {
       if (e.target === this) this.style.display = 'none';
+    });
+
+    document.getElementById('stufe2Btn').addEventListener('click', function() {
+      window.location.href = 'stufe2.html';
     });
 
     // Reveal hero on load
