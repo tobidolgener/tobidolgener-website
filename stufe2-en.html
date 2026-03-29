@@ -413,23 +413,33 @@
       setTimeout(() => { isAnimating = false; }, 850);
     }
 
-    // Mouse wheel – timestamp lock guarantees exactly one section per scroll
-    let lastWheelTime = 0;
+    // Mouse wheel / trackpad – lock + delta accumulation, one section per gesture
+    let wheelLocked = false;
+    let wheelAccum  = 0;
     window.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const now = Date.now();
-      if (now - lastWheelTime < 900) return;
-      lastWheelTime = now;
-      if (e.deltaY > 0) goTo(currentIdx + 1);
-      else              goTo(currentIdx - 1);
+      if (wheelLocked) { wheelAccum = 0; return; }
+      wheelAccum += e.deltaY;
+      if (Math.abs(wheelAccum) < 50) return;
+      const dir = wheelAccum > 0 ? 1 : -1;
+      wheelAccum  = 0;
+      wheelLocked = true;
+      goTo(currentIdx + dir);
+      setTimeout(() => { wheelLocked = false; }, 1100);
     }, { passive: false });
 
-    // Touch
-    let touchY = 0;
+    // Touch swipe
+    let touchY      = 0;
+    let touchLocked = false;
     window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
     window.addEventListener('touchend', e => {
+      if (touchLocked) return;
       const diff = touchY - e.changedTouches[0].clientY;
-      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+      if (Math.abs(diff) > 40) {
+        touchLocked = true;
+        goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+        setTimeout(() => { touchLocked = false; }, 1100);
+      }
     }, { passive: true });
 
     // Keyboard
