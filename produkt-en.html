@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Reichweitenwerk – Tobi Dolgener</title>
+  <meta name="description" content="The Reichweitenwerk – a fully automated social media and lead system. All tiers and legal information before you buy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+    .nav-menu { display: flex; gap: 8px; list-style: none; }
+    .nav-menu a {
+      display: block; padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px); background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(13,37,64,0.5); }
+    .nav-menu a.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    /* ── SECTIONS ── */
+    .snap-section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+    }
+    .snap-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(10,25,45,0.72);
+      pointer-events: none;
+    }
+    .snap-section.alt::before  { background: rgba(13,37,64,0.80); }
+    .snap-section.dark::before { background: rgba(6,15,28,0.88); }
+    .snap-section.warn::before { background: rgba(20,8,0,0.88); }
+
+    /* ── INNER ── */
+    .inner {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      padding: 100px 64px;
+      width: 100%;
+    }
+
+    /* ── LABEL + HEADINGS ── */
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.35);
+      background: rgba(255,94,0,0.08);
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .lead {
+      font-size: 1.05rem; color: rgba(255,255,255,0.75);
+      line-height: 1.8; max-width: 680px;
+    }
+    .muted { color: var(--muted); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.12s; }
+    .reveal-d2 { transition-delay: 0.24s; }
+    .reveal-d3 { transition-delay: 0.36s; }
+    .reveal-d4 { transition-delay: 0.48s; }
+
+    /* ── ACCORDION (shared) ── */
+    .accordion { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .acc-item {
+      background: rgba(15,45,77,0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .acc-item.featured { border-color: var(--orange); background: rgba(255,94,0,0.06); }
+    .acc-trigger {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem; font-weight: 600; color: var(--text);
+      text-align: left; gap: 12px;
+    }
+    .acc-trigger:hover { color: #fff; }
+    .acc-chevron {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.3s, border-color 0.3s;
+      margin-bottom: 4px;
+    }
+    .acc-item.open .acc-trigger { color: var(--orange); }
+    .acc-item.open .acc-chevron { border-color: var(--orange); transform: rotate(-135deg); margin-bottom: -4px; }
+    .acc-body { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+    .acc-body-inner { padding: 0 24px 22px; }
+    .acc-body-inner p { font-size: 0.875rem; color: var(--muted); line-height: 1.85; margin-bottom: 10px; }
+    .acc-body-inner p:last-child { margin-bottom: 0; }
+    .acc-item.open .acc-body { max-height: 600px; }
+
+    /* Tier-specific accordion styles */
+    .stufe-header { display: flex; align-items: center; gap: 16px; flex: 1; }
+    .stufe-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.4); border-radius: 100px;
+      padding: 3px 10px; white-space: nowrap; flex-shrink: 0;
+    }
+    .stufe-header-price {
+      margin-left: auto; font-size: 1.1rem; font-weight: 800;
+      color: #fff; white-space: nowrap; flex-shrink: 0;
+      padding-right: 16px;
+    }
+    .stufe-note-inline {
+      display: inline-block; margin-top: 12px; padding: 6px 14px;
+      background: rgba(255,94,0,0.1); border: 1px solid rgba(255,94,0,0.3);
+      border-radius: 100px; font-size: 0.78rem; color: var(--orange); font-weight: 500;
+    }
+
+    /* ── CONTENT BLOCKS ── */
+    .content-block { margin-bottom: 20px; }
+    .content-block p { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.85; margin-bottom: 12px; }
+    .content-block p:last-child { margin-bottom: 0; }
+    .feature-list {
+      margin-top: 20px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.75); line-height: 1.6;
+    }
+    .feature-item::before {
+      content: ''; width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+      background: rgba(255,94,0,0.15); border: 1.5px solid rgba(255,94,0,0.5);
+    }
+
+    /* ── WARN SECTION ── */
+    .warn-section-box {
+      background: rgba(255,94,0,0.07);
+      border: 1px solid rgba(255,94,0,0.35);
+      border-radius: 16px; padding: 32px 36px;
+      margin-top: 20px;
+    }
+    .warn-section-box h3 {
+      font-size: 1.15rem; font-weight: 700; color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .warn-section-box p {
+      font-size: 0.9rem; color: rgba(255,255,255,0.72); line-height: 1.85;
+      margin-bottom: 12px;
+    }
+    .warn-section-box p:last-child { margin-bottom: 0; }
+    .warn-section-box ul {
+      margin: 12px 0 12px 20px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.72); line-height: 1.85;
+    }
+    .warn-section-box ul li { margin-bottom: 6px; }
+
+    /* ── CONFIRM BOX ── */
+    .confirm-box {
+      margin-top: 32px;
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      backdrop-filter: blur(12px);
+    }
+    .checkbox-wrap {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 28px; cursor: pointer;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px;
+      cursor: pointer; accent-color: var(--orange);
+    }
+    .checkbox-wrap label {
+      font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.7; cursor: pointer;
+    }
+    .amazon-btn {
+      display: inline-block;
+      background: var(--orange); color: #fff;
+      padding: 16px 40px; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .amazon-btn.disabled {
+      background: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.25);
+      cursor: not-allowed; pointer-events: none;
+    }
+    .amazon-btn:not(.disabled):hover { background: #e05200; transform: translateY(-2px); }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      margin-top: 20px; font-size: 0.8rem; color: var(--dimmer); font-style: italic;
+    }
+
+    /* ── SCROLL DOTS ── */
+    .scroll-indicator {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s; padding: 0;
+    }
+    .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.95);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-menu { display: none; }
+      .inner { padding: 80px 24px 60px; }
+      .scroll-indicator { display: none; }
+      footer { padding: 24px; }
+      .acc-item.open .acc-body { max-height: 800px; }
+      .stufe-header-price { font-size: 0.72rem; padding-right: 6px; font-weight: 700; }
+      .warn-section-box { padding: 22px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIDEO BG -->
+  <video autoplay muted loop playsinline
+    style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:-1;"
+    poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230d2540'/%3E%3C/svg%3E">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/f_mp4,q_auto/v1774613954/Logo_Video_u4kbha.mp4" type="video/mp4">
+  </video>
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:0;"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html">Training &amp; Speaking</a></li>
+      <li><a href="/coaching.html">Coaching</a></li>
+      <li><a href="/ai.html" class="active">AI Automation</a></li>
+      <li><a href="mailto:hallo@tobidolgener.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- SCROLL DOTS -->
+  <div class="scroll-indicator" id="scrollDots"></div>
+
+  <!-- ── S1: THANK YOU ── -->
+  <section id="s1" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Das Reichweitenwerk</div></div>
+      <h1 class="reveal reveal-d1">Thank you for<br/>your interest.</h1>
+      <p class="lead reveal reveal-d2">
+        You're interested in the Reichweitenwerk – a system that works for you every day.
+        Here you'll find all the information you need before making a decision.
+        Please read this page in full.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: THE THREE TIERS (ACCORDION) ── -->
+  <section id="s2" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">How to get started</div></div>
+      <h2 class="reveal reveal-d1">The three tiers</h2>
+      <div class="accordion reveal reveal-d2">
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Tier 1</span>
+              The Book
+              <span class="stufe-header-price">€299</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>The Reichweitenwerk – the complete step-by-step guide to building your automated social media and lead system.</p>
+              <p>You receive the entire concept, the architecture and the systems thinking behind a fully automated marketing and communications system. The book describes step by step how the system is built – from content automation through the sales funnel to automated communication.</p>
+              <span class="stufe-note-inline">Required prerequisite for all subsequent tiers</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item featured">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Tier 2</span>
+              Framework Package
+              <span class="stufe-header-price">€700</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>The Framework Package includes a Gemini GEM – your personal coach that guides you step by step through the entire installation – as well as all ready-made scenarios for Make.com that you can import directly. This saves you weeks of configuration work.</p>
+              <span class="stufe-note-inline">Requires the book (Tier 1)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            <div class="stufe-header">
+              <span class="stufe-badge">Tier 3</span>
+              Personal Coaching
+              <span class="stufe-header-price">from €4,000</span>
+            </div>
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>I set up the system together with you. Personal, individual, tailored to your business.</p>
+              <p>In the coaching we work directly on your situation: your target audience, your content, your offering. I get the system running and at the end you know how to operate and adapt it yourself. The coaching takes place remotely and covers a minimum project volume of €4,000.</p>
+              <span class="stufe-note-inline">Minimum €4,000 · Requires book and Framework</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="disclaimer reveal reveal-d3">Small business regulation under § 19 German VAT Act – prices shown are VAT-exempt.</p>
+    </div>
+  </section>
+
+  <!-- ── S3: WHAT THE BOOK CONTAINS ── -->
+  <section id="s3" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">The concept</div></div>
+      <h2 class="reveal reveal-d1">What you get with the book</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>This book is a guide – not theory. It is based on the state of December 2025 and describes a real system that is in active use.</p>
+        <p>What you acquire is the architecture of a fully automated marketing and communications system: the systems thinking, the knowledge of sales techniques and social media, the experience around automation and AI – summarised in a step-by-step guide you can implement.</p>
+        <p>The book explains not only what the system does, but why it is built the way it is. You understand the logic behind every component – which makes you independent and empowers you to develop the system further yourself.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: WHAT THE SYSTEM ACTUALLY DOES ── -->
+  <section id="s4" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">The components</div></div>
+      <h2 class="reveal reveal-d1">What the system specifically comprises</h2>
+      <p class="lead reveal reveal-d2" style="margin-bottom: 0;">The book describes four core modules that together form a complete automated marketing system:</p>
+      <div class="feature-list reveal reveal-d3">
+        <div class="feature-item">Automatic daily posting on Instagram, Facebook and LinkedIn – without you needing to be active every day</div>
+        <div class="feature-item">An automatic communication model for WhatsApp and social media DMs – enquiries are recognised and answered</div>
+        <div class="feature-item">A fully automated sales funnel with a qualification form – prospects qualify themselves before you speak with them</div>
+        <div class="feature-item">An automatic decision module that evaluates prospects and sends the right follow-up emails at the right time</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: TOOLS CHANGE ── -->
+  <section id="s5" class="snap-section warn">
+    <div class="inner">
+      <div class="reveal"><div class="label">Note on currency</div></div>
+      <h2 class="reveal reveal-d1">Tools change – the architecture remains</h2>
+      <div class="warn-section-box reveal reveal-d2">
+        <p>Providers such as Make.com, Google, Instagram, Facebook, LinkedIn, Superchat and others change their user interfaces, menus and settings regularly and without notice.</p>
+        <p>What is described in the book is the architecture and logic of the system – not a fixed click path. If a setting is in a different location or a menu label has changed: the system still works. When in doubt, ask Gemini – it knows the current state of the tools.</p>
+        <p>The book is not continuously updated – it is based on the state of December 2025. The underlying architecture has proven stable in this form.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: NO GUARANTEE OF SUCCESS ── -->
+  <section id="s6" class="snap-section warn">
+    <div class="inner">
+      <div class="reveal"><div class="label">Disclaimer</div></div>
+      <h2 class="reveal reveal-d1">No guarantee of success – no returns</h2>
+      <div class="warn-section-box reveal reveal-d2">
+        <p>The success of using this system depends on factors entirely outside my control:</p>
+        <ul>
+          <li>The quality of your offering and your positioning</li>
+          <li>The time and consistency you invest in implementation</li>
+          <li>Your target audience and the market in which you operate</li>
+          <li>Your technical aptitude and willingness to learn</li>
+        </ul>
+        <p>I accept no liability for absent results.</p>
+        <p><strong>After purchase, returns or refunds are excluded.</strong> Please ensure you have read and understood this page in full before buying.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S7: LEGAL NOTES PART 1 ── -->
+  <section id="s7" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Legal · Part 1 of 2</div></div>
+      <h2 class="reveal reveal-d1">Important legal notes</h2>
+      <p class="muted reveal reveal-d2" style="font-size:0.9rem;">When you operate the system you are personally responsible for compliance with all legal requirements. Please read these points carefully.</p>
+      <div class="accordion reveal reveal-d2">
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Privacy policy
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>If you operate a contact form or qualification form you are required to inform users about the processing of their data. Your privacy policy must include: what you do with the data, who processes it (including any data processors), how long you store it and how someone can request deletion.</p>
+              <p>Use a reputable generator such as eRecht24 or Datenschutz.org and have the statement reviewed by a lawyer. A missing or outdated privacy policy can lead to cease-and-desist letters.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            GDPR consent in the form
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Before submitting a form, the user must actively consent to their data being processed. This means: a checkbox that the user must tick themselves – no pre-ticked box, no opt-out.</p>
+              <p>The checkbox must link to the privacy policy and clearly state what the consent is being given for. Document these consents in case of subsequent queries.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Opt-in for email communication
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Promotional emails and follow-up emails that do not directly relate to the original enquiry require an explicit opt-in. This applies to all automated emails that do not directly answer the enquiry – such as nurturing sequences or newsletters.</p>
+              <p>Add a separate, voluntary checkbox in the qualification form with the exact content of the communication you intend to send. This checkbox must not be a required field.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Opt-in for telephone and WhatsApp
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Calls and WhatsApp messages for advertising purposes without express consent are legally problematic in Germany and can give rise to injunction claims. This also applies to automated WhatsApp messages via Superchat or similar tools.</p>
+              <p>Collect consent in the form with a separate checkbox for telephone and another for WhatsApp. Document when and by whom consent was given – also for future proof if needed.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="disclaimer reveal reveal-d3">This section is not legal advice. Seek advice from a qualified lawyer.</p>
+    </div>
+  </section>
+
+  <!-- ── S8: LEGAL NOTES PART 2 ── -->
+  <section id="s8" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Legal · Part 2 of 2</div></div>
+      <h2 class="reveal reveal-d1">Contracts, data storage &amp; legal notice</h2>
+      <div class="accordion reveal reveal-d2">
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Data processing agreements (DPA)
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>If you use tools such as Make.com, Google (Workspace, Forms, Drive), Superchat, ElevenLabs or Cloudinary and process personal data in doing so, you need a data processing agreement (DPA) with each of these providers.</p>
+              <p>Most providers make the DPA available automatically as part of their terms of use or on request for download. Check in your account settings whether a DPA has been concluded, or conclude one actively. Without a DPA you may not process personal data with these tools.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Retention periods and deletion concept
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>You may not store personal data indefinitely. The GDPR requires a clear purpose limitation – once the purpose ceases the data must be deleted.</p>
+              <p>Recommendation for a simple deletion concept: delete prospects assessed as unsuitable after 6 months. Delete prospects who no longer respond or react to any communication after 12 months. Document your deletion concept in writing – this protects you in the event of enquiries from the data protection authority.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-trigger">
+            Legal notice requirement
+            <span class="acc-chevron"></span>
+          </button>
+          <div class="acc-body">
+            <div class="acc-body-inner">
+              <p>Every commercially used website and every commercially used social media profile requires a complete legal notice (Impressum). This also applies to Instagram, Facebook, LinkedIn and TikTok profiles you use as part of this system.</p>
+              <p>The legal notice must contain: full name or company name, address, contact details (email and telephone), and for limited companies the trade register number and managing directors. A missing or incomplete legal notice is a common cease-and-desist risk. Use a legal notice generator and have it checked.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="disclaimer reveal reveal-d3">This section is not legal advice. Seek advice from a qualified lawyer.</p>
+    </div>
+  </section>
+
+  <!-- ── S9: TRADEMARK NOTICE ── -->
+  <section id="s9" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Trademark notice</div></div>
+      <h2 class="reveal reveal-d1">Trademark notice</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>In this book, brand names such as Make.com, Google, Instagram, Facebook, LinkedIn, TikTok, Superchat, ElevenLabs, Cloudinary and others are mentioned. These are mentioned solely because these tools are used for the system described.</p>
+        <p>This does not constitute advertising, a recommendation or a partnership with the companies mentioned. The use of these tools is at your own risk and is subject to the respective terms of use of the providers. All trademarks mentioned are the property of their respective owners.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S10: GOOGLE NOTICE ── -->
+  <section id="s10" class="snap-section warn">
+    <div class="inner">
+      <div class="reveal"><div class="label">Important note</div></div>
+      <h2 class="reveal reveal-d1">From Tier 2 onwards you work with Google</h2>
+      <div class="warn-section-box reveal reveal-d2">
+        <p>The entire Reichweitenwerk is built on Google. From Tier 2 onwards you will be working continuously with a Google account. The JSON Blueprints are provided via Google Drive and the AI coach runs via Gemini – also a Google service.</p>
+        <p>This means: you need an active Google account and agree that parts of your workflow run via the Google infrastructure.</p>
+        <p><strong style="color:#ff5e00;">If you do not want this, do not purchase this product.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S11: CONFIRMATION + PURCHASE ── -->
+  <section id="s11" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Buy now</div></div>
+      <h2 class="reveal reveal-d1">Have you read and understood everything?</h2>
+      <p class="lead reveal reveal-d2" style="margin-bottom:0;">
+        Before you buy the book please confirm that you have read and understood the following points.
+      </p>
+      <div class="confirm-box reveal reveal-d3">
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="confirmCheck" />
+          <label for="confirmCheck">
+            Yes, I have read and understood everything. No returns, no liability, no guarantee of results.
+          </label>
+        </div>
+        <button id="buyBtn" class="amazon-btn disabled" type="button">
+          Get started now – €299
+        </button>
+        <button id="stufe2Btn" class="buy-btn" type="button"
+          style="margin-top:1rem; background: transparent;
+          border: 1px solid rgba(46,117,182,0.5); color: #8ab4d4;
+          padding: 14px 32px; border-radius: 10px; font-weight: 700;
+          font-size: 0.9rem; cursor: pointer; font-family: 'Inter', sans-serif;
+          display: block; transition: border-color 0.2s, color 0.2s;">
+          Already have the book? → Tier 2
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- POPUP: Book in print -->
+  <div id="druckPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:48px 40px; max-width:420px; width:90%; text-align:center; position:relative;">
+      <p style="font-size:2rem; margin:0 0 16px;">📦</p>
+      <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin:0 0 12px;">The book is being printed</h3>
+      <p style="font-size:0.92rem; color:rgba(255,255,255,0.65); line-height:1.7; margin:0 0 28px;">The shop will be activated shortly. You can bookmark this page and come back in a few days.</p>
+      <button onclick="document.getElementById('druckPopup').style.display='none';" style="background:var(--orange); color:#fff; border:none; border-radius:8px; padding:12px 32px; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Got it</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+    </div>
+  </footer>
+
+  <script>
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
+    const navEl = document.getElementById('navbar');
+    let currentIdx = 0;
+    let isAnimating = false;
+
+    // Build nav dots
+    const dotsWrap = document.getElementById('scrollDots');
+    SECTIONS.forEach((id, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.scroll-dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      navEl.classList.toggle('scrolled', idx > 0);
+      updateDots();
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel – timestamp lock guarantees exactly one section per scroll
+    let lastWheelTime = 0;
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelTime < 900) return;
+      lastWheelTime = now;
+      if (e.deltaY > 0) goTo(currentIdx + 1);
+      else              goTo(currentIdx - 1);
+    }, { passive: false });
+
+    // Touch
+    let touchY = 0;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+    }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // Accordion (all sections)
+    document.querySelectorAll('.acc-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        // close siblings in same accordion only
+        item.closest('.accordion').querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Checkbox enables buy button
+    document.getElementById('confirmCheck').addEventListener('change', function() {
+      const btn = document.getElementById('buyBtn');
+      if (this.checked) {
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.add('disabled');
+      }
+    });
+
+    // Buy button opens popup
+    document.getElementById('buyBtn').addEventListener('click', function() {
+      if (this.classList.contains('disabled')) return;
+      const popup = document.getElementById('druckPopup');
+      popup.style.display = 'flex';
+    });
+
+    // Close popup on overlay click
+    document.getElementById('druckPopup').addEventListener('click', function(e) {
+      if (e.target === this) this.style.display = 'none';
+    });
+
+    document.getElementById('stufe2Btn').addEventListener('click', function() {
+      window.location.href = 'stufe2.html';
+    });
+
+    // Reveal hero on load
+    document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+  </script>
+
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
+  <script src="/nav.js?v=3"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=3"></script>
+  <script src="/lang-switcher.js"></script>
+</body>
+</html>

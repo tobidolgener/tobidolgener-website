@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coaching – Tobi Dolgener</title>
+  <meta name="description" content="Coaching with Tobi Dolgener – building bridges between generations, mindsets and the future." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 22px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+    .nav-menu { display: flex; gap: 8px; list-style: none; }
+    .nav-menu a {
+      display: block; padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(13,37,64,0.5); }
+    .nav-menu a.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    /* ── VIDEO – fixed for entire page ── */
+    .hero-video {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    .hero-video video {
+      width: 100%; height: 100%; object-fit: cover; opacity: 0.55;
+    }
+    .hero-video::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(13,37,64,0.35);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; z-index: 1;
+      height: 100vh; min-height: 600px;
+      display: flex; align-items: flex-end;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 64px 80px;
+      max-width: 1000px;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.7s 0.3s forwards;
+    }
+    .hero-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+    .hero-tag span {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    .hero-content h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 800; letter-spacing: -0.025em;
+      line-height: 1.1; color: #fff;
+      max-width: 760px;
+      opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+    }
+    .hero-content h1 em {
+      font-style: normal; color: var(--orange);
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 100px 64px; max-width: 1100px; margin: 0 auto;
+    }
+    /* Full-width background behind max-width content */
+    .section::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 100vw; z-index: -1;
+      background: rgba(13,37,64,0.78);
+    }
+    /* All snap blocks fill viewport */
+    #hero, #intro, #focus, #clients, #testimonials, #cta {
+      min-height: 100vh;
+    }
+    #clients, #testimonials, #cta {
+      position: relative; z-index: 1;
+      display: flex; align-items: center;
+    }
+    #clients .inner, .testimonials-inner, #cta .inner {
+      width: 100%;
+    }
+
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 16px;
+    }
+    .label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--orange); }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      color: var(--text); margin-bottom: 20px;
+    }
+    .section-intro {
+      font-size: 1.05rem; color: var(--muted);
+      line-height: 1.85; max-width: 700px; margin-bottom: 60px;
+    }
+    .section-intro strong { color: var(--text); font-weight: 600; }
+
+    /* ── INTRO SECTION ── */
+    #intro { padding-top: 80px; }
+    .intro-quote {
+      border-left: 3px solid var(--orange);
+      padding-left: 28px; margin-top: 40px;
+      font-size: 1.15rem; font-style: italic;
+      color: rgba(255,255,255,0.75); line-height: 1.7;
+      max-width: 680px;
+    }
+
+    /* ── FOCUS CARDS ── */
+    .focus-card {
+      flex: 0 0 100%;
+      background: var(--navy3);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px 30px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .focus-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--orange);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .focus-card:hover { border-color: rgba(255,94,0,0.3); transform: translateY(-4px); }
+    .focus-card:hover::before { transform: scaleX(1); }
+    .focus-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(0,119,200,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 22px;
+    }
+    .focus-card h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text); margin-bottom: 12px; line-height: 1.3;
+    }
+    .focus-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; }
+
+    /* ── CLIENTS ── */
+    #clients { position: relative; z-index: 1; background: rgba(15,45,77,0.80); }
+    #clients .inner { max-width: 1100px; margin: 0 auto; padding: 100px 64px; }
+    .client-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;
+    }
+    .client-card {
+      background: var(--navy3);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .client-logo {
+      height: 48px; display: flex; align-items: center;
+    }
+    .client-logo img {
+      max-height: 48px; max-width: 180px;
+      object-fit: contain; object-position: left;
+      filter: brightness(0) invert(1);
+      opacity: 0.85;
+    }
+    .client-logo .logo-fallback {
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--muted); letter-spacing: 0.04em;
+    }
+    .client-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .client-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.75; }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { overflow: hidden; position: relative; z-index: 1; background: rgba(13,37,64,0.80); }
+    .testimonials-inner { max-width: 1100px; margin: 0 auto; padding: 100px 64px; }
+
+    .carousel-wrap { position: relative; overflow: hidden; }
+    .carousel-track {
+      display: flex; gap: 24px;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .testimonial-card {
+      flex: 0 0 100%;
+      background: var(--navy3);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .t-quote {
+      font-size: 2rem; color: var(--orange); line-height: 1; font-weight: 900;
+    }
+    .t-text {
+      font-size: 0.95rem; color: var(--muted);
+      line-height: 1.8; font-style: italic; flex: 1;
+    }
+    .t-author { display: flex; flex-direction: column; gap: 4px; }
+    .t-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .t-role { font-size: 0.78rem; color: var(--dimmer); }
+
+    .carousel-dots {
+      display: flex; justify-content: center; gap: 8px; margin-top: 32px;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--dimmer); cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none;
+    }
+    .carousel-dot.active { background: var(--orange); transform: scale(1.4); }
+
+    /* ── CTA ── */
+    #cta {
+      position: relative; z-index: 1;
+      background: rgba(15,45,77,0.82);
+    }
+    #cta .inner {
+      max-width: 1100px; margin: 0 auto; padding: 100px 64px;
+      display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: center;
+    }
+    #cta h2 { margin-bottom: 12px; }
+    #cta p { font-size: 1rem; color: var(--muted); max-width: 500px; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--orange); color: #fff;
+      padding: 16px 36px; border-radius: 10px;
+      font-weight: 700; font-size: 0.9rem;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .cta-btn:hover { background: var(--blue); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.9);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+    footer a { color: var(--dimmer); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    footer a:hover { color: var(--muted); }
+
+    /* ── REVEAL ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-menu { display: none; }
+      .section, .testimonials-inner { padding: 60px 24px; }
+      #clients .inner { padding: 60px 24px; }
+      #cta .inner { padding: 60px 24px; grid-template-columns: 1fr; gap: 32px; }
+      .hero-content { padding: 0 24px 64px; }
+      /* fix carousel: no gap so one full card shows */
+      .carousel-track { gap: 0; }
+      .testimonial-card { flex: 0 0 100%; }
+      footer { padding: 24px; flex-direction: column; align-items: flex-start; }
+      /* client cards: horizontal scroll snap carousel */
+      .client-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; gap: 16px; padding-bottom: 16px; grid-template-columns: unset; }
+      .client-card { flex: 0 0 85vw; scroll-snap-align: start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html">Training & Speaking</a></li>
+      <li><a href="/coaching.html" class="active">Coaching</a></li>
+      <li><a href="/ai.html">AI Automation</a></li>
+      <li><a href="mailto:hallo@tobidolgener.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+  <video autoplay muted loop playsinline style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:-1;">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/v1774545900/coachiung_dlnam8.mp4" type="video/mp4">
+  </video>
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:0;"></div>
+    <div class="hero-content">
+      <div class="hero-tag">
+        <div class="dot"></div>
+        <span>Coaching · Pathfinders Berlin</span>
+      </div>
+      <h1>Coaching – building bridges between <em>generations</em>, mindsets and the future</h1>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section id="intro" class="section">
+    <div class="reveal"><div class="label">My approach</div></div>
+    <div class="reveal reveal-d1">
+      <h2>Coaching through transitions</h2>
+    </div>
+    <div class="reveal reveal-d2">
+      <p class="section-intro">
+        I accompany people through transitions – between training and career, between old and new worlds of work, between what was and what is coming. My approach combines <strong>career coaching</strong>, <strong>digital mindset</strong> and <strong>generational competence</strong> into a holistic accompaniment programme.
+      </p>
+    </div>
+    <div class="reveal reveal-d3">
+      <p class="intro-quote">
+        I'm not a consultant who gives advice – I'm the coach who asks the right questions.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOCUS AREAS -->
+  <section id="focus" class="section" style="padding-top: 0;">
+    <div class="reveal"><div class="label">Focus areas</div></div>
+    <div class="reveal reveal-d1"><h2>Three coaching fields</h2></div>
+    <div class="carousel-wrap reveal reveal-d2">
+      <div class="carousel-track" id="focusTrack">
+        <div class="focus-card">
+          <h3>Digital Mindset &amp; AI Competence</h3>
+          <p>For students, specialists and leaders who want to understand how AI and automation are changing their world of work – and how to actively shape it rather than react. I help develop an inner attitude that sees disruption as opportunity.</p>
+        </div>
+        <div class="focus-card">
+          <h3>Generational Coaching &amp; Bridge-Building</h3>
+          <p>Between young and experienced, between digital native and old school – I create understanding where there is friction. Whether apprentices and trainers, career starters and established teams: I help both sides to see each other and move forward together.</p>
+        </div>
+        <div class="focus-card">
+          <h3>Career &amp; Personal Development</h3>
+          <p>From finding direction after training to the next career step: I accompany people in finding clarity, recognising their strengths and making courageous decisions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots" id="focusDots"></div>
+  </section>
+
+  <!-- CLIENTS -->
+  <div id="clients">
+    <div class="inner">
+      <div class="reveal"><div class="label">Reference clients</div></div>
+      <div class="reveal reveal-d1"><h2>Trusted by leading institutions</h2></div>
+      <div class="client-grid">
+        <div class="client-card reveal reveal-d1">
+          <div class="client-logo">
+            <img src="frankfurt-school-logo.png" alt="Frankfurt School of Finance & Management"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="logo-fallback" style="display:none;">Frankfurt School of Finance &amp; Management</span>
+          </div>
+          <h3>Frankfurt School of Finance &amp; Management</h3>
+          <p>As a learning coach in the Digitalisation Business degree programme, I help students develop a digital mindset – around agility, AI and the ability to act as a bridge-builder between generations within their companies.</p>
+        </div>
+        <div class="client-card reveal reveal-d2">
+          <div class="client-logo">
+            <img src="kit-logo.png" alt="Karlsruher Institut für Technologie"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="logo-fallback" style="display:none;">KIT – Karlsruher Institut für Technologie</span>
+          </div>
+          <h3>Karlsruhe Institute of Technology (KIT)</h3>
+          <p>As a coach and bridge-builder I help apprentices and trainers overcome the generational conflict and develop a new culture of learning together.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div id="testimonials">
+    <div class="testimonials-inner">
+      <div class="reveal"><div class="label">Voices</div></div>
+      <div class="reveal reveal-d1"><h2>What clients say</h2></div>
+      <div class="carousel-wrap reveal reveal-d2">
+        <div class="carousel-track" id="carouselTrack">
+
+          <div class="testimonial-card">
+            <div class="t-quote">"</div>
+            <p class="t-text">Tobi manages to create clarity. Tobi can both coach and consult. Coaching is where it gets exciting: Tobi succeeds in an enormously pleasant way of accompanying you on the path to your own insight. The effectiveness and quality of his questions is outstanding.</p>
+            <div class="t-author">
+              <span class="t-name">Jan Neumann</span>
+              <span class="t-role">Board Assistant CEO, Randstad Deutschland</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="t-quote">"</div>
+            <p class="t-text">After having worked for many years in the Academia I found myself at a stagnating point in my career. Tobi helped me in setting up a new and successful professional path.</p>
+            <div class="t-author">
+              <span class="t-name">Dr. Valerio Ketmaier</span>
+              <span class="t-role">Associate Director at Morphosys</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="t-quote">"</div>
+            <p class="t-text">Tobi helped me enormously with his experience in finding my path, and I still benefit from his coaching today.</p>
+            <div class="t-author">
+              <span class="t-name">Anonymous</span>
+              <span class="t-role">Client Success Manager, Scalable Capital</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="t-quote">"</div>
+            <p class="t-text">I was impressed from the very beginning by his seemingly endless know-how and extensive skill set. I can only recommend everyone to be convinced by his professionalism and authenticity.</p>
+            <div class="t-author">
+              <span class="t-name">Axel Brettschneider</span>
+              <span class="t-role">Regional Director of Sales, Radisson Hotel Group</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div id="cta">
+    <div class="inner">
+      <div class="reveal">
+        <h2>Ready for your next step?</h2>
+        <p>Let's find out in a free initial conversation how I can accompany you.</p>
+      </div>
+      <a href="#" class="cta-btn reveal reveal-d1" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">
+        Book a free initial conversation
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+  </footer>
+
+  <script>
+    // ── Section snap navigation ──
+    const SECTIONS = ['hero','intro','focus','clients','testimonials','cta'];
+    let currentIdx = 0;
+    let isAnimating = false;
+    const nav = document.getElementById('navbar');
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      // Reveal content in target section
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      nav.classList.toggle('scrolled', idx > 0);
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel – timestamp lock guarantees exactly one section per scroll
+    let lastWheelTime = 0;
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelTime < 900) return;
+      lastWheelTime = now;
+      if (e.deltaY > 0) goTo(currentIdx + 1);
+      else              goTo(currentIdx - 1);
+    }, { passive: false });
+
+    // Touch swipe support
+    let touchY = 0;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+    }, { passive: true });
+
+    // Keyboard arrow keys
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // Reveal hero on load
+    document.getElementById('hero').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+
+    // Reusable carousel
+    function initCarousel(trackId, dotsId, cardSelector, interval) {
+      const track = document.getElementById(trackId);
+      const dotsWrap = document.getElementById(dotsId);
+      const cards = track.querySelectorAll(cardSelector);
+      const perView = () => 1;
+      const total = cards.length;
+      let current = 0, timer;
+
+      function buildDots() {
+        dotsWrap.innerHTML = '';
+        const count = Math.ceil(total / perView());
+        for (let i = 0; i < count; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+          btn.addEventListener('click', () => goTo(i * perView()));
+          dotsWrap.appendChild(btn);
+        }
+      }
+      function updateDots() {
+        const idx = Math.round(current / perView());
+        dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+      function goTo(idx) {
+        const max = total - perView();
+        current = Math.max(0, Math.min(idx, max));
+        const w = track.parentElement.offsetWidth;
+        const gap = 24;
+        track.style.transform = `translateX(-${current * ((w - gap) / perView() + gap / perView())}px)`;
+        updateDots();
+        clearInterval(timer);
+        timer = setInterval(next, interval);
+      }
+      function next() { goTo(current + perView() >= total ? 0 : current + 1); }
+
+      // Touch swipe support for carousel
+      let tx = 0;
+      track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const diff = tx - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) { goTo(diff > 0 ? current + 1 : current - 1); }
+      }, { passive: true });
+
+      buildDots();
+      timer = setInterval(next, interval);
+      window.addEventListener('resize', () => { buildDots(); goTo(0); });
+    }
+
+    initCarousel('focusTrack',    'focusDots',    '.focus-card',       5000);
+    initCarousel('carouselTrack', 'carouselDots', '.testimonial-card', 4000);
+  </script>
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
+  <script src="/nav.js?v=3"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=3"></script>
+  <script src="/lang-switcher.js"></script>
+</body>
+</html>

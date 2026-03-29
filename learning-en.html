@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training & Speaking – Tobi Dolgener</title>
+  <meta name="description" content="Sales trainer, live online trainer, speaker and instructional designer – Tobi Dolgener." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── VIDEO – fixed fullscreen ── */
+    .bg-video {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    .bg-video video {
+      width: 100%; height: 100%; object-fit: cover; opacity: 0.45;
+    }
+    .bg-video::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(13,37,64,0.45);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+    .nav-menu { display: flex; gap: 8px; list-style: none; }
+    .nav-menu a {
+      display: block; padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px); background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(13,37,64,0.5); }
+    .nav-menu a.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    /* ── SECTION BASE ── */
+    .snap-section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+    }
+    .snap-section::before {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background: rgba(13,37,64,0.80);
+    }
+    .snap-section.alt::before { background: rgba(15,45,77,0.82); }
+
+    .inner {
+      width: 100%; max-width: 1100px;
+      margin: 0 auto; padding: 100px 64px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 16px;
+    }
+    .label::before { content: ''; width: 20px; height: 1px; background: var(--orange); }
+
+    h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;
+      color: #fff; margin-bottom: 24px;
+    }
+    h1 .accent { color: var(--orange); }
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      color: var(--text); margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text); margin-bottom: 10px;
+    }
+    .subtext {
+      font-size: 1rem; color: var(--muted);
+      line-height: 1.8; max-width: 680px; margin-bottom: 32px;
+    }
+    .bodytext {
+      font-size: 0.95rem; color: var(--muted);
+      line-height: 1.85; max-width: 680px;
+    }
+
+    /* ── HERO ── */
+    #s1 { align-items: flex-end; }
+    #s1::before { background: transparent; }
+    .hero-inner {
+      width: 100%; max-width: 1100px;
+      margin: 0 auto; padding: 0 64px 80px;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 22px;
+      opacity: 0; animation: fadeUp 0.7s 0.3s forwards;
+    }
+    .hero-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+    .hero-tag span {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    #s1 h1 {
+      opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+      max-width: 860px; margin-bottom: 18px;
+    }
+    .hero-sub {
+      font-size: 0.92rem; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.05em;
+      opacity: 0; animation: fadeUp 0.7s 0.7s forwards;
+    }
+
+    /* ── CAROUSEL ── */
+    .carousel-wrap {
+      position: relative; margin-top: 40px; overflow: hidden;
+    }
+    .carousel-track {
+      display: flex; transition: transform 0.45s ease;
+    }
+
+    /* Leistung cards */
+    .leistung-card {
+      flex: 0 0 100%;
+      background: rgba(15,45,77,0.6);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .leistung-nr {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--orange);
+    }
+    .leistung-card h3 { font-size: 1.15rem; margin-bottom: 0; }
+    .leistung-card p {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.8;
+    }
+
+    /* Speaker tiles */
+    .speaker-tile {
+      flex: 0 0 100%;
+      background: rgba(13,37,64,0.55);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 32px 28px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .tile-event {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--orange);
+    }
+    .speaker-tile h3 { font-size: 1rem; }
+    .speaker-tile p {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.75;
+    }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex; gap: 8px; margin-top: 24px;
+    }
+    .c-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none; cursor: pointer;
+      transition: background 0.3s, transform 0.3s; padding: 0;
+    }
+    .c-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── APPROACH ── */
+    .ansatz-list {
+      display: flex; flex-direction: column; gap: 36px;
+      margin-top: 48px; max-width: 720px;
+    }
+    .ansatz-item {
+      display: grid; grid-template-columns: 48px 1fr; gap: 20px;
+      align-items: flex-start;
+    }
+    .ansatz-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,94,0,0.12); border: 1px solid rgba(255,94,0,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800; color: var(--orange);
+      flex-shrink: 0;
+    }
+    .ansatz-item h3 { font-size: 1rem; margin-bottom: 6px; }
+    .ansatz-item p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; }
+
+    /* ── CTA ── */
+    #s6::before { background: rgba(15,45,77,0.85); }
+    .cta-inner { max-width: 640px; }
+    .cta-inner h2 { margin-bottom: 16px; }
+    .cta-inner p { font-size: 1rem; color: var(--muted); line-height: 1.85; margin-bottom: 40px; }
+    .cta-btn {
+      display: inline-block; background: var(--orange); color: #fff;
+      padding: 16px 40px; border-radius: 10px;
+      font-weight: 700; font-size: 0.9rem; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover { background: var(--blue); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.95);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+    footer a { color: var(--dimmer); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    footer a:hover { color: var(--muted); }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-indicator {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none; padding: 0;
+    }
+    .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-menu { display: none; }
+      .inner { padding: 60px 24px; }
+      .hero-inner { padding: 0 24px 60px; }
+      .leistung-grid { grid-template-columns: 1fr; }
+      .speaker-grid { grid-template-columns: 1fr; }
+      .scroll-indicator { display: none; }
+      footer { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIDEO BG -->
+  <video autoplay muted loop playsinline style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:-1;">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/v1774545918/training_omoiyw.mp4" type="video/mp4">
+  </video>
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:0;"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html" class="active">Training & Speaking</a></li>
+      <li><a href="/coaching.html">Coaching</a></li>
+      <li><a href="/ai.html">AI Automation</a></li>
+      <li><a href="mailto:hallo@tobidolgener.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- SECTION NAV DOTS -->
+  <div class="scroll-indicator" id="scrollDots"></div>
+
+  <!-- ── S1: HERO ── -->
+  <section id="s1" class="snap-section">
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <div class="dot"></div>
+        <span>Training · Speaking · Enablement</span>
+      </div>
+      <h1>Training – knowledge that <span class="accent">moves</span>,<br />learning that <span class="accent">sticks</span></h1>
+      <p class="hero-sub">Sales Trainer · Live Online Trainer · Speaker · Instructional Designer</p>
+    </div>
+  </section>
+
+  <!-- ── S2: ABOUT ME ── -->
+  <section id="s2" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">About me</div></div>
+      <h2 class="reveal reveal-d1">From bank clerk to learning designer</h2>
+      <p class="bodytext reveal reveal-d2">
+        For more than 15 years I have been getting people into action. Grown up in the banking world, trained as a trainer, matured as a lecturer and speaker – I understand both sides: the subject matter and the person behind it.
+      </p>
+      <p class="bodytext reveal reveal-d3" style="margin-top: 20px;">
+        My credo: make theory tangible. Don't teach participants – move them.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S3: SERVICE AREAS ── -->
+  <section id="s3" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Service areas</div></div>
+      <h2 class="reveal reveal-d1">What I do</h2>
+      <div class="carousel-wrap reveal reveal-d2">
+        <div class="carousel-track" id="leistungTrack">
+
+          <div class="leistung-card">
+            <div class="leistung-nr">01</div>
+            <h3>Sales Training</h3>
+            <p>Sales and communication are the same thing. In my training sessions we work on three levels: attitude, preparation and communication. I teach techniques that can be applied immediately in everyday life – individual, practical, sustainable. Methodically based on MacLean's structural analysis and the Island Model by Birkenbihl.</p>
+          </div>
+
+          <div class="leistung-card">
+            <div class="leistung-nr">02</div>
+            <h3>Live Online Training</h3>
+            <p>Conveying knowledge without direct feedback is an art. As a live online trainer I have learnt: in the virtual space, trainers must become entertainers. I design digital learning experiences that don't just inform – they leave a lasting impression.</p>
+          </div>
+
+          <div class="leistung-card">
+            <div class="leistung-nr">03</div>
+            <h3>Production of Digital Learning Content</h3>
+            <p>As a qualified instructional designer I develop e-learnings, learning videos and digital course formats that convey knowledge in a structured, modern and scalable way. From concept to finished production – all from a single source.</p>
+          </div>
+
+        </div>
+        <div class="carousel-dots" id="leistungDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: SPEAKING ── -->
+  <section id="s4" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Speaking</div></div>
+      <h2 class="reveal reveal-d1">On stage – people, technology, enablement</h2>
+      <p class="subtext reveal reveal-d2">Technology is changing how we work, learn and think. On stage I ask the question that really counts: how do we bring people along with us? My keynotes combine practical knowledge with real use cases – clear, direct and without buzzword bingo.</p>
+
+      <div class="carousel-wrap reveal reveal-d3" style="max-width: 680px;">
+        <div class="carousel-track" id="speakerTrack">
+
+          <div class="speaker-tile">
+            <div class="tile-event">LEARNTEC · Karlsruhe</div>
+            <h3>The modern online learning tool FS-Wallet – exam-ready</h3>
+            <p>Europe's leading trade fair for digital learning. How digital tools generate real learning success – and why the format alone is not enough.</p>
+          </div>
+
+          <div class="speaker-tile">
+            <div class="tile-event">Qualitypool Partner Days</div>
+            <h3>AI in the financial world – opportunities, risks and the human in the middle</h3>
+            <p>Annual industry event of the financial and real estate sector. How advisors and teams can use AI productively rather than fearing it.</p>
+          </div>
+
+          <div class="speaker-tile">
+            <div class="tile-event">Hypoport Inside</div>
+            <h3>Digital transformation – how do real use cases emerge from it?</h3>
+            <p>Innovation event of one of the leading technology networks in the real estate and financial sector. From idea to application: what really works and what just sounds good.</p>
+          </div>
+
+          <div class="speaker-tile">
+            <div class="tile-event">Frankfurt School of Finance & Management</div>
+            <h3>Modern learning – how we keep going in a part-time degree programme</h3>
+            <p>One of Europe's most renowned business schools. Motivational psychology, learning strategies and digital tools for the long haul.</p>
+          </div>
+
+        </div>
+        <div class="carousel-dots" id="speakerDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: APPROACH ── -->
+  <section id="s5" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">My approach</div></div>
+      <h2 class="reveal reveal-d1">What makes my training different</h2>
+      <div class="ansatz-list">
+
+        <div class="ansatz-item reveal reveal-d1">
+          <div class="ansatz-num">01</div>
+          <div>
+            <h3>Empathy meets clarity</h3>
+            <p>Through MacLean's structural analysis I understand how different people think and communicate – and I adapt my language and methodology individually.</p>
+          </div>
+        </div>
+
+        <div class="ansatz-item reveal reveal-d2">
+          <div class="ansatz-num">02</div>
+          <div>
+            <h3>Smartphones are not the enemy</h3>
+            <p>My job is not to keep participants away from their phones. My job is to show them how to use them for their own learning success.</p>
+          </div>
+        </div>
+
+        <div class="ansatz-item reveal reveal-d3">
+          <div class="ansatz-num">03</div>
+          <div>
+            <h3>Entertainer rather than lecturer</h3>
+            <p>Especially in the virtual space: anyone who doesn't entertain, loses the audience. I combine knowledge transfer with energy, structure and genuine practical relevance.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: CTA ── -->
+  <section id="s6" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Contact</div></div>
+      <div class="cta-inner">
+        <h2 class="reveal reveal-d1">Ready for training that truly delivers?</h2>
+        <p class="reveal reveal-d2">Let's look together at what your team or participants need.</p>
+        <a href="#" class="cta-btn reveal reveal-d3" onclick="event.preventDefault();if(window.openContactForm)openContactForm();">
+          Request a conversation now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+    </div>
+  </footer>
+
+  <script>
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6'];
+    const nav = document.getElementById('navbar');
+    let currentIdx = 0;
+    let isAnimating = false;
+
+    // Build nav dots
+    const dotsWrap = document.getElementById('scrollDots');
+    SECTIONS.forEach((id, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.scroll-dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      nav.classList.toggle('scrolled', idx > 0);
+      updateDots();
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel – timestamp lock guarantees exactly one section per scroll
+    let lastWheelTime = 0;
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelTime < 900) return;
+      lastWheelTime = now;
+      if (e.deltaY > 0) goTo(currentIdx + 1);
+      else              goTo(currentIdx - 1);
+    }, { passive: false });
+
+    // Touch
+    let touchY = 0;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+    }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // ── CAROUSEL ──
+    function initCarousel(trackId, dotsId, cardSelector, interval) {
+      const track = document.getElementById(trackId);
+      const dotsWrap = document.getElementById(dotsId);
+      const cards = track.querySelectorAll(cardSelector);
+      let idx = 0, timer;
+
+      cards.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'c-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => { go(i); resetTimer(); });
+        dotsWrap.appendChild(d);
+      });
+
+      function go(n) {
+        idx = (n + cards.length) % cards.length;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        dotsWrap.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+
+      function resetTimer() { clearInterval(timer); timer = setInterval(() => go(idx + 1), interval); }
+
+      // Touch swipe
+      let tx = 0;
+      track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const diff = tx - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) { go(diff > 0 ? idx + 1 : idx - 1); resetTimer(); }
+      }, { passive: true });
+
+      resetTimer();
+    }
+
+    initCarousel('leistungTrack', 'leistungDots', '.leistung-card', 5000);
+    initCarousel('speakerTrack',  'speakerDots',  '.speaker-tile',  4500);
+
+    // Reveal hero on load
+    document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+  </script>
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
+  <script src="/nav.js?v=3"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=3"></script>
+  <script src="/lang-switcher.js"></script>
+</body>
+</html>

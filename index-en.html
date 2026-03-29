@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tobi Dolgener</title>
+  <meta name="description" content="Tobi Dolgener – I get people and organisations moving." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0d2540;
+      --blue:  #0077c8;
+      --orange: #ff5e00;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: #fff;
+      overflow: hidden; /* full-screen, no scroll on homepage */
+    }
+
+    /* ── VIDEO BACKGROUND ── */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .bg-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+    }
+
+    /* dark gradient overlay – heavier at bottom so text pops */
+    .bg-video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom,
+          rgba(13,37,64,0.55) 0%,
+          rgba(13,37,64,0.30) 40%,
+          rgba(13,37,64,0.70) 75%,
+          rgba(13,37,64,0.96) 100%
+        );
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      display: block;
+      padding: 9px 20px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      background: rgba(13,37,64,0.3);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .nav-menu a:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.35);
+      background: rgba(13,37,64,0.5);
+    }
+
+    .nav-menu a.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+
+    /* ── HERO CONTENT ── */
+    .hero {
+      position: relative;
+      z-index: 5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 72px;
+    }
+
+    .hero-inner {
+      max-width: 820px;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s forwards;
+    }
+
+    .eyebrow-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .hero-eyebrow span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+
+    h1 {
+      font-size: clamp(3.8rem, 9vw, 7.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 0.93;
+      color: #fff;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .hero-claim {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 400;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+      max-width: 520px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.7s forwards;
+    }
+
+    /* ── THREE AREA LINKS ── */
+    .areas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.9s forwards;
+    }
+
+    .area-card {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(13,37,64,0.45);
+      backdrop-filter: blur(16px);
+      text-decoration: none;
+      color: #fff;
+      transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    }
+
+    .area-card:hover {
+      border-color: var(--orange);
+      background: rgba(255,94,0,0.12);
+      transform: translateY(-3px);
+    }
+
+    .area-icon { display: none; }
+
+    .area-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .area-label {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.03em;
+    }
+
+    .area-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      position: fixed;
+      bottom: 56px;
+      right: 48px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeIn 1s 1.4s forwards;
+    }
+
+    .scroll-hint span {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.3));
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 5;
+      padding: 14px 48px;
+      display: flex; justify-content: flex-end;
+      pointer-events: none;
+    }
+    .footer-inner {
+      display: flex; gap: 20px; align-items: center;
+      pointer-events: all;
+    }
+    footer a {
+      font-size: 0.72rem; color: rgba(255,255,255,0.3);
+      text-decoration: none; transition: color 0.2s;
+    }
+    footer a:hover { color: rgba(255,255,255,0.6); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      nav .nav-legal { display: none !important; }
+
+      .nav-menu { display: none; }
+
+      h1 { font-size: 3.2rem; line-height: 0.95; margin-bottom: 16px; }
+
+      .hero-eyebrow { margin-bottom: 16px; }
+
+      .hero-claim { font-size: 0.95rem; margin-bottom: 28px; }
+
+      .hero { padding: 80px 20px 180px; }
+
+      .areas { grid-template-columns: 1fr; gap: 8px; }
+
+      .scroll-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIDEO BG -->
+  <video autoplay muted loop playsinline
+    style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:1;"
+    preload="auto">
+    <source src="https://res.cloudinary.com/dqrtks5ik/video/upload/f_mp4,q_auto/v1774546675/start_cjlc3s.mp4" type="video/mp4">
+  </video>
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2;"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning.html">Training & Speaking</a></li>
+      <li><a href="/coaching.html">Coaching</a></li>
+      <li><a href="/ai.html">AI Automation</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <main class="hero">
+    <div class="hero-inner">
+
+      <div class="hero-eyebrow">
+        <div class="eyebrow-dot"></div>
+        <span>Trainer · Coach · AI Consultant · Berlin</span>
+      </div>
+
+      <h1>Tobi<br />Dolgener</h1>
+
+      <p class="hero-claim">
+        I get people and organisations moving.
+      </p>
+
+      <div class="areas">
+        <a href="/learning.html" class="area-card">
+          <span class="area-icon">🎤</span>
+          <div class="area-text">
+            <span class="area-label">Area 01</span>
+            <span class="area-title">Training & Speaking</span>
+          </div>
+        </a>
+        <a href="/coaching.html" class="area-card">
+          <span class="area-icon">🧭</span>
+          <div class="area-text">
+            <span class="area-label">Area 02</span>
+            <span class="area-title">Coaching · Pathfinders Berlin</span>
+          </div>
+        </a>
+        <a href="/ai.html" class="area-card">
+          <span class="area-icon">⚡</span>
+          <div class="area-text">
+            <span class="area-label">Area 03</span>
+            <span class="area-title">AI Automation</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SCROLL HINT -->
+  <div class="scroll-hint">
+    <span>Explore</span>
+    <div class="scroll-line"></div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+    </div>
+  </footer>
+
+  <!-- hidden Netlify form for detection -->
+  <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="vorname" />
+    <input type="text" name="nachname" />
+    <input type="email" name="email" />
+    <input type="tel" name="telefon" />
+    <select name="bereich"><option>Training &amp; Speaking</option></select>
+    <textarea name="nachricht"></textarea>
+  </form>
+
+  <script src="/nav.js?v=3"></script>
+  <script src="/cookie-consent.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/contact-form.js"></script>
+  <script src="/contact-widget.js?v=3"></script>
+  <script src="/lang-switcher.js"></script>
+</body>
+</html>
