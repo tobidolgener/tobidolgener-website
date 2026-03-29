@@ -176,7 +176,9 @@
     /* legal links at bottom of panel */
     var legalDiv = document.createElement('div');
     legalDiv.className = 'nav-panel-legal';
+    var isEnPage = window.location.pathname.indexOf('-en') !== -1;
     legalDiv.innerHTML =
+      (isEnPage ? '' : '<a href="/agb.html">AGB</a>') +
       '<a href="/impressum.html">Impressum</a>' +
       '<a href="/datenschutz.html">Datenschutz</a>' +
       '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
