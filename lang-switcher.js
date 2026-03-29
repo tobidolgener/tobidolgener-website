@@ -26,7 +26,7 @@
 
   /* ── CSS ── */
   var css = [
-    '.ls-wrap{position:fixed;top:46px;z-index:9999;',
+    '.ls-wrap{position:fixed;top:60px;z-index:9999;',
     'left:48px;',
     'display:flex;align-items:center;gap:3px;}',
     '.ls-btn{background:none;border:none;cursor:pointer;',
@@ -36,7 +36,7 @@
     '.ls-btn.ls-active{opacity:1;filter:none;transform:scale(1.15);}',
     '.ls-btn:not(.ls-active):hover{opacity:0.75;filter:grayscale(0);}',
     '@media(max-width:640px){',
-    '.ls-wrap{left:24px;top:42px;}}'
+    '.ls-wrap{left:24px;top:56px;}}'
   ].join('');
 
   function init() {
