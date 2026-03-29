@@ -292,8 +292,57 @@
     }
     .faq-item.open .faq-body { max-height: 300px; }
 
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+    }
+    .stat-item {
+      background: rgba(46,117,182,0.08);
+      border: 1px solid rgba(46,117,182,0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2e75b6;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #8ab4d4;
+      line-height: 1.4;
+    }
+    .section-footnote {
+      font-size: 0.95rem;
+      color: #8ab4d4;
+      margin-top: 1.5rem;
+      font-style: italic;
+      border-left: 3px solid #2e75b6;
+      padding-left: 1rem;
+    }
+    .highlight-box {
+      background: rgba(46,117,182,0.08);
+      border: 1px solid rgba(46,117,182,0.25);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
     /* ── CTA ── */
-    #s10::before { background: rgba(15,45,77,0.85); }
+    #s12::before { background: rgba(15,45,77,0.85); }
     .cta-inner { max-width: 700px; }
     .cta-inner h2 { margin-bottom: 16px; }
     .cta-inner p { font-size: 1rem; color: var(--muted); line-height: 1.85; margin-bottom: 40px; }
@@ -409,8 +458,55 @@
     </div>
   </section>
 
-  <!-- ── S2: BEI UNS BEKOMMEN SIE ── -->
+  <!-- ── S2: WARUM DAS WICHTIG IST ── -->
   <section id="s2" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Warum das wichtig ist</div></div>
+      <h2 class="reveal reveal-d1">Ohne Sichtbarkeit auf Social Media<br>hilft keine Maßnahme.</h2>
+      <p class="subtext reveal reveal-d2">
+        Als Sales Trainer und Berater im Retailmarkt sehe ich täglich wie viele Unternehmen
+        mit ihrem Vertrieb hadern und Maßnahmen ergreifen – dabei ist längst eine andere
+        Realität eingetreten.
+      </p>
+      <div class="highlight-box reveal reveal-d3">
+        <p>40–45 % aller Internetnutzer weltweit recherchieren Produkte auf Social Media
+        bevor sie kaufen. Bis zu 70 % der Konsumenten sagen, ihre Kaufentscheidung wurde
+        durch Social-Media-Inhalte beeinflusst. Bei der Gen Z nutzen bereits 30–50 % TikTok
+        und Instagram als primäre Suchmaschine – nicht mehr Google.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S3: SOCIAL COMMERCE ── -->
+  <section id="s3" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Social Commerce heute</div></div>
+      <h2 class="reveal reveal-d1">Der Markt kauft dort wo er<br>seine Zeit verbringt.</h2>
+      <p class="subtext reveal reveal-d2">Social Media ist nicht mehr nur Sichtbarkeit – es ist der neue Verkaufsraum.</p>
+      <div class="stats-grid reveal reveal-d2">
+        <div class="stat-item">
+          <span class="stat-number">1 von 3</span>
+          <span class="stat-label">Internetnutzer in Deutschland kauft bereits direkt über Social Media</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">50 %</span>
+          <span class="stat-label">der Gen Z kauft über soziale Netzwerke – Tendenz stark steigend</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">1,2 Bio. $</span>
+          <span class="stat-label">globaler Social-Commerce-Markt bis 2026</span>
+        </div>
+      </div>
+      <p class="section-footnote reveal reveal-d3">
+        Wenn du Konsumgüter oder Dienstleistungen verkaufst ist Social Media heute
+        oft der erste Berührungspunkt. Wer dort nicht präsent ist verliert den Kontakt
+        bevor das Gespräch beginnt.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S4: BEI UNS BEKOMMEN SIE ── -->
+  <section id="s4" class="snap-section alt">
     <div class="inner">
       <h2 class="reveal" style="font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900; margin-bottom: 28px;">Bei uns bekommen Sie.</h2>
       <p class="subtext reveal reveal-d1">
@@ -425,7 +521,7 @@
   </section>
 
   <!-- ── S3: PROBLEM ── -->
-  <section id="s3" class="snap-section">
+  <section id="s5" class="snap-section">
     <div class="inner">
       <div class="reveal"><div class="label">Das Problem</div></div>
       <h2 class="reveal reveal-d1">Warum klassische Social-Media-Aktivität<br />für KMU kaum funktioniert</h2>
@@ -440,7 +536,7 @@
   </section>
 
   <!-- ── S4: LÖSUNG ── -->
-  <section id="s4" class="snap-section alt">
+  <section id="s6" class="snap-section alt">
     <div class="inner">
       <div class="reveal"><div class="label">Die Lösung</div></div>
       <h2 class="reveal reveal-d1">Ein fertiges Kundengewinnungs-System — kein Konzept</h2>
@@ -459,7 +555,7 @@
   </section>
 
   <!-- ── S5: ZIELGRUPPE ── -->
-  <section id="s5" class="snap-section">
+  <section id="s7" class="snap-section">
     <div class="inner">
       <div class="reveal"><div class="label">Zielgruppe</div></div>
       <h2 class="reveal reveal-d1">Für wen das System gemacht ist</h2>
@@ -475,7 +571,7 @@
   </section>
 
   <!-- ── S6: PRODUKT – ARCHITEKTUR ── -->
-  <section id="s6" class="snap-section alt">
+  <section id="s8" class="snap-section alt">
     <div class="product-section-inner">
       <div class="product-section-left">
         <div class="reveal"><div class="product-tier-label">Architektur</div></div>
@@ -507,7 +603,7 @@
   </section>
 
   <!-- ── S7: PRODUKT – FRAMEWORK (EMPFOHLEN) ── -->
-  <section id="s7" class="snap-section">
+  <section id="s9" class="snap-section">
     <div class="product-section-inner">
       <div class="product-section-left">
         <div class="reveal">
@@ -539,7 +635,7 @@
   </section>
 
   <!-- ── S8: PRODUKT – IMPLEMENTIERUNG ── -->
-  <section id="s8" class="snap-section alt">
+  <section id="s10" class="snap-section alt">
     <div class="product-section-inner">
       <div class="product-section-left">
         <div class="reveal"><div class="product-tier-label">Implementierung</div></div>
@@ -571,7 +667,7 @@
   </section>
 
   <!-- ── S9: FAQ ── -->
-  <section id="s9" class="snap-section">
+  <section id="s11" class="snap-section">
     <div class="inner">
       <div class="reveal"><div class="label">FAQ</div></div>
       <h2 class="reveal reveal-d1">Häufige Fragen</h2>
@@ -612,7 +708,7 @@
   </section>
 
   <!-- ── S10: CTA ── -->
-  <section id="s10" class="snap-section">
+  <section id="s12" class="snap-section">
     <div class="inner">
       <div class="reveal"><div class="label">Jetzt starten</div></div>
       <div class="cta-inner">
@@ -638,7 +734,7 @@
   </footer>
 
   <script>
-    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'];
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
     const nav = document.getElementById('navbar');
     let currentIdx = 0;
     let isAnimating = false;
