@@ -182,10 +182,28 @@
       cursor: not-allowed;
     }
     .stripe-btn:not(:disabled):hover { background: #e05200; transform: translateY(-2px); }
+    .agb-check-label {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 16px; cursor: pointer;
+    }
+    .agb-check-label input[type="checkbox"] {
+      width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0;
+      accent-color: var(--orange); cursor: pointer;
+    }
+    .agb-check-label span {
+      font-size: 0.82rem; color: var(--muted); line-height: 1.5;
+    }
+    .agb-check-label span a { color: var(--blue); text-decoration: underline; }
     .stripe-note {
       margin-top: 14px;
       font-size: 0.78rem; color: var(--dimmer); line-height: 1.7;
     }
+    .agb-link-note {
+      margin-top: 10px;
+      font-size: 0.76rem; text-align: center;
+    }
+    .agb-link-note a { color: var(--dimmer); text-decoration: underline; }
+    .agb-link-note a:hover { color: var(--muted); }
 
     /* ── BACK LINK ── */
     .back-link {
@@ -364,13 +382,21 @@
           autocomplete="off"
           spellcheck="false"
         />
+        <label class="agb-check-label" id="agbLabel">
+          <input type="checkbox" id="agbCheck" />
+          <span>I agree to the <a href="/agb-en.html" target="_blank">Terms and Conditions</a> and the <a href="/datenschutz.html" target="_blank">Privacy Policy</a> of Pathfinders Berlin e.K.<br><br>
+          <strong style="color:rgba(255,255,255,0.7);">Important notice regarding Digital Products &amp; Services:</strong><br>
+          I expressly request and agree that Pathfinders Berlin e.K. begins the delivery of the digital content (GEM &amp; Blueprints) or the performance of coaching services before the end of any statutory cancellation period.<br><br>
+          I acknowledge that by gaining instant access to the digital products, I lose my right to cancel the contract for a refund based on a "change of mind" or for no reason. My statutory rights under the Australian Consumer Law (ACL) regarding faulty products remain unaffected.</span>
+        </label>
         <button id="stripeBtn" class="stripe-btn" disabled>
           Continue to Tier 2 – €700
         </button>
         <p class="stripe-note">
-          You will be redirected to Stripe. Secure payment.<br>
+          You will be redirected to PayPal. Secure payment.<br>
           One-off €700. After payment you will receive an email with your download link.
         </p>
+        <p class="agb-link-note"><a href="/agb-en.html" target="_blank">Terms and Conditions</a></p>
       </div>
     </div>
   </section>
@@ -448,16 +474,21 @@
       if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
     });
 
-    // Password gate
-    const CORRECT = "overlay_text:";
-    const input = document.getElementById('passwordInput');
-    const btn = document.getElementById('stripeBtn');
+    // Password gate + T&C checkbox
+    const CORRECT  = "overlay_text:";
+    const input    = document.getElementById('passwordInput');
+    const btn      = document.getElementById('stripeBtn');
+    const agbCheck = document.getElementById('agbCheck');
 
-    input.addEventListener('input', function() {
-      const match = this.value.trim() === CORRECT;
-      btn.disabled = !match;
-      this.classList.toggle('valid', match);
-    });
+    function checkGate() {
+      const match = input.value.trim() === CORRECT;
+      const ok    = match && agbCheck.checked;
+      btn.disabled = !ok;
+      input.classList.toggle('valid', match);
+    }
+
+    input.addEventListener('input', checkGate);
+    agbCheck.addEventListener('change', checkGate);
 
     btn.addEventListener('click', function() {
       if (!this.disabled) {

@@ -178,9 +178,9 @@
     legalDiv.className = 'nav-panel-legal';
     var isEnPage = window.location.pathname.indexOf('-en') !== -1;
     legalDiv.innerHTML =
-      (isEnPage ? '' : '<a href="/agb.html">AGB</a>') +
+      (isEnPage ? '<a href="/agb-en.html">T&amp;C</a>' : '<a href="/agb.html">AGB</a>') +
       '<a href="/impressum.html">Impressum</a>' +
-      '<a href="/datenschutz.html">Datenschutz</a>' +
+      '<a href="/datenschutz.html">' + (isEnPage ? 'Privacy' : 'Datenschutz') + '</a>' +
       '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
     panel.appendChild(legalDiv);
 

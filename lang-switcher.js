@@ -15,7 +15,9 @@
     '/coaching-en.html':  '/coaching.html',
     '/learning-en.html':  '/learning.html',
     '/produkt-en.html':   '/produkt.html',
-    '/stufe2-en.html':    '/stufe2.html'
+    '/stufe2-en.html':    '/stufe2.html',
+    '/agb.html':          '/agb-en.html',
+    '/agb-en.html':       '/agb.html'
   };
 
   var path       = window.location.pathname;
