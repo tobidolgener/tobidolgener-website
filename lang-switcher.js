@@ -26,17 +26,17 @@
 
   /* ── CSS ── */
   var css = [
-    '.ls-wrap{position:fixed;top:20px;z-index:9999;',
-    'left:calc(50% + 68px);',
+    '.ls-wrap{position:fixed;top:46px;z-index:9999;',
+    'left:48px;',
     'display:flex;align-items:center;gap:3px;}',
     '.ls-btn{background:none;border:none;cursor:pointer;',
-    'font-size:1.15rem;padding:2px 3px;border-radius:5px;',
+    'font-size:1.05rem;padding:1px 2px;border-radius:4px;',
     'line-height:1;transition:opacity 0.2s,transform 0.2s;',
     'opacity:0.35;filter:grayscale(0.4);}',
-    '.ls-btn.ls-active{opacity:1;filter:none;transform:scale(1.18);}',
+    '.ls-btn.ls-active{opacity:1;filter:none;transform:scale(1.15);}',
     '.ls-btn:not(.ls-active):hover{opacity:0.75;filter:grayscale(0);}',
     '@media(max-width:640px){',
-    '.ls-wrap{left:auto;right:16px;top:16px;}}'
+    '.ls-wrap{left:24px;top:42px;}}'
   ].join('');
 
   function init() {
