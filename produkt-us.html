@@ -732,17 +732,13 @@
       }
     });
 
-    // Buy button opens popup
+    // Buy button opens Amazon
     document.getElementById('buyBtn').addEventListener('click', function() {
       if (this.classList.contains('disabled')) return;
-      const popup = document.getElementById('druckPopup');
-      popup.style.display = 'flex';
+      window.open('https://amzn.eu/d/01xRxnvU', '_blank');
+      
     });
 
-    // Close popup on overlay click
-    document.getElementById('druckPopup').addEventListener('click', function(e) {
-      if (e.target === this) this.style.display = 'none';
-    });
 
     document.getElementById('stufe2Btn').addEventListener('click', function() {
       window.location.href = 'stufe2-us.html';
