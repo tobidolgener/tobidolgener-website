@@ -20,11 +20,10 @@
     '/agb-en.html':       '/agb.html'
   };
 
-  var path       = window.location.pathname;
-  var isEnglish  = path.indexOf('-en') !== -1;
-  var targetPath = PAGE_MAP[path] || (isEnglish
-    ? path.replace('-en.html', '.html')
-    : path.replace('.html', '-en.html'));
+  var path      = window.location.pathname;
+  var isEnglish = path.indexOf('-en') !== -1;
+  /* Always navigate to the home page of the target language */
+  var targetPath = isEnglish ? '/index.html' : '/index-en.html';
 
   var css = [
     /* wrapper – fixed, positioned dynamically via JS */
