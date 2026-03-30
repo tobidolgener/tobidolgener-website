@@ -131,8 +131,11 @@
     /* ── 2. Hamburger button ── */
     var burger = document.createElement('button');
     burger.className = 'nav-burger';
-    var isEnPage = window.location.pathname.indexOf('-en') !== -1;
-    burger.setAttribute('aria-label', isEnPage ? 'Open menu' : 'Menü öffnen');
+    var pagePath  = window.location.pathname;
+    var isEnPage  = pagePath.indexOf('-en') !== -1;
+    var isUsPage  = pagePath.indexOf('-us') !== -1;
+    var isIntl    = isEnPage || isUsPage;
+    burger.setAttribute('aria-label', isIntl ? 'Open menu' : 'Menü öffnen');
     burger.innerHTML = '<span></span><span></span><span></span>';
     nav.appendChild(burger);
 
@@ -146,14 +149,14 @@
 
     var closeBtn = document.createElement('button');
     closeBtn.className = 'nav-panel-close';
-    closeBtn.setAttribute('aria-label', isEnPage ? 'Close menu' : 'Menü schließen');
+    closeBtn.setAttribute('aria-label', isIntl ? 'Close menu' : 'Menü schließen');
     closeBtn.innerHTML = '&#x2715;';
     panel.appendChild(closeBtn);
 
     /* Book now / Termin buchen button at top */
     var bookingBtn = document.createElement('button');
     bookingBtn.className = 'nav-panel-booking';
-    bookingBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + (isEnPage ? 'Book now' : 'Termin buchen');
+    bookingBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + (isIntl ? 'Book now' : 'Termin buchen');
     function triggerBooking(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -177,11 +180,27 @@
     /* legal links at bottom of panel */
     var legalDiv = document.createElement('div');
     legalDiv.className = 'nav-panel-legal';
-    legalDiv.innerHTML =
-      (isEnPage ? '<a href="/agb-en.html">T&amp;C</a>' : '<a href="/agb.html">AGB</a>') +
-      '<a href="/impressum.html">Impressum</a>' +
-      '<a href="/datenschutz.html">' + (isEnPage ? 'Privacy' : 'Datenschutz') + '</a>' +
-      '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
+    var legalHtml;
+    if (isUsPage) {
+      legalHtml =
+        '<a href="/tos-us.html">Terms of Service</a>' +
+        '<a href="/privacy-us.html">Privacy Policy</a>' +
+        '<a href="/refund-us.html">Refund Policy</a>' +
+        '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
+    } else if (isEnPage) {
+      legalHtml =
+        '<a href="/agb-en.html">T&amp;C</a>' +
+        '<a href="/impressum.html">Impressum</a>' +
+        '<a href="/datenschutz.html">Privacy</a>' +
+        '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
+    } else {
+      legalHtml =
+        '<a href="/agb.html">AGB</a>' +
+        '<a href="/impressum.html">Impressum</a>' +
+        '<a href="/datenschutz.html">Datenschutz</a>' +
+        '<button onclick="if(window.openCookieSettings)openCookieSettings()">Cookies</button>';
+    }
+    legalDiv.innerHTML = legalHtml;
     panel.appendChild(legalDiv);
 
     document.body.appendChild(panel);

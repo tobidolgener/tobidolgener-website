@@ -1,29 +1,13 @@
 (function () {
   'use strict';
 
-  /* ── PAGE MAP: German ↔ English ── */
-  var PAGE_MAP = {
-    '/':                  '/index-en.html',
-    '/index.html':        '/index-en.html',
-    '/ai.html':           '/ai-en.html',
-    '/coaching.html':     '/coaching-en.html',
-    '/learning.html':     '/learning-en.html',
-    '/produkt.html':      '/produkt-en.html',
-    '/stufe2.html':       '/stufe2-en.html',
-    '/index-en.html':     '/index.html',
-    '/ai-en.html':        '/ai.html',
-    '/coaching-en.html':  '/coaching.html',
-    '/learning-en.html':  '/learning.html',
-    '/produkt-en.html':   '/produkt.html',
-    '/stufe2-en.html':    '/stufe2.html',
-    '/agb.html':          '/agb-en.html',
-    '/agb-en.html':       '/agb.html'
-  };
+  var path    = window.location.pathname;
+  var isDE    = path.indexOf('-en') === -1 && path.indexOf('-us') === -1;
+  var isEN    = path.indexOf('-en') !== -1;
+  var isUS    = path.indexOf('-us') !== -1;
 
-  var path      = window.location.pathname;
-  var isEnglish = path.indexOf('-en') !== -1;
-  /* Always navigate to the home page of the target language */
-  var targetPath = isEnglish ? '/index.html' : '/index-en.html';
+  /* Current flag for trigger button */
+  var currentFlag = isUS ? '🇺🇸' : (isEN ? '🇦🇺' : '🇩🇪');
 
   var css = [
     /* wrapper – fixed, positioned dynamically via JS */
@@ -99,31 +83,26 @@
     var trigger = document.createElement('button');
     trigger.className = 'ls-trigger';
     trigger.setAttribute('aria-label', 'Select language');
-    trigger.innerHTML = (isEnglish ? '🇦🇺' : '🇩🇪') + '&nbsp;<span class="ls-arrow">▾</span>';
+    trigger.innerHTML = currentFlag + '&nbsp;<span class="ls-arrow">▾</span>';
 
     var panel = document.createElement('div');
     panel.className = 'ls-panel';
 
-    var deOpt = document.createElement('button');
-    deOpt.className = 'ls-option' + (!isEnglish ? ' ls-active' : '');
-    deOpt.innerHTML = '🇩🇪 <span>Deutsch</span>' + (!isEnglish ? '<span class="ls-check">✓</span>' : '');
-    deOpt.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (isEnglish) window.location.href = targetPath;
-      else closeDD();
-    });
+    function makeOpt(flag, label, active, dest) {
+      var opt = document.createElement('button');
+      opt.className = 'ls-option' + (active ? ' ls-active' : '');
+      opt.innerHTML = flag + ' <span>' + label + '</span>' + (active ? '<span class="ls-check">✓</span>' : '');
+      opt.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (active) closeDD();
+        else window.location.href = dest;
+      });
+      return opt;
+    }
 
-    var enOpt = document.createElement('button');
-    enOpt.className = 'ls-option' + (isEnglish ? ' ls-active' : '');
-    enOpt.innerHTML = '🇦🇺 <span>English</span>' + (isEnglish ? '<span class="ls-check">✓</span>' : '');
-    enOpt.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (!isEnglish) window.location.href = targetPath;
-      else closeDD();
-    });
-
-    panel.appendChild(deOpt);
-    panel.appendChild(enOpt);
+    panel.appendChild(makeOpt('🇩🇪', 'Deutsch',  isDE, '/index.html'));
+    panel.appendChild(makeOpt('🇦🇺', 'English',  isEN, '/index-en.html'));
+    panel.appendChild(makeOpt('🇺🇸', 'English (US)', isUS, '/index-us.html'));
     wrap.appendChild(trigger);
     wrap.appendChild(panel);
     document.body.appendChild(wrap);

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tier 2 – Blueprints & AI Coach · Tobi Dolgener</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2540;
+      --navy2:  #0f2d4d;
+      --navy3:  #13345a;
+      --blue:   #0077c8;
+      --orange: #ff5e00;
+      --border: rgba(0,119,200,0.18);
+      --text:   #f0f0f0;
+      --muted:  #8aaec8;
+      --dimmer: #4a6d8c;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(13,37,64,0.95) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,37,64,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 0.92rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); text-decoration: none;
+    }
+
+    /* ── SECTIONS ── */
+    .snap-section {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+    }
+    .snap-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(10,25,45,0.72);
+      pointer-events: none;
+    }
+    .snap-section.alt::before  { background: rgba(13,37,64,0.80); }
+    .snap-section.dark::before { background: rgba(6,15,28,0.88); }
+    .snap-section.warn::before { background: rgba(20,8,0,0.88); }
+
+    /* ── INNER ── */
+    .inner {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      padding: 100px 64px;
+      width: 100%;
+    }
+
+    /* ── LABEL + HEADINGS ── */
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(255,94,0,0.35);
+      background: rgba(255,94,0,0.08);
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .lead {
+      font-size: 1.05rem; color: rgba(255,255,255,0.75);
+      line-height: 1.8; max-width: 680px;
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.12s; }
+    .reveal-d2 { transition-delay: 0.24s; }
+    .reveal-d3 { transition-delay: 0.36s; }
+    .reveal-d4 { transition-delay: 0.48s; }
+
+    /* ── CONTENT BLOCKS ── */
+    .content-block { margin-bottom: 20px; }
+    .content-block p {
+      font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.85; margin-bottom: 12px;
+    }
+    .content-block p:last-child { margin-bottom: 0; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 32px;
+      margin-top: 20px;
+    }
+    .info-box h3 {
+      font-size: 1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px;
+    }
+    .info-box p {
+      font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 8px;
+    }
+    .info-box p:last-child { margin-bottom: 0; }
+
+    /* ── WARN BOX ── */
+    .warn-box {
+      background: rgba(255,94,0,0.07);
+      border: 1px solid rgba(255,94,0,0.35);
+      border-radius: 16px; padding: 28px 32px;
+      margin-top: 20px;
+    }
+    .warn-box h3 {
+      font-size: 1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px;
+    }
+    .warn-box p {
+      font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 8px;
+    }
+    .warn-box p:last-child { margin-bottom: 0; }
+
+    /* ── PASSWORD SECTION ── */
+    .password-box {
+      margin-top: 28px;
+      background: rgba(15,45,77,0.55);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      backdrop-filter: blur(12px);
+    }
+    .password-input {
+      width: 100%;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .password-input::placeholder { color: var(--dimmer); }
+    .password-input.valid { border-color: #2ea043; }
+    .stripe-btn {
+      display: block; width: 100%;
+      background: var(--orange); color: #fff;
+      padding: 16px 40px; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem;
+      border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .stripe-btn:disabled {
+      background: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.25);
+      cursor: not-allowed;
+    }
+    .stripe-btn:not(:disabled):hover { background: #e05200; transform: translateY(-2px); }
+    .agb-check-label {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 16px; cursor: pointer;
+    }
+    .agb-check-label input[type="checkbox"] {
+      width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0;
+      accent-color: var(--orange); cursor: pointer;
+    }
+    .agb-check-label span {
+      font-size: 0.82rem; color: var(--muted); line-height: 1.5;
+    }
+    .agb-check-label span a { color: var(--blue); text-decoration: underline; }
+    .stripe-note {
+      margin-top: 14px;
+      font-size: 0.78rem; color: var(--dimmer); line-height: 1.7;
+    }
+    .agb-link-note {
+      margin-top: 10px;
+      font-size: 0.76rem; text-align: center;
+    }
+    .agb-link-note a { color: var(--dimmer); text-decoration: underline; }
+    .agb-link-note a:hover { color: var(--muted); }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-block; margin-top: 20px;
+      font-size: 0.85rem; color: var(--muted);
+      text-decoration: none; border-bottom: 1px solid rgba(138,174,200,0.3);
+      padding-bottom: 2px; transition: color 0.2s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── SCROLL DOTS ── */
+    .scroll-indicator {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+    }
+    .scroll-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s; padding: 0;
+    }
+    .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      background: rgba(13,37,64,0.95);
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 0.78rem; color: var(--dimmer); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .inner { padding: 80px 24px 60px; }
+      .scroll-indicator { display: none; }
+      footer { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BG -->
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--navy); z-index:-1;"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/index-us.html" class="nav-logo">Tobi Dolgener</a>
+    <ul class="nav-menu">
+      <li><a href="/learning-us.html">Training &amp; Speaking</a></li>
+      <li><a href="/coaching-us.html">Coaching</a></li>
+      <li><a href="/ai-us.html">AI Automation</a></li>
+      <li><a href="mailto:hallo@tobidolgener.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- SCROLL DOTS -->
+  <div class="scroll-indicator" id="scrollDots"></div>
+
+  <!-- ── S1: HERO ── -->
+  <section id="s1" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Tier 2</div></div>
+      <h1 class="reveal reveal-d1">Blueprints &amp; AI Coach</h1>
+      <p class="lead reveal reveal-d2">Let's go.</p>
+    </div>
+  </section>
+
+  <!-- ── S2: FOR BOOK BUYERS ONLY ── -->
+  <section id="s2" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Prerequisite</div></div>
+      <h2 class="reveal reveal-d1">For book buyers only</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>This page is exclusively for people who have already purchased the Reichweitenwerk (Tier 1). Without the book, the Framework Package makes no sense.</p>
+      </div>
+      <a href="/produkt-us.html" class="back-link reveal reveal-d3">← Back to /produkt</a>
+    </div>
+  </section>
+
+  <!-- ── S3: INTELLECTUAL PROPERTY ── -->
+  <section id="s3" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Licence</div></div>
+      <h2 class="reveal reveal-d1">Your rights – and ours</h2>
+      <div class="info-box reveal reveal-d2">
+        <p>Personal, non-transferable licence for your own business.</p>
+        <p>Copyright remains with Pathfinders Berlin e.K.</p>
+        <p>No sharing, no resale, no reproduction.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: AI DISCLAIMER ── -->
+  <section id="s4" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">AI notice</div></div>
+      <h2 class="reveal reveal-d1">No guarantee for the AI Coach</h2>
+      <div class="warn-box reveal reveal-d2">
+        <p>AI can hallucinate. Outputs must be checked critically.</p>
+        <p>No liability for errors based on AI outputs.</p>
+        <p>Gemini is a Google service – no influence over its availability.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: NO GUARANTEE OF SUCCESS ── -->
+  <section id="s5" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Disclaimer</div></div>
+      <h2 class="reveal reveal-d1">No guarantee of success</h2>
+      <div class="warn-box reveal reveal-d2">
+        <p>Blueprints and AI Coach are tools, not a guarantee.</p>
+        <p>Success depends on positioning, offering, target audience and consistency.</p>
+        <p>No refunds after purchase.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S6: BASIC LEGAL RULES ── -->
+  <section id="s6" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Legal</div></div>
+      <h2 class="reveal reveal-d1">Basic legal rules</h2>
+      <div class="info-box reveal reveal-d2">
+        <p>GDPR, privacy policy, opt-in, legal notice, DPA.</p>
+        <p>Blueprints do not include a legal review.</p>
+        <p>Legal advice recommended.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S7: LIABILITY & TRADEMARKS ── -->
+  <section id="s7" class="snap-section">
+    <div class="inner">
+      <div class="reveal"><div class="label">Liability &amp; Trademarks</div></div>
+      <h2 class="reveal reveal-d1">Liability &amp; Trademarks</h2>
+      <div class="info-box reveal reveal-d2">
+        <h3>Disclaimer of liability</h3>
+        <p>No liability for direct or indirect damages arising from the use of the Blueprints or the AI Coach.</p>
+      </div>
+      <div class="info-box reveal reveal-d3">
+        <h3>Trademark notice</h3>
+        <p>Make.com, Google, Instagram, Facebook, LinkedIn, TikTok, Superchat, ElevenLabs, Cloudinary – mentioned for technical necessity, not as a partnership. All trademarks are the property of their respective owners.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S8: FINDING YOUR PASSWORD ── -->
+  <section id="s8" class="snap-section alt">
+    <div class="inner">
+      <div class="reveal"><div class="label">Password</div></div>
+      <h2 class="reveal reveal-d1">How to find your password</h2>
+      <div class="content-block reveal reveal-d2">
+        <p>To purchase Tier 2 you need a password. You will find it on <strong style="color:#fff;">page 111</strong> of your book.</p>
+      </div>
+      <div class="info-box reveal reveal-d3">
+        <p style="color:var(--muted); font-size:0.82rem; margin-bottom:14px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">The output on page 111 looks like this:</p>
+        <p style="font-family:monospace; font-size:0.85rem; line-height:1.8; word-break:break-all;">{ public_id: '...', <strong style="color:#fff; background:rgba(255,255,255,0.12); padding:1px 5px; border-radius:3px;">this is the password</strong> '...', caption: '...' }</p>
+        <p style="margin-top:14px; font-size:0.85rem; color:var(--muted);">On the next page enter <strong style="color:#fff;">only</strong> the highlighted part from your book.</p>
+        <p style="margin-top:8px; font-size:0.78rem; color:var(--dimmer);">No curly braces, no full JSON – just that one part.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S9: PASSWORD ENTRY & PAYMENT ── -->
+  <section id="s9" class="snap-section dark">
+    <div class="inner">
+      <div class="reveal"><div class="label">Buy now</div></div>
+      <h2 class="reveal reveal-d1">Ready? Let's go.</h2>
+      <p class="reveal reveal-d2" style="font-size:0.85rem; color:var(--muted); margin-bottom:16px;">Enter the password from <strong style="color:#fff;">page 111</strong> of your book – only the highlighted part, no curly braces.</p>
+      <div class="password-box reveal reveal-d3">
+        <input
+          type="text"
+          id="passwordInput"
+          class="password-input"
+          placeholder="Password from the book (page 111)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <label class="agb-check-label" id="agbLabel">
+          <input type="checkbox" id="agbCheck" />
+          <span>I agree to the <a href="/agb-us.html" target="_blank">Terms and Conditions</a> and the <a href="/datenschutz.html" target="_blank">Privacy Policy</a> of Pathfinders Berlin e.K.<br><br>
+          <strong style="color:rgba(255,255,255,0.7);">Important notice regarding Digital Products &amp; Services:</strong><br>
+          I expressly request and agree that Pathfinders Berlin e.K. begins the delivery of the digital content (GEM &amp; Blueprints) or the performance of coaching services before the end of any statutory cancellation period.<br><br>
+          I acknowledge that by gaining instant access to the digital products, I lose my right to cancel the contract for a refund based on a "change of mind" or for no reason. My statutory rights under the Australian Consumer Law (ACL) regarding faulty products remain unaffected.</span>
+        </label>
+        <button id="stripeBtn" class="stripe-btn" disabled>
+          Continue to Tier 2 – €700
+        </button>
+        <p class="stripe-note">
+          You will be redirected to PayPal. Secure payment.<br>
+          One-off €700 (approx. USD – final conversion by PayPal).<br>
+          After payment you will receive an email with your download link.
+        </p>
+        <p class="agb-link-note"><a href="/agb-us.html" target="_blank">Terms and Conditions</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Tobi Dolgener · tobidolgener.com · Berlin</p>
+    </div>
+  </footer>
+
+  <script>
+    const SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+    const navEl = document.getElementById('navbar');
+    let currentIdx = 0;
+    let isAnimating = false;
+
+    // Build nav dots
+    const dotsWrap = document.getElementById('scrollDots');
+    SECTIONS.forEach((id, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    });
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.scroll-dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= SECTIONS.length || isAnimating) return;
+      currentIdx = idx;
+      isAnimating = true;
+      const el = document.getElementById(SECTIONS[idx]);
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+      el.querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+      navEl.classList.toggle('scrolled', idx > 0);
+      updateDots();
+      setTimeout(() => { isAnimating = false; }, 850);
+    }
+
+    // Mouse wheel / trackpad – lock + delta accumulation, one section per gesture
+    let wheelLocked = false;
+    let wheelAccum  = 0;
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (wheelLocked) { wheelAccum = 0; return; }
+      wheelAccum += e.deltaY;
+      if (Math.abs(wheelAccum) < 50) return;
+      const dir = wheelAccum > 0 ? 1 : -1;
+      wheelAccum  = 0;
+      wheelLocked = true;
+      goTo(currentIdx + dir);
+      setTimeout(() => { wheelLocked = false; }, 1100);
+    }, { passive: false });
+
+    // Touch swipe
+    let touchY      = 0;
+    let touchLocked = false;
+    window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      if (touchLocked) return;
+      const diff = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 40) {
+        touchLocked = true;
+        goTo(diff > 0 ? currentIdx + 1 : currentIdx - 1);
+        setTimeout(() => { touchLocked = false; }, 1100);
+      }
+    }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(currentIdx + 1);
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(currentIdx - 1);
+    });
+
+    // Password gate + two US consent checkboxes
+    const CORRECT   = "overlay_text:";
+    const input     = document.getElementById('passwordInput');
+    const btn       = document.getElementById('stripeBtn');
+    const agbCheck1 = document.getElementById('agbCheck1');
+    const agbCheck2 = document.getElementById('agbCheck2');
+
+    function checkGate() {
+      const match = input.value.trim() === CORRECT;
+      const ok    = match && agbCheck1.checked && agbCheck2.checked;
+      btn.disabled = !ok;
+      input.classList.toggle('valid', match);
+    }
+
+    input.addEventListener('input', checkGate);
+    agbCheck1.addEventListener('change', checkGate);
+    agbCheck2.addEventListener('change', checkGate);
+
+    btn.addEventListener('click', function() {
+      if (!this.disabled) {
+        window.location.href = 'https://www.paypal.com/ncp/payment/X5M3WL5V5CDJY';
+      }
+    });
+
+    // Reveal hero on load
+    document.getElementById('s1').querySelectorAll('.reveal').forEach(r => r.classList.add('visible'));
+  </script>
+
+  <script src="/nav.js"></script>
+  <script src="/contact-widget.js"></script>
+  <script src="/booking.js"></script>
+  <script src="/lang-switcher.js"></script>
+</body>
+</html>
