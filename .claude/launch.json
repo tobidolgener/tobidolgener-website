@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Static Site",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": ["-S", "-c", "import sys; sys.path=['/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9','/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload']; import socketserver,functools; from http.server import SimpleHTTPRequestHandler; h=functools.partial(SimpleHTTPRequestHandler,directory='/tmp/tobidolgener'); s=socketserver.TCPServer(('',3000),h); s.serve_forever()"],
+      "port": 3000
+    }
+  ]
+}

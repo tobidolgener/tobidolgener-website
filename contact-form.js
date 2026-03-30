@@ -64,6 +64,11 @@
     '.cf-success h3{color:#fff;font-size:1.1rem;font-weight:700;margin-bottom:8px;}',
     '.cf-success p{color:rgba(255,255,255,0.5);font-size:0.85rem;line-height:1.6;}',
 
+    /* privacy hint */
+    '.cf-privacy{font-size:0.72rem;color:rgba(255,255,255,0.35);line-height:1.55;margin-bottom:12px;margin-top:4px;}',
+    '.cf-privacy a{color:rgba(255,255,255,0.5);text-decoration:underline;}',
+    '.cf-privacy a:hover{color:rgba(255,255,255,0.75);}',
+
     /* error */
     '.cf-error{font-size:0.75rem;color:#ff5e00;margin-top:4px;}',
 
@@ -110,7 +115,8 @@
           '<label>Deine Nachricht <span class="req">*</span></label>' +
           '<textarea name="nachricht" placeholder="Wie kann ich dir helfen?" required></textarea>' +
         '</div>' +
-        '<button type="submit" class="cf-submit" id="cfSubmit">Nachricht senden</button>' +
+        '<p class="cf-privacy">Mit dem Absenden deiner Nachricht stimmst du der Verarbeitung deiner Daten gemäß unserer <a href="/datenschutz.html" target="_blank">Datenschutzerklärung</a> zu.</p>' +
+        '<button type="submit" class="cf-submit" id="cfSubmit" disabled>Nachricht senden</button>' +
       '</form>' +
       '<div class="cf-success" id="cfSuccess" style="display:none;">' +
         '<div class="cf-success-icon">✅</div>' +
@@ -154,6 +160,26 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeForm();
     });
+
+    /* required-field gate: disable submit until all required fields filled */
+    var cfForm = document.getElementById('cfForm');
+    var cfSubmit = document.getElementById('cfSubmit');
+    var requiredNames = ['vorname', 'nachname', 'email', 'bereich', 'nachricht'];
+    function updateSubmitState() {
+      var ok = requiredNames.every(function (n) {
+        var el = cfForm.querySelector('[name="' + n + '"]');
+        return el && el.value.trim() !== '';
+      });
+      cfSubmit.disabled = !ok;
+    }
+    requiredNames.forEach(function (n) {
+      var el = cfForm.querySelector('[name="' + n + '"]');
+      if (el) {
+        el.addEventListener('input', updateSubmitState);
+        el.addEventListener('change', updateSubmitState);
+      }
+    });
+    updateSubmitState();
 
     /* form submit */
     document.getElementById('cfForm').addEventListener('submit', function (e) {

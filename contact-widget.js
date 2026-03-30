@@ -15,13 +15,13 @@
 
   /* ── BUTTON CONFIG (bottom → top) ── */
   var BTNS = [
-    { label: 'Schreib mir',    href: '#', color: '#ff5e00', icon: 'chat',     target: '_self', onclick: 'event.stopPropagation();if(window.openContactForm)openContactForm();return false;' },
+    { label: 'Schreib mir',    href: 'mailto:hallo@tobidolgener.com', color: '#ff5e00', icon: 'chat',     target: '_self', onclick: 'event.stopPropagation();if(window.openContactForm)openContactForm();return false;' },
     { label: 'WhatsApp',       href: 'https://wa.me/4915225210226',                            color: '#25D366', icon: 'whatsapp',  target: '_blank' },
     { label: 'Instagram',      href: 'https://www.instagram.com/pathfindersberlin/',           color: '#E1306C', icon: 'instagram', target: '_blank' },
     { label: 'TikTok',         href: 'https://www.tiktok.com/@pathfinders_denkfabrik',        color: '#010101', icon: 'tiktok',    target: '_blank' },
     { label: 'Facebook',       href: 'https://www.facebook.com/profile.php?id=61588410167429', color: '#1877F2', icon: 'facebook', target: '_blank' },
     { label: 'LinkedIn',       href: 'https://www.linkedin.com/in/tobias-dolgener/',           color: '#0A66C2', icon: 'linkedin',  target: '_blank' },
-    { label: 'Termin buchen',  href: '#', color: '#FF6600', icon: 'calendar', target: '_self', onclick: 'event.stopPropagation();if(window.openBooking)openBooking();return false;' }
+    { label: 'Termin buchen',  href: 'javascript:void(0)', color: '#FF6600', icon: 'calendar', target: '_self', onclick: 'event.stopPropagation();if(window.openBooking)openBooking();return false;' }
   ];
 
   /* ── SOCIAL FOOTER CONFIG ── */

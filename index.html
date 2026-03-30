@@ -163,10 +163,29 @@
       color: rgba(255,255,255,0.65);
       line-height: 1.6;
       max-width: 520px;
-      margin-bottom: 48px;
+      margin-bottom: 24px;
       opacity: 0;
       animation: fadeUp 0.7s 0.7s forwards;
     }
+
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--orange);
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.85s forwards;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .cta-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
     /* ── THREE AREA LINKS ── */
     .areas {
@@ -285,7 +304,8 @@
 
       .hero-eyebrow { margin-bottom: 16px; }
 
-      .hero-claim { font-size: 0.95rem; margin-bottom: 28px; }
+      .hero-claim { font-size: 0.95rem; margin-bottom: 16px; }
+      .cta-primary { font-size: 0.85rem; padding: 11px 22px; margin-bottom: 20px; }
 
       .hero { padding: 80px 20px 180px; }
 
@@ -329,6 +349,8 @@
       <p class="hero-claim">
         Ich bringe Menschen und Organisationen in Bewegung.
       </p>
+
+      <a href="javascript:void(0)" class="cta-primary" onclick="if(window.openContactForm)openContactForm()">Erstgespräch anfragen</a>
 
       <div class="areas">
         <a href="/learning.html" class="area-card">
