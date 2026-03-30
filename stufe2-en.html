@@ -389,6 +389,10 @@
           autocomplete="off"
           spellcheck="false"
         />
+        <label class="agb-check-label" id="deliveryLabel" style="margin-bottom:8px;">
+          <input type="checkbox" id="deliveryCheck" />
+          <span>I understand that delivery of my download link may take up to <strong style="color:rgba(255,255,255,0.85);">2 hours</strong> — please be patient. Once received, I have <strong style="color:rgba(255,255,255,0.85);">78 hours</strong> to download the ZIP file.</span>
+        </label>
         <label class="agb-check-label" id="agbLabel">
           <input type="checkbox" id="agbCheck" />
           <span>I agree to the <a href="/agb-en.html" target="_blank">Terms and Conditions</a> and the <a href="/datenschutz.html" target="_blank">Privacy Policy</a> of Pathfinders Berlin e.K.<br><br>
@@ -488,17 +492,19 @@
     const CORRECT  = "overlay_text:";
     const input    = document.getElementById('passwordInput');
     const btn      = document.getElementById('stripeBtn');
-    const agbCheck = document.getElementById('agbCheck');
+    const agbCheck      = document.getElementById('agbCheck');
+    const deliveryCheck = document.getElementById('deliveryCheck');
 
     function checkGate() {
       const match = input.value.trim() === CORRECT;
-      const ok    = match && agbCheck.checked;
+      const ok    = match && agbCheck.checked && deliveryCheck.checked;
       btn.disabled = !ok;
       input.classList.toggle('valid', match);
     }
 
     input.addEventListener('input', checkGate);
     agbCheck.addEventListener('change', checkGate);
+    deliveryCheck.addEventListener('change', checkGate);
 
     btn.addEventListener('click', function() {
       if (!this.disabled) {

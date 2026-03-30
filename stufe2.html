@@ -396,6 +396,10 @@
           <input type="checkbox" id="agbCheck" />
           <span>Ich verzichte aufgrund des digitalen Produktes auf mein <a href="/agb.html" target="_blank">Widerrufsrecht</a>.</span>
         </label>
+        <label class="agb-check-label" id="deliveryLabel" style="margin-top:8px;">
+          <input type="checkbox" id="deliveryCheck" />
+          <span>Ich habe verstanden, dass der Versand meines Download-Links bis zu <strong style="color:rgba(255,255,255,0.85);">2 Stunden</strong> dauern kann – bitte hab Geduld. Nach Erhalt habe ich <strong style="color:rgba(255,255,255,0.85);">78 Stunden</strong> Zeit, die ZIP-Datei herunterzuladen.</span>
+        </label>
         <button id="stripeBtn" class="stripe-btn" disabled>
           Weiter zu Stufe 2 – 700 €
         </button>
@@ -485,17 +489,19 @@
     const CORRECT = "overlay_text:";
     const input    = document.getElementById('passwordInput');
     const btn      = document.getElementById('stripeBtn');
-    const agbCheck = document.getElementById('agbCheck');
+    const agbCheck      = document.getElementById('agbCheck');
+    const deliveryCheck = document.getElementById('deliveryCheck');
 
     function checkGate() {
       const match = input.value.trim() === CORRECT;
-      const ok    = match && agbCheck.checked;
+      const ok    = match && agbCheck.checked && deliveryCheck.checked;
       btn.disabled = !ok;
       input.classList.toggle('valid', match);
     }
 
     input.addEventListener('input', checkGate);
     agbCheck.addEventListener('change', checkGate);
+    deliveryCheck.addEventListener('change', checkGate);
 
     btn.addEventListener('click', function() {
       if (!this.disabled) {
