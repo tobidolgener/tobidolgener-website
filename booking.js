@@ -7,9 +7,13 @@
   var path = window.location.pathname;
   var isEN = path.indexOf('-en') !== -1 || path.indexOf('-us') !== -1;
 
-  var CALENDAR_URL = isEN
-    ? 'https://calendar.app.google/DoChK7Ua6TDGcVgP9'   /* AU / US */
-    : 'https://calendar.app.google/LsPEFfuxkZn1TgC26';  /* DE      */
+  var isUS = path.indexOf('-us') !== -1;
+
+  var CALENDAR_URL = isUS
+    ? 'https://calendar.app.google/7chCFkAddcnZT4TBA'   /* US      */
+    : isEN
+      ? 'https://calendar.app.google/DoChK7Ua6TDGcVgP9' /* AU      */
+      : 'https://calendar.app.google/LsPEFfuxkZn1TgC26';/* DE      */
 
   var T = {
     title:  isEN ? 'Book a call'                                                             : 'Termin buchen',
