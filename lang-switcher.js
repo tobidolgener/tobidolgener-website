@@ -58,7 +58,8 @@
     var r      = cw.getBoundingClientRect();
     var h      = Math.round(r.height);
     var top    = Math.round(r.top);
-    var left   = Math.round(r.left) - 15 - wrap.offsetWidth;
+    /* Place 15px to the RIGHT of the contact widget */
+    var left   = Math.round(r.right) + 15;
     wrap.style.cssText = [
       'position:fixed',
       'z-index:9999',
