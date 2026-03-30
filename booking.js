@@ -2,7 +2,21 @@
   'use strict';
 
   var MODAL_ID = 'cwBookingModal';
-  var CALENDAR_URL = 'https://calendar.app.google/LsPEFfuxkZn1TgC26';
+
+  /* ── LANGUAGE + URL ── */
+  var path = window.location.pathname;
+  var isEN = path.indexOf('-en') !== -1 || path.indexOf('-us') !== -1;
+
+  var CALENDAR_URL = isEN
+    ? 'https://calendar.app.google/DoChK7Ua6TDGcVgP9'   /* AU / US */
+    : 'https://calendar.app.google/LsPEFfuxkZn1TgC26';  /* DE      */
+
+  var T = {
+    title:  isEN ? 'Book a call'                                                             : 'Termin buchen',
+    sub:    isEN ? '30 minutes. No sales pitch. We\'ll see together if and how I can help.'  : '30 Minuten. Kein Verkaufsgespräch. Wir schauen gemeinsam ob und wie ich dich weiterbringen kann.',
+    cta:    isEN ? 'Pick a time →'                                                           : 'Jetzt Termin wählen →',
+    note:   isEN ? 'Opens Google Calendar in a new tab'                                      : 'Öffnet Google Calendar in einem neuen Tab'
+  };
 
   function createModal() {
     if (document.getElementById(MODAL_ID)) return;
@@ -34,24 +48,24 @@
     closeBtn.addEventListener('mouseout',  function(){ this.style.color='rgba(255,255,255,0.5)'; });
     closeBtn.addEventListener('click', closeBooking);
 
-    // Calendar icon
+    /* Calendar icon */
     var iconWrap = document.createElement('div');
     iconWrap.style.cssText = 'margin:0 auto 20px;width:64px;height:64px;border-radius:50%;background:#FF6600;display:flex;align-items:center;justify-content:center;';
     iconWrap.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
 
     var title = document.createElement('h2');
-    title.textContent = 'Termin buchen';
+    title.textContent = T.title;
     title.style.cssText = 'color:#fff;margin:0 0 12px;font-size:1.7rem;font-family:"Inter",sans-serif;font-weight:800;letter-spacing:-0.02em;';
 
     var sub = document.createElement('p');
-    sub.textContent = '30 Minuten. Kein Verkaufsgespräch. Wir schauen gemeinsam ob und wie ich dich weiterbringen kann.';
+    sub.textContent = T.sub;
     sub.style.cssText = 'color:rgba(255,255,255,0.55);margin:0 0 32px;font-size:1rem;font-family:"Inter",sans-serif;line-height:1.6;';
 
     var ctaBtn = document.createElement('a');
     ctaBtn.href = CALENDAR_URL;
     ctaBtn.target = '_blank';
     ctaBtn.rel = 'noopener';
-    ctaBtn.textContent = 'Jetzt Termin wählen →';
+    ctaBtn.textContent = T.cta;
     ctaBtn.style.cssText = [
       'display:inline-block;background:#FF6600;color:#fff;',
       'padding:16px 36px;border-radius:10px;font-size:1.05rem;',
@@ -62,7 +76,7 @@
     ctaBtn.addEventListener('mouseout',  function(){ this.style.filter=''; });
 
     var note = document.createElement('p');
-    note.textContent = 'Öffnet Google Calendar in einem neuen Tab';
+    note.textContent = T.note;
     note.style.cssText = 'color:rgba(255,255,255,0.25);margin:16px 0 0;font-size:0.75rem;font-family:"Inter",sans-serif;';
 
     inner.appendChild(closeBtn);
@@ -98,6 +112,6 @@
     if (e.key === 'Escape') closeBooking();
   });
 
-  window.openBooking = openBooking;
+  window.openBooking  = openBooking;
   window.closeBooking = closeBooking;
 })();
