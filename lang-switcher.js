@@ -60,6 +60,16 @@
     var top    = Math.round(r.top);
     /* Place 15px to the RIGHT of the contact widget */
     var left   = Math.round(r.right) + 15;
+    /* On small screens keep gap from hamburger button */
+    var burger = document.querySelector('.nav-burger');
+    if (burger) {
+      var br      = burger.getBoundingClientRect();
+      var wrapW   = wrap.offsetWidth || 48;
+      var maxLeft = Math.round(br.left) - 10 - wrapW;
+      if (left + wrapW > Math.round(br.left) - 8) {
+        left = maxLeft;
+      }
+    }
     wrap.style.cssText = [
       'position:fixed',
       'z-index:9999',
