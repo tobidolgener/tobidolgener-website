@@ -1,6 +1,38 @@
 (function () {
   'use strict';
 
+  /* ── LANGUAGE DETECTION ── */
+  var path = window.location.pathname;
+  var isEN = path.indexOf('-en') !== -1 || path.indexOf('-us') !== -1;
+
+  var T = {
+    title:       isEN ? 'Get in touch'                              : 'Schreib mir',
+    sub:         isEN ? "I'll get back to you personally."          : 'Ich melde mich persönlich bei dir.',
+    vorname:     isEN ? 'First name'                                : 'Vorname',
+    nachname:    isEN ? 'Last name'                                 : 'Nachname',
+    email:       isEN ? 'Email'                                     : 'E-Mail',
+    tel:         isEN ? 'Phone <span style="color:rgba(255,255,255,0.25);font-weight:400;">(optional)</span>'
+                      : 'Telefon <span style="color:rgba(255,255,255,0.25);font-weight:400;">(optional)</span>',
+    telHint:     isEN ? '📱 WhatsApp-capable number only — I will call you via WhatsApp.'
+                      : '📱 Bitte nur WhatsApp-fähige Nummer angeben – ich rufe via WhatsApp an.',
+    telPh:       isEN ? '+1 555 123 456'                            : '+49 123 456789',
+    bereich:     isEN ? "I'm interested in"                         : 'Ich interessiere mich für',
+    selectPh:    isEN ? 'Select area …'                             : 'Bereich auswählen …',
+    nachricht:   isEN ? 'Your message'                              : 'Deine Nachricht',
+    nachrichtPh: isEN ? 'How can I help you?'                       : 'Wie kann ich dir helfen?',
+    privacy:     isEN
+      ? 'By submitting your message you agree to the processing of your data in accordance with our <a href="/datenschutz.html" target="_blank">Privacy Policy</a>.'
+      : 'Mit dem Absenden deiner Nachricht stimmst du der Verarbeitung deiner Daten gemäß unserer <a href="/datenschutz.html" target="_blank">Datenschutzerklärung</a> zu.',
+    submit:      isEN ? 'Send message'                              : 'Nachricht senden',
+    sending:     isEN ? 'Sending …'                                 : 'Wird gesendet …',
+    successTitle:isEN ? 'Message sent!'                             : 'Nachricht gesendet!',
+    successText: isEN ? "Thank you for your message. I'll get back to you as soon as possible."
+                      : 'Danke für deine Nachricht. Ich melde mich so schnell wie möglich bei dir.',
+    close:       isEN ? 'Close'                                     : 'Schließen',
+    ariaLabel:   isEN ? 'Contact form'                              : 'Kontaktformular',
+    fallbackSubject: isEN ? 'Enquiry from ' : 'Anfrage von '
+  };
+
   var css = [
     /* overlay */
     '.cf-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:19998;opacity:0;pointer-events:none;transition:opacity 0.3s;}',
@@ -27,8 +59,8 @@
     '.cf-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-0.02em;}',
     '.cf-sub{font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:28px;}',
 
-    /* form layout */
-    '.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}',
+    /* form layout — Nachname column slightly narrower */
+    '.cf-row{display:grid;grid-template-columns:1.2fr 0.8fr;gap:14px;margin-bottom:14px;}',
     '.cf-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}',
     '.cf-field label{font-size:0.72rem;font-weight:600;letter-spacing:0.06em;',
       'text-transform:uppercase;color:rgba(255,255,255,0.45);}',
@@ -48,6 +80,9 @@
 
     /* required star */
     '.cf-field .req{color:#ff5e00;}',
+
+    /* phone hint */
+    '.cf-tel-hint{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:4px;line-height:1.4;}',
 
     /* submit */
     '.cf-submit{width:100%;padding:13px;border-radius:10px;border:none;',
@@ -78,50 +113,51 @@
 
   var HTML =
     '<div class="cf-overlay" id="cfOverlay"></div>' +
-    '<div class="cf-modal" id="cfModal" role="dialog" aria-modal="true" aria-label="Kontaktformular">' +
-      '<button class="cf-close" id="cfClose" aria-label="Schließen">&#x2715;</button>' +
-      '<div class="cf-title">Schreib mir</div>' +
-      '<div class="cf-sub">Ich melde mich persönlich bei dir.</div>' +
+    '<div class="cf-modal" id="cfModal" role="dialog" aria-modal="true" aria-label="' + T.ariaLabel + '">' +
+      '<button class="cf-close" id="cfClose" aria-label="' + T.close + '">&#x2715;</button>' +
+      '<div class="cf-title">' + T.title + '</div>' +
+      '<div class="cf-sub">' + T.sub + '</div>' +
       '<form id="cfForm" novalidate>' +
         '<input type="hidden" name="form-name" value="kontakt">' +
         '<div class="cf-row">' +
           '<div class="cf-field">' +
-            '<label>Vorname <span class="req">*</span></label>' +
-            '<input type="text" name="vorname" placeholder="Max" required>' +
+            '<label>' + T.vorname + ' <span class="req">*</span></label>' +
+            '<input type="text" name="vorname" placeholder="' + (isEN ? 'Jane' : 'Max') + '" required>' +
           '</div>' +
           '<div class="cf-field">' +
-            '<label>Nachname <span class="req">*</span></label>' +
-            '<input type="text" name="nachname" placeholder="Mustermann" required>' +
+            '<label>' + T.nachname + ' <span class="req">*</span></label>' +
+            '<input type="text" name="nachname" placeholder="' + (isEN ? 'Doe' : 'Müller') + '" required>' +
           '</div>' +
         '</div>' +
         '<div class="cf-field">' +
-          '<label>E-Mail <span class="req">*</span></label>' +
-          '<input type="email" name="email" placeholder="deine@email.de" required>' +
+          '<label>' + T.email + ' <span class="req">*</span></label>' +
+          '<input type="email" name="email" placeholder="' + (isEN ? 'your@email.com' : 'deine@email.de') + '" required>' +
         '</div>' +
         '<div class="cf-field">' +
-          '<label>Telefon <span style="color:rgba(255,255,255,0.25);font-weight:400;">(optional)</span></label>' +
-          '<input type="tel" name="telefon" placeholder="+49 123 456789">' +
+          '<label>' + T.tel + '</label>' +
+          '<input type="tel" name="telefon" placeholder="' + T.telPh + '">' +
+          '<span class="cf-tel-hint">' + T.telHint + '</span>' +
         '</div>' +
         '<div class="cf-field">' +
-          '<label>Ich interessiere mich für <span class="req">*</span></label>' +
+          '<label>' + T.bereich + ' <span class="req">*</span></label>' +
           '<select name="bereich" required>' +
-            '<option value="" disabled selected>Bereich auswählen …</option>' +
+            '<option value="" disabled selected>' + T.selectPh + '</option>' +
             '<option value="Training &amp; Speaking">Training &amp; Speaking</option>' +
             '<option value="Coaching – Pathfinders Berlin">Coaching – Pathfinders Berlin</option>' +
             '<option value="AI Automation">AI Automation</option>' +
           '</select>' +
         '</div>' +
         '<div class="cf-field">' +
-          '<label>Deine Nachricht <span class="req">*</span></label>' +
-          '<textarea name="nachricht" placeholder="Wie kann ich dir helfen?" required></textarea>' +
+          '<label>' + T.nachricht + ' <span class="req">*</span></label>' +
+          '<textarea name="nachricht" placeholder="' + T.nachrichtPh + '" required></textarea>' +
         '</div>' +
-        '<p class="cf-privacy">Mit dem Absenden deiner Nachricht stimmst du der Verarbeitung deiner Daten gemäß unserer <a href="/datenschutz.html" target="_blank">Datenschutzerklärung</a> zu.</p>' +
-        '<button type="submit" class="cf-submit" id="cfSubmit" disabled>Nachricht senden</button>' +
+        '<p class="cf-privacy">' + T.privacy + '</p>' +
+        '<button type="submit" class="cf-submit" id="cfSubmit" disabled>' + T.submit + '</button>' +
       '</form>' +
       '<div class="cf-success" id="cfSuccess" style="display:none;">' +
         '<div class="cf-success-icon">✅</div>' +
-        '<h3>Nachricht gesendet!</h3>' +
-        '<p>Danke für deine Nachricht. Ich melde mich so schnell wie möglich bei dir.</p>' +
+        '<h3>' + T.successTitle + '</h3>' +
+        '<p>' + T.successText + '</p>' +
       '</div>' +
     '</div>';
 
@@ -162,7 +198,7 @@
     });
 
     /* required-field gate: disable submit until all required fields filled */
-    var cfForm = document.getElementById('cfForm');
+    var cfForm   = document.getElementById('cfForm');
     var cfSubmit = document.getElementById('cfSubmit');
     var requiredNames = ['vorname', 'nachname', 'email', 'bereich', 'nachricht'];
     function updateSubmitState() {
@@ -185,22 +221,22 @@
     document.getElementById('cfForm').addEventListener('submit', function (e) {
       e.preventDefault();
       var form = e.target;
-      var btn = document.getElementById('cfSubmit');
+      var btn  = document.getElementById('cfSubmit');
 
       /* collect data */
       var data = { 'form-name': 'kontakt' };
-      var els = form.elements;
+      var els  = form.elements;
       for (var i = 0; i < els.length; i++) {
         if (els[i].name) data[els[i].name] = els[i].value;
       }
 
-      btn.disabled = true;
-      btn.textContent = 'Wird gesendet …';
+      btn.disabled    = true;
+      btn.textContent = T.sending;
 
       fetch('/', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode(data)
+        body:    encode(data)
       })
       .then(function () {
         form.style.display = 'none';
@@ -208,18 +244,18 @@
       })
       .catch(function () {
         /* fallback: mailto */
-        var subject = encodeURIComponent('Anfrage von ' + data['vorname'] + ' ' + data['nachname']);
-        var body = encodeURIComponent(
-          'Vorname: ' + data['vorname'] + '\n' +
-          'Nachname: ' + data['nachname'] + '\n' +
-          'E-Mail: ' + data['email'] + '\n' +
-          'Telefon: ' + (data['telefon'] || '–') + '\n' +
-          'Bereich: ' + data['bereich'] + '\n\n' +
+        var subject = encodeURIComponent(T.fallbackSubject + data['vorname'] + ' ' + data['nachname']);
+        var body    = encodeURIComponent(
+          (isEN ? 'First name' : 'Vorname')  + ': ' + data['vorname']  + '\n' +
+          (isEN ? 'Last name'  : 'Nachname') + ': ' + data['nachname'] + '\n' +
+          'E-Mail: '                                 + data['email']    + '\n' +
+          (isEN ? 'Phone'      : 'Telefon')  + ': ' + (data['telefon'] || '–') + '\n' +
+          (isEN ? 'Area'       : 'Bereich')  + ': ' + data['bereich']  + '\n\n' +
           data['nachricht']
         );
         window.location.href = 'mailto:hallo@tobidolgener.com?subject=' + subject + '&body=' + body;
-        btn.disabled = false;
-        btn.textContent = 'Nachricht senden';
+        btn.disabled    = false;
+        btn.textContent = T.submit;
       });
     });
 
