@@ -55,21 +55,20 @@
   ].join('');
 
   function positionNext(wrap, cw) {
-    var r      = cw.getBoundingClientRect();
-    var h      = Math.round(r.height);
-    var top    = Math.round(r.top);
-    /* Place 15px to the RIGHT of the contact widget */
-    var left   = Math.round(r.right) + 15;
-    /* On small screens keep gap from hamburger button */
-    var burger = document.querySelector('.nav-burger');
-    if (burger) {
-      var br      = burger.getBoundingClientRect();
-      var wrapW   = wrap.offsetWidth || 48;
-      var maxLeft = Math.round(br.left) - 10 - wrapW;
-      if (left + wrapW > Math.round(br.left) - 8) {
-        left = maxLeft;
-      }
+    var r     = cw.getBoundingClientRect();
+    var h     = Math.round(r.height);
+    var top, left;
+
+    if (window.innerWidth < 640) {
+      /* Mobile: place below the contact widget, right-aligned with it */
+      top  = Math.round(r.bottom) + 8;
+      left = Math.round(r.right) - (wrap.offsetWidth || 52);
+    } else {
+      /* Desktop: place 15px to the RIGHT of the contact widget */
+      top  = Math.round(r.top);
+      left = Math.round(r.right) + 15;
     }
+
     wrap.style.cssText = [
       'position:fixed',
       'z-index:9999',
