@@ -26,85 +26,121 @@
     ? path.replace('-en.html', '.html')
     : path.replace('.html', '-en.html'));
 
-  /* ── CSS (desktop only – mobile handled via JS) ── */
   var css = [
-    '.ls-wrap{position:fixed;top:60px;left:48px;z-index:9999;',
-    'display:flex;align-items:center;gap:3px;}',
-    '.ls-btn{background:none;border:none;cursor:pointer;',
-    'font-size:1.05rem;padding:1px 2px;border-radius:4px;',
-    'line-height:1;transition:opacity 0.2s,transform 0.2s;',
-    'opacity:0.35;filter:grayscale(0.4);}',
-    '.ls-btn.ls-active{opacity:1;filter:none;transform:scale(1.15);}',
-    '.ls-btn:not(.ls-active):hover{opacity:0.75;filter:grayscale(0);}',
-    '@media(max-width:640px){.ls-wrap{display:none;}}'
+    /* dropdown wrapper – sits inline in nav */
+    '.ls-dropdown{position:relative;display:inline-flex;align-items:center;margin-right:8px;}',
+
+    /* trigger button – matches hamburger style */
+    '.ls-trigger{',
+      'background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;',
+      'cursor:pointer;height:32px;padding:0 10px;',
+      'display:inline-flex;align-items:center;gap:5px;',
+      'font-size:1rem;line-height:1;',
+      'transition:border-color 0.2s;',
+    '}',
+    '.ls-trigger:hover{border-color:rgba(255,255,255,0.4);}',
+    '.ls-arrow{',
+      'font-size:0.55rem;color:rgba(255,255,255,0.5);',
+      'display:inline-block;transition:transform 0.2s;margin-top:1px;',
+    '}',
+    '.ls-dropdown.open .ls-arrow{transform:rotate(180deg);}',
+
+    /* dropdown panel */
+    '.ls-panel{',
+      'position:absolute;top:calc(100% + 8px);right:0;',
+      'background:rgba(9,22,42,0.98);backdrop-filter:blur(20px);',
+      'border:1px solid rgba(0,119,200,0.2);border-radius:10px;',
+      'padding:6px;min-width:148px;z-index:9999;',
+      'opacity:0;pointer-events:none;transform:translateY(-6px);',
+      'transition:opacity 0.18s,transform 0.18s;',
+    '}',
+    '.ls-dropdown.open .ls-panel{opacity:1;pointer-events:all;transform:translateY(0);}',
+
+    /* option rows */
+    '.ls-option{',
+      'display:flex;align-items:center;gap:9px;width:100%;',
+      'background:none;border:none;cursor:pointer;',
+      'padding:9px 12px;border-radius:7px;',
+      'font-size:0.84rem;color:rgba(255,255,255,0.5);',
+      'font-family:"Inter",sans-serif;letter-spacing:0.02em;',
+      'transition:background 0.15s,color 0.15s;text-align:left;',
+    '}',
+    '.ls-option:hover{background:rgba(255,255,255,0.07);color:#fff;}',
+    '.ls-option.ls-active{color:#fff;font-weight:600;}',
+    '.ls-check{margin-left:auto;font-size:0.72rem;color:#0077c8;}'
   ].join('');
 
-  function makeBtn(flag, title, active, onClick) {
-    var btn = document.createElement('button');
-    btn.className = 'ls-btn' + (active ? ' ls-active' : '');
-    btn.textContent = flag;
-    btn.title = title;
-    btn.addEventListener('click', onClick);
-    return btn;
-  }
-
-  function placeMobileFlags(deBtn, auBtn) {
-    /* wait for contact widget (.cw-main) to exist */
-    var tries = 0;
-    var timer = setInterval(function () {
-      var cw = document.querySelector('.cw-main');
-      if (cw || tries > 30) {
-        clearInterval(timer);
-        if (!cw) return;
-        var r    = cw.getBoundingClientRect();
-        var top  = Math.round((r.top + r.bottom) / 2 - 11);
-        var base = 'position:fixed;z-index:9999;top:' + top + 'px;'
-                 + 'background:none;border:none;cursor:pointer;'
-                 + 'font-size:1.1rem;line-height:1;padding:0;'
-                 + 'opacity:' + (isEnglish ? '0.35' : '1') + ';'
-                 + 'filter:' + (isEnglish ? 'grayscale(0.4)' : 'none') + ';'
-                 + 'transition:opacity 0.2s;';
-        /* 🇩🇪 – 10 px LEFT of widget */
-        deBtn.style.cssText = base
-          + 'right:' + Math.round(window.innerWidth - r.left + 10) + 'px;';
-        /* 🇦🇺 – 10 px RIGHT of widget */
-        auBtn.style.cssText = base
-          + 'left:' + Math.round(r.right + 10) + 'px;'
-          + 'opacity:' + (isEnglish ? '1' : '0.35') + ';'
-          + 'filter:' + (isEnglish ? 'none' : 'grayscale(0.4)') + ';';
-        document.body.appendChild(deBtn);
-        document.body.appendChild(auBtn);
-      }
-      tries++;
-    }, 50);
-  }
-
   function init() {
-    /* inject CSS */
+    var nav = document.querySelector('nav');
+    if (!nav) return;
+
     var style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
-    var deBtn = makeBtn('🇩🇪', 'Deutsch', !isEnglish, function () {
+    /* dropdown wrapper */
+    var dropdown = document.createElement('div');
+    dropdown.className = 'ls-dropdown';
+
+    /* trigger: current flag + arrow */
+    var trigger = document.createElement('button');
+    trigger.className = 'ls-trigger';
+    trigger.setAttribute('aria-label', 'Select language');
+    trigger.innerHTML = (isEnglish ? '🇦🇺' : '🇩🇪') + '<span class="ls-arrow">▾</span>';
+
+    /* panel */
+    var panel = document.createElement('div');
+    panel.className = 'ls-panel';
+    panel.setAttribute('role', 'menu');
+
+    /* DE option */
+    var deOpt = document.createElement('button');
+    deOpt.className = 'ls-option' + (!isEnglish ? ' ls-active' : '');
+    deOpt.setAttribute('role', 'menuitem');
+    deOpt.innerHTML = '🇩🇪 <span>Deutsch</span>' + (!isEnglish ? '<span class="ls-check">✓</span>' : '');
+    deOpt.addEventListener('click', function () {
       if (isEnglish) window.location.href = targetPath;
-    });
-    var auBtn = makeBtn('🇦🇺', 'English', isEnglish, function () {
-      if (!isEnglish) window.location.href = targetPath;
+      else closeDropdown();
     });
 
-    if (window.innerWidth <= 640) {
-      /* mobile: flanking the contact widget */
-      placeMobileFlags(deBtn, auBtn);
+    /* EN option */
+    var enOpt = document.createElement('button');
+    enOpt.className = 'ls-option' + (isEnglish ? ' ls-active' : '');
+    enOpt.setAttribute('role', 'menuitem');
+    enOpt.innerHTML = '🇦🇺 <span>English</span>' + (isEnglish ? '<span class="ls-check">✓</span>' : '');
+    enOpt.addEventListener('click', function () {
+      if (!isEnglish) window.location.href = targetPath;
+      else closeDropdown();
+    });
+
+    panel.appendChild(deOpt);
+    panel.appendChild(enOpt);
+    dropdown.appendChild(trigger);
+    dropdown.appendChild(panel);
+
+    /* insert before hamburger button */
+    var burger = nav.querySelector('.nav-burger');
+    if (burger) {
+      nav.insertBefore(dropdown, burger);
     } else {
-      /* desktop: below logo */
-      var wrap = document.createElement('div');
-      wrap.className = 'ls-wrap';
-      wrap.appendChild(deBtn);
-      wrap.appendChild(auBtn);
-      document.body.appendChild(wrap);
+      nav.appendChild(dropdown);
     }
+
+    function openDropdown()  { dropdown.classList.add('open'); }
+    function closeDropdown() { dropdown.classList.remove('open'); }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.classList.contains('open') ? closeDropdown() : openDropdown();
+    });
+
+    document.addEventListener('click', closeDropdown);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDropdown();
+    });
   }
 
+  /* wait for nav.js to finish building the nav (runs before us) */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
