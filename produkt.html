@@ -623,16 +623,6 @@
     </div>
   </section>
 
-  <!-- POPUP: Buch im Druck -->
-  <div id="druckPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:48px 40px; max-width:420px; width:90%; text-align:center; position:relative;">
-      <p style="font-size:2rem; margin:0 0 16px;">📦</p>
-      <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin:0 0 12px;">Das Buch ist im Druck</h3>
-      <p style="font-size:0.92rem; color:rgba(255,255,255,0.65); line-height:1.7; margin:0 0 28px;">Der Shop wird in Kürze freigeschaltet. Du kannst diese Seite bookmarken und in ein paar Tagen wiederkommen.</p>
-      <button onclick="document.getElementById('druckPopup').style.display='none';" style="background:var(--orange); color:#fff; border:none; border-radius:8px; padding:12px 32px; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Verstanden</button>
-    </div>
-  </div>
-
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
@@ -731,16 +721,10 @@
       }
     });
 
-    // Buy button opens popup
+    // Buy button → epubli shop
     document.getElementById('buyBtn').addEventListener('click', function() {
       if (this.classList.contains('disabled')) return;
-      const popup = document.getElementById('druckPopup');
-      popup.style.display = 'flex';
-    });
-
-    // Close popup on overlay click
-    document.getElementById('druckPopup').addEventListener('click', function(e) {
-      if (e.target === this) this.style.display = 'none';
+      window.open('https://www.epubli.com/shop/reichweitenwerk-9783565367689', '_blank');
     });
 
     document.getElementById('stufe2Btn').addEventListener('click', function() {
