@@ -27,34 +27,35 @@
     : path.replace('.html', '-en.html'));
 
   var css = [
-    /* dropdown wrapper – sits inline in nav */
-    '.ls-dropdown{position:relative;display:inline-flex;align-items:center;margin-right:8px;}',
+    /* wrapper – fixed, positioned dynamically via JS */
+    '.ls-wrap{position:fixed;z-index:9999;display:flex;align-items:center;}',
 
-    /* trigger button – matches hamburger style */
+    /* trigger button – styled to match .cw-main */
     '.ls-trigger{',
-      'background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;',
-      'cursor:pointer;height:32px;padding:0 10px;',
-      'display:inline-flex;align-items:center;gap:5px;',
-      'font-size:1rem;line-height:1;',
-      'transition:border-color 0.2s;',
+      'display:inline-flex;align-items:center;gap:4px;',
+      'background:rgba(255,94,0,0.12);',
+      'border:1px solid rgba(255,94,0,0.35);',
+      'border-radius:5px;cursor:pointer;',
+      'font-size:inherit;line-height:1;',
+      'padding:0 8px;height:100%;',
+      'color:rgba(255,255,255,0.85);',
+      'transition:border-color 0.2s,background 0.2s;',
+      'white-space:nowrap;font-family:"Inter",sans-serif;',
     '}',
-    '.ls-trigger:hover{border-color:rgba(255,255,255,0.4);}',
-    '.ls-arrow{',
-      'font-size:0.55rem;color:rgba(255,255,255,0.5);',
-      'display:inline-block;transition:transform 0.2s;margin-top:1px;',
-    '}',
-    '.ls-dropdown.open .ls-arrow{transform:rotate(180deg);}',
+    '.ls-trigger:hover{border-color:rgba(255,94,0,0.7);background:rgba(255,94,0,0.2);}',
+    '.ls-arrow{font-size:0.55em;color:rgba(255,255,255,0.5);transition:transform 0.2s;display:inline-block;margin-top:1px;}',
+    '.ls-wrap.open .ls-arrow{transform:rotate(180deg);}',
 
     /* dropdown panel */
     '.ls-panel{',
-      'position:absolute;top:calc(100% + 8px);right:0;',
+      'position:absolute;top:calc(100% + 8px);left:0;',
       'background:rgba(9,22,42,0.98);backdrop-filter:blur(20px);',
       'border:1px solid rgba(0,119,200,0.2);border-radius:10px;',
       'padding:6px;min-width:148px;z-index:9999;',
       'opacity:0;pointer-events:none;transform:translateY(-6px);',
       'transition:opacity 0.18s,transform 0.18s;',
     '}',
-    '.ls-dropdown.open .ls-panel{opacity:1;pointer-events:all;transform:translateY(0);}',
+    '.ls-wrap.open .ls-panel{opacity:1;pointer-events:all;transform:translateY(0);}',
 
     /* option rows */
     '.ls-option{',
@@ -70,77 +71,94 @@
     '.ls-check{margin-left:auto;font-size:0.72rem;color:#0077c8;}'
   ].join('');
 
-  function init() {
-    var nav = document.querySelector('nav');
-    if (!nav) return;
+  function positionNext(wrap, cw) {
+    var r      = cw.getBoundingClientRect();
+    var h      = Math.round(r.height);
+    var top    = Math.round(r.top);
+    var left   = Math.round(r.left) - 15 - wrap.offsetWidth;
+    wrap.style.cssText = [
+      'position:fixed',
+      'z-index:9999',
+      'top:' + top + 'px',
+      'left:' + left + 'px',
+      'height:' + h + 'px',
+      'font-size:' + Math.round(r.height * 0.56) + 'px',
+      'display:flex',
+      'align-items:center'
+    ].join(';') + ';';
+  }
 
+  function init() {
     var style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
-    /* dropdown wrapper */
-    var dropdown = document.createElement('div');
-    dropdown.className = 'ls-dropdown';
+    /* build dropdown */
+    var wrap = document.createElement('div');
+    wrap.className = 'ls-wrap';
 
-    /* trigger: current flag + arrow */
     var trigger = document.createElement('button');
     trigger.className = 'ls-trigger';
     trigger.setAttribute('aria-label', 'Select language');
-    trigger.innerHTML = (isEnglish ? '🇦🇺' : '🇩🇪') + '<span class="ls-arrow">▾</span>';
+    trigger.innerHTML = (isEnglish ? '🇦🇺' : '🇩🇪') + '&nbsp;<span class="ls-arrow">▾</span>';
 
-    /* panel */
     var panel = document.createElement('div');
     panel.className = 'ls-panel';
-    panel.setAttribute('role', 'menu');
 
-    /* DE option */
     var deOpt = document.createElement('button');
     deOpt.className = 'ls-option' + (!isEnglish ? ' ls-active' : '');
-    deOpt.setAttribute('role', 'menuitem');
     deOpt.innerHTML = '🇩🇪 <span>Deutsch</span>' + (!isEnglish ? '<span class="ls-check">✓</span>' : '');
-    deOpt.addEventListener('click', function () {
+    deOpt.addEventListener('click', function (e) {
+      e.stopPropagation();
       if (isEnglish) window.location.href = targetPath;
-      else closeDropdown();
+      else closeDD();
     });
 
-    /* EN option */
     var enOpt = document.createElement('button');
     enOpt.className = 'ls-option' + (isEnglish ? ' ls-active' : '');
-    enOpt.setAttribute('role', 'menuitem');
     enOpt.innerHTML = '🇦🇺 <span>English</span>' + (isEnglish ? '<span class="ls-check">✓</span>' : '');
-    enOpt.addEventListener('click', function () {
+    enOpt.addEventListener('click', function (e) {
+      e.stopPropagation();
       if (!isEnglish) window.location.href = targetPath;
-      else closeDropdown();
+      else closeDD();
     });
 
     panel.appendChild(deOpt);
     panel.appendChild(enOpt);
-    dropdown.appendChild(trigger);
-    dropdown.appendChild(panel);
+    wrap.appendChild(trigger);
+    wrap.appendChild(panel);
+    document.body.appendChild(wrap);
 
-    /* insert before hamburger button */
-    var burger = nav.querySelector('.nav-burger');
-    if (burger) {
-      nav.insertBefore(dropdown, burger);
-    } else {
-      nav.appendChild(dropdown);
-    }
-
-    function openDropdown()  { dropdown.classList.add('open'); }
-    function closeDropdown() { dropdown.classList.remove('open'); }
+    function openDD()  { wrap.classList.add('open'); }
+    function closeDD() { wrap.classList.remove('open'); }
 
     trigger.addEventListener('click', function (e) {
       e.stopPropagation();
-      dropdown.classList.contains('open') ? closeDropdown() : openDropdown();
+      wrap.classList.contains('open') ? closeDD() : openDD();
     });
 
-    document.addEventListener('click', closeDropdown);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeDropdown();
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) closeDD();
     });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDD();
+    });
+
+    /* position next to .cw-main – poll until it appears */
+    var tries = 0;
+    var timer = setInterval(function () {
+      var cw = document.querySelector('.cw-main');
+      if (cw || tries > 40) {
+        clearInterval(timer);
+        if (!cw) return;
+        positionNext(wrap, cw);
+        /* reposition on resize */
+        window.addEventListener('resize', function () { positionNext(wrap, cw); });
+      }
+      tries++;
+    }, 50);
   }
 
-  /* wait for nav.js to finish building the nav (runs before us) */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
