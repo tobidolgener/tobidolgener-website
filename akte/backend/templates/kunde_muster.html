@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titel %}Vorlagen{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block nav %}<a href="/app">Zurueck</a>{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Vorlagen zum Ausfuellen</h1>
+  <p>Diese Muster kannst du ausfuellen, unterschreiben und als PDF hochladen.</p>
+  <ul class="liste">
+    <li class="zeile"><a href="/app/vorlage/vollmacht-verkaeufer.pdf"><span class="text"><strong>Vollmacht des Verkaeufers</strong><br><small>Fuer Grundbuch, Flurkarte, Baulasten</small></span><span class="pfeil">&darr;</span></a></li>
+  {% for m in muster %}
+    <li class="zeile"><a href="/app/muster/{{ m.id }}"><span class="text"><strong>{{ m.titel }}</strong><br><small>{{ m.beschreibung }}</small></span><span class="pfeil">&darr;</span></a></li>
+  {% endfor %}
+  </ul>
+</section>
+{% endblock %}

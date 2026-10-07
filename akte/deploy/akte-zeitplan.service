@@ -1,0 +1,11 @@
+[Unit]
+Description=AKTE Zeitplan (Erinnerungen, Nachfragen)
+After=akte.service
+
+[Service]
+Type=oneshot
+User=akte
+Group=akte
+WorkingDirectory=/opt/akte/backend
+EnvironmentFile=/etc/akte.env
+ExecStart=/opt/akte/backend/.venv/bin/python zeitplan.py

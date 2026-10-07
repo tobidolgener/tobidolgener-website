@@ -1,0 +1,8 @@
+backend/daten/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+*.db
+*.eml

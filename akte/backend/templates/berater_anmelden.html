@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titel %}Berater anmelden{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Beraterzugang</h1>
+  {% if fehler %}<p class="hinweis rot">{{ fehler }}</p>{% endif %}
+  <form method="post" action="/berater/anmelden" class="formular">
+    <label>E-Mail<input type="email" name="email" required autocomplete="username"></label>
+    <label>Passwort<input type="password" name="passwort" required autocomplete="current-password"></label>
+    <button class="knopf">Anmelden</button>
+  </form>
+</section>
+{% endblock %}

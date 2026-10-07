@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titel %}Berater{% endblock %}
+{% block rolle %}berater{% endblock %}
+{% block klasse %}breit{% endblock %}
+{% block heim %}/berater{% endblock %}
+{% block nav %}<a href="/berater/kunde/neu">Neuer Kunde</a> <a href="/berater/einstellungen">Einstellungen</a> <a href="/berater/abmelden">Abmelden</a>{% endblock %}
+{% block inhalt %}
+<h1>Vorgaenge</h1>
+{% if not push_aktiv %}<p class="hinweis">Push-Mitteilungen sind in diesem Browser aus. <button class="knopf leicht klein" id="push-knopf" type="button">Mitteilungen erlauben</button> <span id="push-hinweis" class="klein"></span></p>{% endif %}
+{% if not zeilen %}<p>Noch keine Vorgaenge. <a href="/berater/kunde/neu">Lege den ersten Kunden an.</a></p>{% endif %}
+<table class="tabelle">
+<thead><tr><th>Kunde</th><th>Objekt / Bank</th><th>Status</th><th>Zins bis</th><th>Unterlagen</th><th>Offen fuer dich</th><th>Push</th></tr></thead>
+<tbody>
+{% for z in zeilen %}{% set v = z.v %}{% set r = v.zins_tage_rest %}
+<tr class="{% if r is not none and r < 0 %}rot{% elif r is not none and r <= 3 %}orange{% endif %}">
+  <td><a href="/berater/vorgang/{{ v.id }}"><strong>{{ v.kunde.name }}</strong></a>{% if z.vertretung %} <small>(Vertretung)</small>{% endif %}<br><small>{{ v.kunde.email }}</small></td>
+  <td>{{ v.bezeichnung or '-' }}<br><small>{{ v.bank }}</small></td>
+  <td>{{ v.status }}</td>
+  <td>{% if v.zins_gueltig_bis %}{{ v.zins_gueltig_bis.strftime('%d.%m.%Y') }}<br><small>{% if r < 0 %}seit {{ -r }} Tagen abgelaufen{% else %}noch {{ r }} Tage{% endif %}</small>{% else %}<span class="orange">fehlt</span>{% endif %}</td>
+  <td>{% if z.fortschritt[1] %}{{ z.fortschritt[0] }} / {{ z.fortschritt[1] }}{% else %}keine Liste{% endif %}</td>
+  <td>{% if z.freigaben %}<span class="marke-klein">{{ z.freigaben }} Freigabe(n)</span>{% endif %}
+      {% if z.unsicher %}<span class="marke-klein">{{ z.unsicher }} Zuordnung(en)</span>{% endif %}
+      {% if z.beauftragt %}<span class="marke-klein">{{ z.beauftragt }} beauftragt</span>{% endif %}
+      {% if v.export_moeglich and not v.exportiert_am %}<span class="marke-klein gruen">Export bereit</span>{% endif %}</td>
+  <td>{{ 'ja' if z.push else 'nein' }}</td>
+</tr>
+{% endfor %}
+</tbody></table>
+{% endblock %}

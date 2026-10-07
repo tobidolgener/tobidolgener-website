@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block titel %}Deine Unterlagen{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block nav %}<a href="/app/muster">Vorlagen</a> <a href="/app/abmelden">Abmelden</a>{% endblock %}
+{% block inhalt %}
+{% if request.query_params.get('auftrag') %}<p class="hinweis gruen">Danke. Dein Berater hat den Auftrag und die Vollmacht erhalten und kuemmert sich.</p>{% endif %}
+{% if request.query_params.get('abgelehnt') %}
+<p class="hinweis rot"><strong>Wichtig:</strong> Du besorgst alle Unterlagen selbst. Das kann lange dauern. Dein Berater uebernimmt keine Haftung dafuer, dass die Zinskondition bis dahin haelt. Du kannst ihn jederzeit unter <a href="/app/beschaffung">Berater beauftragen</a> doch noch um Hilfe bitten.</p>
+{% endif %}
+
+<div id="installation" class="karte versteckt">
+  <h2>App auf den Homebildschirm</h2>
+  <p id="install-text">Damit du Nachrichten bekommst, leg die App auf deinen Homebildschirm: Teilen-Symbol antippen, dann <strong>Zum Home-Bildschirm</strong>.</p>
+  <button class="knopf leicht" id="install-knopf" type="button">App installieren</button>
+</div>
+{% if not push_aktiv %}
+<div class="karte" id="push-karte">
+  <h2>Benachrichtigungen</h2>
+  <p>Wir sagen dir Bescheid, wenn etwas zu tun ist. Bitte erlaube Mitteilungen.</p>
+  <button class="knopf" id="push-knopf" type="button">Mitteilungen erlauben</button>
+  <p class="klein" id="push-hinweis"></p>
+</div>
+{% endif %}
+
+{% if not vorgang or vorgang.status == 'beratung' %}
+<section class="karte">
+  <h1>Hallo {{ kunde.vorname }}</h1>
+  <p>Dein Berater {{ berater.name }} bereitet dein Angebot vor. Sobald die Bank feststeht, bekommst du hier deine Unterlagenliste.</p>
+</section>
+{% else %}
+<section class="karte">
+  <h1>Hallo {{ kunde.vorname }}</h1>
+  {% if vorgang.bezeichnung %}<p class="klein">{{ vorgang.bezeichnung }}{% if vorgang.bank %} &middot; {{ vorgang.bank }}{% endif %}</p>{% endif %}
+  {% set f = vorgang.fortschritt %}
+  <div class="balken"><div style="width: {{ (100 * f[0] / f[1]) if f[1] else 0 }}%"></div></div>
+  <p><strong>{{ f[0] }} von {{ f[1] }}</strong> Unterlagen akzeptiert.</p>
+  {% if vorgang.zins_gueltig_bis %}
+    {% set r = vorgang.zins_tage_rest %}
+    <p class="countdown {% if r < 0 %}rot{% elif r <= 7 %}orange{% endif %}">
+      {% if r < 0 %}Zinskondition seit {{ -r }} Tagen abgelaufen. Dein Berater prueft ein neues Angebot.
+      {% elif r == 0 %}Zinskondition laeuft <strong>heute</strong> ab.
+      {% else %}Noch <strong>{{ r }} Tage</strong> bis die Zinskondition ablaeuft ({{ vorgang.zins_gueltig_bis.strftime('%d.%m.%Y') }}).{% endif %}
+    </p>
+  {% endif %}
+  {% if vorgang.freigegeben %}
+    <p class="hinweis gruen">Du hast deine Unterlagen freigegeben. Dein Berater reicht sie bei der Bank ein.</p>
+  {% elif vorgang.alles_akzeptiert %}
+    <form method="post" action="/app/freigabe" class="freigabe">
+      <p class="hinweis gruen">Alle Unterlagen sind da. Gib sie frei, dann reicht dein Berater sie bei der Bank ein.</p>
+      <button class="knopf">Unterlagen freigeben</button>
+    </form>
+  {% endif %}
+</section>
+
+{% if nachfragen %}
+<section class="karte aufgabe">
+  <h2>Ist die Antwort vom Makler da?</h2>
+  <p>Du hast {{ nachfragen|length }} Unterlage(n) beim Makler angefragt.</p>
+  <a class="knopf" href="/app/nachfrage">Jetzt beantworten</a>
+</section>
+{% endif %}
+
+{% if offene_rollen %}
+<section class="karte aufgabe">
+  <h2>Ansprechpartner fehlen</h2>
+  <p>Fuer offene Unterlagen fehlt uns: {% for r in offene_rollen %}<strong>{{ ROLLEN[r] }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+  <p><a class="knopf leicht" href="/app/beteiligte">Nachtragen</a> <a class="knopf" href="/app/beschaffung">Berater beauftragen</a></p>
+</section>
+{% endif %}
+
+<section class="karte">
+  <h2>Deine Unterlagen</h2>
+  <ul class="liste">
+  {% for u in unterlagen %}
+    <li class="zeile status-{{ u.status }}">
+      <a href="/app/unterlage/{{ u.id }}">
+        <span class="punkt"></span>
+        <span class="text"><strong>{{ u.bezeichnung }}</strong><br><small>{{ u.status_text }}{% if u.status == 'abgelehnt' and u.fehler %} &middot; {{ u.fehler|length }} Punkt(e) zu beheben{% endif %}</small></span>
+        <span class="pfeil">&rsaquo;</span>
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+</section>
+{% if beauftragbar and not vorgang.freigegeben %}
+<section class="karte">
+  <p>Du kommst an etwas nicht heran? <a href="/app/beschaffung">Dein Berater kann Unterlagen fuer dich besorgen.</a></p>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

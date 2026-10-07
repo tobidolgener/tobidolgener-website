@@ -1,0 +1,77 @@
+:root{--blau:#1f4e5f;--hell:#eef4f6;--rand:#d7e0e4;--text:#1b2a30;--grau:#5f7078;--gruen:#1d7a4a;--rot:#b3261e;--orange:#b8640a;--weiss:#fff}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--hell);color:var(--text);line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+.kopf{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blau);color:#fff;padding-top:calc(12px + env(safe-area-inset-top))}
+.kopf .marke{color:#fff;text-decoration:none;font-weight:700;letter-spacing:.08em}
+.kopf nav a{color:#fff;opacity:.9;margin-left:14px;text-decoration:none;font-size:.95rem}
+.inhalt{max-width:640px;margin:0 auto;padding:16px}
+body.breit .inhalt{max-width:1100px}
+.karte{background:var(--weiss);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+.karte.mitte{text-align:center}
+.karte.aufgabe{border-left:5px solid var(--orange)}
+h1{font-size:1.4rem;margin:0 0 10px}h2{font-size:1.1rem;margin:18px 0 8px}h2 small{font-weight:400;color:var(--grau);font-size:.85rem}
+p{margin:8px 0}.klein,small{font-size:.86rem;color:var(--grau)}
+.versteckt{display:none !important}
+.rot{color:var(--rot)}.gruen{color:var(--gruen)}.orange{color:var(--orange)}
+.hinweis{padding:10px 12px;border-radius:8px;background:var(--hell);border:1px solid var(--rand)}
+.hinweis.gruen{background:#e6f4ec;border-color:#b9dfc8;color:#14522f}
+.hinweis.rot{background:#fbe9e7;border-color:#f0b9b4;color:#7d1a14}
+.knopf{display:inline-block;background:var(--blau);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:1rem;font-weight:600;text-decoration:none;cursor:pointer;margin:4px 0}
+.knopf.leicht{background:#fff;color:var(--blau);border:2px solid var(--blau)}
+.knopf.klein{padding:6px 10px;font-size:.85rem;border-radius:8px}
+.knopf:disabled{opacity:.5}
+form.inline{display:inline}
+.formular label{display:block;margin:10px 0 6px;font-weight:600;font-size:.95rem}
+.formular input[type=text],.formular input[type=email],.formular input[type=tel],.formular input[type=number],.formular input[type=password],.formular input[type=date],.formular select,.formular textarea,.karte input[type=text]{width:100%;padding:11px;border:1px solid var(--rand);border-radius:8px;font-size:1rem;margin-top:4px;background:#fff}
+.formular fieldset{border:1px solid var(--rand);border-radius:8px;padding:10px 12px;margin:12px 0}
+.formular legend{font-weight:700;padding:0 6px}
+.gruppe{border-bottom:1px dashed var(--rand);padding-bottom:8px;margin-bottom:8px}
+.gruppe.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0}
+label.wahl{display:flex;align-items:center;gap:10px;font-weight:500;padding:8px 0}
+label.wahl input{width:auto;margin:0}
+.zeile-form{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.zeile-form input[type=text],.zeile-form select{width:auto;flex:1}
+.datei-knopf{display:inline-block;border:2px dashed var(--blau);border-radius:10px;padding:12px;color:var(--blau);font-weight:600;cursor:pointer;margin:6px 0;text-align:center;width:100%}
+.datei-knopf.klein{padding:6px 10px;font-size:.85rem;width:auto;border-width:1px}
+.datei-knopf input{display:none}
+.liste{list-style:none;padding:0;margin:0}
+.liste .zeile{border-top:1px solid var(--rand);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.liste .zeile:first-child{border-top:0}
+.liste .zeile a{display:flex;align-items:center;gap:12px;padding:12px 4px;color:inherit;text-decoration:none;width:100%}
+.liste .zeile .text{flex:1}
+.liste .zeile .pfeil{color:var(--grau);font-size:1.4rem}
+.punkt{width:12px;height:12px;border-radius:50%;background:#c4ccd0;flex:none}
+.status-akzeptiert .punkt{background:var(--gruen)}
+.status-abgelehnt .punkt{background:var(--rot)}
+.status-angefragt .punkt,.status-selbst .punkt{background:var(--orange)}
+.status-hochgeladen .punkt,.status-wartet_freigabe .punkt,.status-beauftragt .punkt{background:var(--blau)}
+.balken{height:10px;background:var(--hell);border-radius:5px;overflow:hidden;border:1px solid var(--rand)}
+.balken div{height:100%;background:var(--gruen)}
+.countdown{font-size:1.05rem}
+.fehlerliste{background:#fbe9e7;border:1px solid #f0b9b4;border-radius:8px;padding:10px 14px}
+.fehlerliste h2{margin-top:4px;color:#7d1a14}
+.fehlerliste ol{margin:6px 0 6px 18px;padding:0}
+.wahlliste label.wahl{justify-content:space-between}
+.wahlliste label.wahl span:first-of-type{flex:1}
+.preis{font-weight:600}
+.summe{font-size:1.05rem}
+.unterschrift{border:2px solid var(--blau);border-radius:10px;background:#fff;touch-action:none}
+.unterschrift canvas{width:100%;height:auto;display:block}
+.vorschau{display:flex;flex-wrap:wrap;gap:6px}
+.vorschau img{width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid var(--rand)}
+.tabelle{width:100%;border-collapse:collapse;font-size:.92rem}
+.tabelle th,.tabelle td{text-align:left;padding:8px 6px;border-top:1px solid var(--rand);vertical-align:top}
+.tabelle th{border-top:0;color:var(--grau);font-weight:600;font-size:.82rem}
+.tabelle tr.rot td{background:#fbe9e7}.tabelle tr.orange td{background:#fdf1e3}
+.tabelle.klein{font-size:.8rem}
+.tabelle .unsicher{border:2px solid var(--orange)}
+.tabelle select,.tabelle input[type=text]{padding:5px;font-size:.85rem;border:1px solid var(--rand);border-radius:6px;max-width:220px}
+.tabelle .aktionen form{margin:2px 0}
+.tabelle ul.fehler{margin:4px 0 0 16px;padding:0;color:var(--rot)}
+.marke-klein{display:inline-block;background:var(--hell);border:1px solid var(--rand);border-radius:6px;padding:1px 6px;font-size:.75rem;margin:1px 2px}
+.marke-klein.gruen{background:#e6f4ec;border-color:#b9dfc8}
+.spalten{display:grid;gap:16px}
+@media(min-width:800px){.spalten{grid-template-columns:1fr 1fr}}
+.fuss{text-align:center;color:var(--grau);font-size:.8rem;padding:16px}
+hr{border:0;border-top:1px solid var(--rand);margin:12px 0}

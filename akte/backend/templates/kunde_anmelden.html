@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titel %}Anmelden{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Anmelden</h1>
+  {% if fehler %}<p class="hinweis rot">{{ fehler }}</p>{% endif %}
+  {% if gesendet %}
+    <p class="hinweis gruen">Wenn wir dich kennen, ist ein neuer Anmeldelink unterwegs. Bitte schau in dein Postfach.</p>
+  {% else %}
+    <p>Du hast per Mail einen Link bekommen. Ist er abgelaufen, schicken wir dir einen neuen.</p>
+    <form method="post" action="/app/anmelden">
+      <label>Deine E-Mail-Adresse<input type="email" name="email" required autocomplete="email"></label>
+      <button class="knopf">Neuen Link senden</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

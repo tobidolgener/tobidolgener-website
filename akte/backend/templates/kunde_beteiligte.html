@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titel %}Ansprechpartner{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Deine Unterlagenliste ist da</h1>
+  <p>Damit wir dir beim Besorgen helfen koennen, nenne uns die Beteiligten. Alles ist freiwillig, lass leer, was es bei dir nicht gibt.</p>
+  <form method="post" action="/app/beteiligte" class="formular">
+    {% for rolle in rollen if rolle != 'handwerker' %}
+    {% set b = vorhanden.get(rolle) %}
+    <fieldset>
+      <legend>{{ ROLLEN[rolle] }}</legend>
+      <label>Name<input type="text" name="{{ rolle }}_name" value="{{ b.name if b else '' }}" autocomplete="off"></label>
+      <label>E-Mail<input type="email" name="{{ rolle }}_email" value="{{ b.email if b else '' }}" autocomplete="off"></label>
+      {% if rolle == 'verkaeufer' %}<label>Adresse<input type="text" name="{{ rolle }}_adresse" value="{{ b.adresse if b else '' }}"></label>{% endif %}
+    </fieldset>
+    {% endfor %}
+    {% if 'handwerker' in rollen %}
+    <fieldset>
+      <legend>Handwerker (mehrere moeglich)</legend>
+      {% for i in range(1, 4) %}
+      {% set h = handwerker[i-1] if handwerker|length >= i else none %}
+      <div class="gruppe">
+        <label>Name / Firma<input type="text" name="handwerker_{{ i }}_name" value="{{ h.name if h else '' }}"></label>
+        <label>Gewerk<input type="text" name="handwerker_{{ i }}_gewerk" value="{{ h.gewerk if h else '' }}" placeholder="z. B. Sanitaer, Dach, Elektro"></label>
+        <label>Adresse<input type="text" name="handwerker_{{ i }}_adresse" value="{{ h.adresse if h else '' }}"></label>
+      </div>
+      {% endfor %}
+    </fieldset>
+    {% endif %}
+    <button class="knopf">Speichern</button>
+  </form>
+</section>
+{% endblock %}

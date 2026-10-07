@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block titel %}{{ kunde.name }}{% endblock %}
+{% block rolle %}berater{% endblock %}
+{% block klasse %}breit{% endblock %}
+{% block heim %}/berater{% endblock %}
+{% block nav %}<a href="/berater">Alle Vorgaenge</a>{% endblock %}
+{% block inhalt %}
+{% set v = vorgang %}
+{% if request.query_params.get('neu') %}<p class="hinweis gruen">Kunde angelegt, Einstiegsmail ist raus.</p>{% endif %}
+{% if request.query_params.get('mail') %}<p class="hinweis gruen">Einstiegsmail erneut gesendet.</p>{% endif %}
+{% if request.query_params.get('liste') is not none %}<p class="hinweis gruen">Liste gelesen: {{ request.query_params.get('liste') }} neue Position(en). Kunde wurde benachrichtigt.</p>{% endif %}
+
+<div class="spalten">
+<section class="karte">
+  <h1>{{ kunde.name }}</h1>
+  <p>{{ kunde.email }}{% if kunde.telefon %} &middot; {{ kunde.telefon }}{% endif %}<br>
+  <small>Herkunft: {{ kunde.herkunft }} &middot; angelegt {{ kunde.erstellt_am.strftime('%d.%m.%Y') }}
+  {% if kunde.onboarding_am %} &middot; Gehaelter: {{ kunde.netto_1|int }} / {{ kunde.netto_2|int }} / {{ kunde.netto_3|int }} EUR ({{ kunde.beschaeftigung }}){% else %} &middot; <span class="orange">Onboarding offen</span>{% endif %}
+  &middot; App installiert: {{ 'ja' if kunde.app_installiert_am else 'nein' }} &middot; Push: {{ 'ja' if push_kunde else 'nein' }}</small></p>
+  <form method="post" action="/berater/vorgang/{{ v.id }}/einstiegsmail" class="inline"><button class="knopf leicht klein">Einstiegsmail erneut senden</button></form>
+  <form method="post" action="/berater/vorgang/{{ v.id }}/status" class="inline">
+    <select name="status" onchange="this.form.submit()">
+      {% for st in ['beratung','sammeln','freigegeben','exportiert','abgeschlossen','abgebrochen'] %}<option value="{{ st }}" {% if v.status == st %}selected{% endif %}>{{ st }}</option>{% endfor %}
+    </select></form>
+</section>
+
+<section class="karte">
+  <h2>Angebot und Kondition</h2>
+  <form method="post" action="/berater/vorgang/{{ v.id }}/daten" class="formular">
+    <label>Objekt<input type="text" name="bezeichnung" value="{{ v.bezeichnung }}" placeholder="Strasse, Ort"></label>
+    <label>Bank<input type="text" name="bank" value="{{ v.bank }}"></label>
+    <label>Zinskondition gueltig bis<input type="date" name="zins_gueltig_bis" value="{{ v.zins_gueltig_bis.isoformat() if v.zins_gueltig_bis else '' }}"></label>
+    {% set r = v.zins_tage_rest %}{% if r is not none %}<p class="klein {% if r < 0 %}rot{% elif r <= 3 %}orange{% endif %}">{% if r < 0 %}Seit {{ -r }} Tagen abgelaufen. Neues Angebot pruefen und neues Datum setzen.{% else %}Noch {{ r }} Tage.{% endif %}</p>{% endif %}
+    <label>Modernisierung geplant?
+      <select name="modernisierung"><option value="nein" {% if not v.modernisierung %}selected{% endif %}>nein</option><option value="ja" {% if v.modernisierung %}selected{% endif %}>ja</option></select></label>
+    <label>Modernisierungsbetrag (EUR)<input type="text" name="modernisierung_betrag" value="{{ v.modernisierung_betrag|int if v.modernisierung_betrag else '' }}" inputmode="numeric"></label>
+    <button class="knopf">Speichern</button>
+  </form>
+</section>
+</div>
+
+<section class="karte">
+  <h2>Unterlagenliste der Bank</h2>
+  {% if v.liste_datei %}<p class="klein">Hochgeladen {{ v.liste_hochgeladen_am.strftime('%d.%m.%Y %H:%M') }} &middot; <a href="/berater/vorgang/{{ v.id }}/liste.pdf">PDF</a></p>{% endif %}
+  <form method="post" action="/berater/vorgang/{{ v.id }}/liste" enctype="multipart/form-data" class="formular zeile-form">
+    <label class="datei-knopf">Europace-Liste (PDF){% if v.liste_datei %} ergaenzen{% endif %}<input type="file" name="datei" accept="application/pdf" required></label>
+    <button class="knopf">Hochladen, lesen und Kunde benachrichtigen</button>
+  </form>
+  <p class="klein">Die KI liest die Positionen und ordnet sie dem Katalog zu. Unsichere Zuordnungen sind unten markiert. Der erste Upload loest den Push "Deine Unterlagenliste ist da" aus.</p>
+</section>
+
+{% if v.unterlagen %}
+<section class="karte">
+  <h2>Unterlagen {% set f = v.fortschritt %}<small>{{ f[0] }} / {{ f[1] }} akzeptiert</small></h2>
+  {% if offene_rollen %}<p class="klein orange">Dem Kunden fehlen Ansprechpartner: {% for r in offene_rollen %}{{ ROLLEN[r] }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>{% endif %}
+  <table class="tabelle unterlagen">
+  <thead><tr><th>#</th><th>Position</th><th>Typ</th><th>Status</th><th>Datei</th><th>Aktion</th></tr></thead>
+  <tbody>
+  {% for u in v.unterlagen %}
+  <tr id="u{{ u.id }}" class="status-{{ u.status }}">
+    <td>{{ loop.index }}</td>
+    <td><strong>{{ u.bezeichnung }}</strong>{% if u.kritisch %} <span class="marke-klein">Freigabe noetig</span>{% endif %}
+      {% if u.fehler %}<ul class="klein fehler">{% for f in u.fehler %}<li>{{ f }}</li>{% endfor %}</ul>{% endif %}
+      {% if u.ki_ergebnis %}{% set kir = u.ki_ergebnis|fromjson %}{% if kir.zusammenfassung %}<p class="klein">KI: {{ kir.zusammenfassung }}</p>{% endif %}{% endif %}</td>
+    <td>
+      <form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><input type="hidden" name="aktion" value="typ">
+        <select name="katalog_typ" onchange="this.form.submit()" class="{% if not u.zuordnung_sicher %}unsicher{% endif %}">
+          {% for t in typen %}<option value="{{ t.schluessel }}" {% if t.schluessel == u.katalog_typ %}selected{% endif %}>{{ t.name }}</option>{% endfor %}
+        </select></form>
+      {% if not u.zuordnung_sicher %}<form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><input type="hidden" name="aktion" value="bestaetigen"><button class="knopf leicht klein">Zuordnung ok</button></form>{% endif %}
+      {% if katalog.typ(u.katalog_typ).beauftragbar %}
+      <form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><input type="hidden" name="aktion" value="preis">
+        <input type="text" name="preis" value="{{ '%.2f'|format(u.preis_beschaffung) if u.preis_beschaffung is not none else '' }}" placeholder="Preis {{ '%.2f'|format(berater.preis_beschaffung) }}" size="6" inputmode="decimal"> <button class="knopf leicht klein">EUR</button></form>
+      {% endif %}
+    </td>
+    <td>{{ u.status_text }}{% if u.hochgeladen_am %}<br><small>{{ u.hochgeladen_am.strftime('%d.%m. %H:%M') }} von {{ u.hochgeladen_von }}</small>{% endif %}
+      {% if u.status == 'angefragt' %}<br><small>Makler-Mail {{ u.makler_mail_am.strftime('%d.%m.') if u.makler_mail_am else '' }}</small>{% endif %}</td>
+    <td>{% if u.datei %}<a href="/berater/vorgang/{{ v.id }}/datei/{{ u.id }}">{{ u.dateiname or 'Datei' }}</a>{% endif %}</td>
+    <td class="aktionen">
+      {% if u.status in ('wartet_freigabe', 'hochgeladen', 'akzeptiert', 'abgelehnt') and u.datei %}
+      <form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline">
+        <input type="text" name="kommentar" placeholder="Kommentar fuer den Kunden" size="18">
+        {% if u.status != 'akzeptiert' %}<button class="knopf klein" name="aktion" value="freigeben">Freigeben</button>{% endif %}
+        {% if u.status != 'abgelehnt' %}<button class="knopf leicht klein" name="aktion" value="ablehnen">Ablehnen</button>{% endif %}
+      </form>
+      {% endif %}
+      {% if u.status == 'beauftragt' %}<form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><button class="knopf klein" name="aktion" value="erledigt">Besorgt (ohne Upload)</button></form>{% endif %}
+      {% if v.vollmacht_vorhanden and u.status != 'akzeptiert' %}
+      <form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}/upload" enctype="multipart/form-data" class="inline">
+        <label class="datei-knopf klein">PDF fuer Kunden hochladen<input type="file" name="datei" accept="application/pdf" onchange="this.form.submit()"></label></form>
+      {% endif %}
+      {% if u.status != 'nicht_erforderlich' %}<form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><button class="knopf leicht klein" name="aktion" value="nicht_erforderlich">nicht noetig</button></form>
+      {% else %}<form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/{{ u.id }}" class="inline"><button class="knopf leicht klein" name="aktion" value="zuruecksetzen">wieder noetig</button></form>{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  <form method="post" action="/berater/vorgang/{{ v.id }}/unterlage/neu" class="formular zeile-form">
+    <input type="text" name="bezeichnung" placeholder="Zusaetzliche Unterlage (z. B. Bankforderung)" required>
+    <select name="katalog_typ">{% for t in typen %}<option value="{{ t.schluessel }}">{{ t.name }}</option>{% endfor %}</select>
+    <button class="knopf leicht">Position ergaenzen</button>
+  </form>
+  {% if not v.vollmacht_vorhanden %}<p class="klein">Eigener Upload fuer den Kunden ist gesperrt, bis eine Vollmacht vorliegt (in der App unterschrieben oder unten schriftlich hinterlegt).</p>{% endif %}
+</section>
+
+<div class="spalten">
+<section class="karte">
+  <h2>Vollmacht und Freigabe</h2>
+  <p>Vollmacht des Kunden: {% if v.vollmacht_vorhanden %}<strong class="gruen">liegt vor</strong> seit {{ v.vollmacht_berater_am.strftime('%d.%m.%Y') }}{% else %}<strong class="orange">fehlt</strong>{% endif %}</p>
+  {% for vm in vollmachten %}<p class="klein"><a href="/berater/vorgang/{{ v.id }}/vollmacht/{{ vm.id }}">{{ vm.art }} vom {{ vm.unterschrieben_am.strftime('%d.%m.%Y %H:%M') }}{% if vm.betrag %} ({{ '%.2f'|format(vm.betrag) }} EUR){% endif %}</a></p>{% endfor %}
+  <form method="post" action="/berater/vorgang/{{ v.id }}/vollmacht" enctype="multipart/form-data" class="formular zeile-form">
+    <label class="datei-knopf klein">Schriftliche Vollmacht (PDF) hinterlegen<input type="file" name="datei" accept="application/pdf" onchange="this.form.submit()"></label>
+  </form>
+  <hr>
+  <p>Freigabe durch den Kunden: {% if v.freigabe_kunde_am %}<strong class="gruen">in der App am {{ v.freigabe_kunde_am.strftime('%d.%m.%Y %H:%M') }}</strong>{% else %}noch nicht{% endif %}</p>
+  <form method="post" action="/berater/vorgang/{{ v.id }}/freigabe-schriftlich" class="formular">
+    <label class="wahl"><input type="checkbox" name="bestaetigt" value="ja" {% if v.freigabe_schriftlich %}checked{% endif %} onchange="this.form.submit()"> Schriftliche Bestaetigung des Kunden liegt mir vor</label>
+  </form>
+  {% if v.export_moeglich %}
+    <p><a class="knopf" href="/berater/vorgang/{{ v.id }}/export.zip">Unterlagen als ZIP fuer Europace herunterladen</a></p>
+    {% if v.exportiert_am %}<p class="klein">Zuletzt exportiert {{ v.exportiert_am.strftime('%d.%m.%Y %H:%M') }}.</p>{% endif %}
+  {% else %}
+    <p class="klein">Export wird frei, wenn alle Unterlagen akzeptiert sind und die Freigabe des Kunden vorliegt.</p>
+  {% endif %}
+</section>
+
+<section class="karte">
+  <h2>Beteiligte</h2>
+  {% if v.beteiligte %}
+  <ul class="liste">{% for b in v.beteiligte %}<li class="zeile"><span class="text"><strong>{{ ROLLEN[b.rolle] }}{% if b.gewerk %} ({{ b.gewerk }}){% endif %}</strong><br><small>{{ b.name }} {{ b.email }} {{ b.adresse }}</small></span></li>{% endfor %}</ul>
+  {% else %}<p class="klein">Noch nichts erfasst{% if v.beteiligte_erfasst_am %} (Kunde hat alles leer gelassen){% endif %}.</p>{% endif %}
+  {% if v.hilfe_abgelehnt_am %}<p class="klein orange">Kunde hat Hilfe abgelehnt am {{ v.hilfe_abgelehnt_am.strftime('%d.%m.%Y') }}. Woechentliche Erinnerung laeuft.</p>{% endif %}
+</section>
+</div>
+{% endif %}
+
+<section class="karte">
+  <h2>Ereignisprotokoll</h2>
+  <table class="tabelle klein"><tbody>
+  {% for e in ereignisse %}<tr><td>{{ e.zeit.strftime('%d.%m.%Y %H:%M') }}</td><td>{{ e.ausloeser }}</td><td>{{ e.art }}</td><td>{{ e.text }}</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

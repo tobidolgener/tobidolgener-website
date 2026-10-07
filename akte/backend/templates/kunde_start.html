@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titel %}Willkommen{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Hallo {{ kunde.vorname }},</h1>
+  <p>dein Berater <strong>{{ berater.name }}</strong> freut sich auf den Termin mit dir.</p>
+  <p>Zur Vorbereitung braucht er deine letzten drei Nettogehaelter. Wir speichern nur diese drei Zahlen, keine Nachweise.</p>
+  <form method="post" action="/app/start" class="formular">
+    <fieldset>
+      <legend>Wie bist du beschaeftigt?</legend>
+      <label class="wahl"><input type="radio" name="beschaeftigung" value="angestellt" checked> Angestellt</label>
+      <label class="wahl"><input type="radio" name="beschaeftigung" value="selbstaendig"> Selbstaendig</label>
+    </fieldset>
+    <p class="klein" id="hinweis-angestellt">Trage die drei letzten Nettogehaelter ein, das juengste zuerst.</p>
+    <p class="klein versteckt" id="hinweis-selbst">Trage dreimal deinen durchschnittlichen monatlichen Gewinn der letzten drei Monate ein.</p>
+    <label>Letzter Monat (EUR netto)<input type="number" name="netto_1" step="1" min="0" required inputmode="numeric"></label>
+    <label>Vorletzter Monat (EUR netto)<input type="number" name="netto_2" step="1" min="0" required inputmode="numeric"></label>
+    <label>Davor (EUR netto)<input type="number" name="netto_3" step="1" min="0" required inputmode="numeric"></label>
+    <button class="knopf">Absenden</button>
+  </form>
+</section>
+<script>
+document.querySelectorAll('input[name=beschaeftigung]').forEach(r => r.addEventListener('change', () => {
+  const s = document.querySelector('input[name=beschaeftigung]:checked').value === 'selbstaendig';
+  document.getElementById('hinweis-angestellt').classList.toggle('versteckt', s);
+  document.getElementById('hinweis-selbst').classList.toggle('versteckt', !s);
+}));
+</script>
+{% endblock %}

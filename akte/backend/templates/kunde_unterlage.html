@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block titel %}{{ u.bezeichnung }}{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block nav %}<a href="/app">Zurueck</a>{% endblock %}
+{% block inhalt %}
+<section class="karte status-{{ u.status }}">
+  <p class="klein">Status: <strong>{{ u.status_text }}</strong></p>
+  <h1>{{ u.bezeichnung }}</h1>
+  {% if request.query_params.get('geprueft') %}
+    {% if u.status == 'akzeptiert' %}<p class="hinweis gruen">Geprueft und akzeptiert. Danke!</p>
+    {% elif u.status == 'wartet_freigabe' %}<p class="hinweis gruen">Hochgeladen. Dein Berater schaut noch einmal drueber und gibt frei.</p>
+    {% else %}<p class="hinweis rot">So wuerde die Bank die Unterlage nicht akzeptieren. Unten steht, was zu tun ist.</p>{% endif %}
+  {% endif %}
+  {% if request.query_params.get('fehler') == 'scan' %}<p class="hinweis rot">Die Fotos reichen nicht aus. Bitte die genannten Seiten neu fotografieren.</p>{% endif %}
+  {% if request.query_params.get('fehler') == 'format' %}<p class="hinweis rot">Bitte entweder ein PDF oder nur Fotos hochladen.</p>{% endif %}
+
+  {% if u.fehler and u.status in ('abgelehnt', 'fehlt', 'selbst', 'angefragt') %}
+  <div class="fehlerliste">
+    <h2>Das muss noch behoben werden</h2>
+    <ol>{% for f in u.fehler %}<li>{{ f }}</li>{% endfor %}</ol>
+    {% if u.versuche >= 2 %}<p class="klein">Tipp: Lade das Original-PDF hoch (z. B. aus dem Online-Portal) oder nutze den Dokumentenscanner deines Handys (iPhone: Dateien-App, Android: Google Drive).</p>{% endif %}
+  </div>
+  {% endif %}
+  {% if u.berater_kommentar and u.status == 'akzeptiert' %}<p class="klein">Hinweis deines Beraters: {{ u.berater_kommentar }}</p>{% endif %}
+
+  {% if u.status in ('fehlt', 'selbst', 'angefragt', 'abgelehnt') %}
+  <h2>So bekommst du die Unterlage</h2>
+  <p>{{ typ.beschaffung }}</p>
+  {% if typ.link %}<p><a class="knopf leicht" href="{{ typ.link }}" target="_blank" rel="noopener">Zum Dienstleister</a></p>{% endif %}
+  {% if typ.vollmacht == 'verkaeufer' %}
+    <p><a class="knopf leicht" href="/app/vorlage/vollmacht-verkaeufer.pdf">Vollmacht fuer den Verkaeufer herunterladen</a></p>
+    <p class="klein">Vom Verkaeufer unterschreiben lassen und als Unterlage "Vollmacht des Verkaeufers" hochladen. Dein Berater holt dann den Auszug.</p>
+  {% endif %}
+  {% if muster %}<p>Vorlagen: {% for m in muster %}<a href="/app/muster/{{ m.id }}">{{ m.titel }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+
+  {% if mailto and u.status != 'angefragt' %}
+    <h2>Beim Makler anfordern</h2>
+    <p>Wir haben eine Mail an {{ makler.name or makler.email }} vorbereitet. Sie oeffnet sich in deinem Mailprogramm.</p>
+    <p><a class="knopf" href="{{ mailto }}">Mail an Makler oeffnen</a></p>
+    <form method="post" action="/app/unterlage/{{ u.id }}/makler-gesendet">
+      <button class="knopf leicht">Ich habe die Mail gesendet</button>
+    </form>
+    <p class="klein">Nach {{ E.NACHFRAGE_MAKLER_TAGE }} Tagen fragen wir dich, ob die Antwort da ist.</p>
+  {% elif not makler and typ.quelle in ('makler', 'verkaeufer_vollmacht') %}
+    <p class="klein">Kein Makler eingetragen. <a href="/app/beteiligte">Hier nachtragen</a>, dann bereiten wir die Mail vor.</p>
+  {% endif %}
+  {% if u.status == 'angefragt' %}<p class="klein">Beim Makler angefragt am {{ (u.mahnung_am or u.makler_mail_am).strftime('%d.%m.%Y') }}.</p>{% endif %}
+
+  {% if typ.beauftragbar and not vorgang.freigegeben %}
+    <p><a class="knopf leicht" href="/app/beschaffung">Berater beauftragen</a>
+    {% if u.status != 'selbst' %}<form method="post" action="/app/unterlage/{{ u.id }}/selbst" class="inline"><button class="knopf leicht">Ich besorge sie selbst</button></form>{% endif %}</p>
+  {% endif %}
+  {% endif %}
+
+  {% if u.status in ('fehlt', 'selbst', 'angefragt', 'abgelehnt') %}
+  <h2>Hochladen</h2>
+  <form method="post" action="/app/unterlage/{{ u.id }}/upload" enctype="multipart/form-data" class="formular upload" id="upload">
+    <label class="datei-knopf">PDF auswaehlen<input type="file" name="dateien" accept="application/pdf" id="pdf-datei"></label>
+    <label class="datei-knopf">Fotografieren (mehrere Seiten moeglich)<input type="file" name="dateien" accept="image/*" capture="environment" multiple id="foto-datei"></label>
+    <p class="klein">Beim Fotografieren: Blatt flach hinlegen, von oben, Tageslicht, kein Blitz. Wir machen daraus einen sauberen Scan und pruefen ihn sofort.</p>
+    <div id="vorschau" class="vorschau"></div>
+    <button class="knopf" id="upload-knopf">Hochladen und pruefen lassen</button>
+    <p class="klein versteckt" id="upload-lauf">Wird geprueft, einen Moment ...</p>
+  </form>
+  {% elif u.status == 'beauftragt' %}
+  <p class="hinweis">Dein Berater besorgt diese Unterlage fuer dich.</p>
+  {% elif u.status == 'hochgeladen' or u.status == 'wartet_freigabe' %}
+  <p class="hinweis">Hochgeladen am {{ u.hochgeladen_am.strftime('%d.%m.%Y %H:%M') }}. Wartet auf die Freigabe deines Beraters.</p>
+  {% elif u.status == 'akzeptiert' %}
+  <p class="hinweis gruen">Akzeptiert{% if u.hochgeladen_am %} ({{ u.hochgeladen_am.strftime('%d.%m.%Y') }}){% endif %}.</p>
+  {% endif %}
+</section>
+{% endblock %}

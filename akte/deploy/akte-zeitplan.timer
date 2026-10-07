@@ -1,0 +1,9 @@
+[Unit]
+Description=AKTE Zeitplan stuendlich
+
+[Timer]
+OnCalendar=*-*-* *:07:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

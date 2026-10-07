@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titel %}Berater beauftragen{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Soll dein Berater Unterlagen besorgen?</h1>
+  {% if warnung %}
+  <p class="hinweis rot"><strong>Unsere dringende Empfehlung:</strong> Lass deinen Berater alles besorgen, was mit Kosten verbunden ist. Ohne Ansprechpartner dauert die Beschaffung oft Wochen. So lange kann die Zinskondition nicht garantiert werden.</p>
+  {% endif %}
+  {% if request.query_params.get('fehler') %}<p class="hinweis rot">Bitte mindestens eine Unterlage waehlen und unterschreiben.</p>{% endif %}
+  {% if vorgang.vollmacht_vorhanden %}<p class="hinweis gruen">Du hast deinem Berater bereits eine Vollmacht erteilt. Du kannst weitere Unterlagen beauftragen.</p>{% endif %}
+  {% if beauftragbar %}
+  <form method="post" action="/app/beschaffung" class="formular" id="auftrag">
+    <p>Waehle, was dein Berater fuer dich besorgen soll. Du kannst auch nur einzelne Unterlagen waehlen.</p>
+    <ul class="liste wahlliste">
+    {% for u in beauftragbar %}
+      <li><label class="wahl"><input type="checkbox" name="unterlage" value="{{ u.id }}" data-preis="{{ u.preis_beschaffung or 0 }}" checked>
+        <span>{{ u.bezeichnung }}</span><span class="preis">{{ '%.2f'|format(u.preis_beschaffung or 0) }} EUR</span></label></li>
+    {% endfor %}
+    </ul>
+    <p class="summe">Gesamt: <strong id="summe">0,00 EUR</strong> <small>zzgl. Gebuehren der Aemter nach Beleg</small></p>
+    <h2>Unterschrift</h2>
+    <p class="klein">Mit deiner Unterschrift erteilst du den Beschaffungsauftrag und bevollmaechtigst {{ berater.name }}, Unterlagen in deinem Namen anzufordern und hochzuladen.</p>
+    <div class="unterschrift"><canvas id="pad" width="600" height="220"></canvas></div>
+    <p><button type="button" class="knopf leicht klein" id="pad-leeren">Neu zeichnen</button></p>
+    <input type="hidden" name="unterschrift" id="unterschrift">
+    <button class="knopf" id="auftrag-senden">Auftrag erteilen und unterschreiben</button>
+  </form>
+  {% else %}
+  <p>Im Moment gibt es keine Unterlage, die dein Berater fuer dich besorgen kann.</p>
+  {% endif %}
+</section>
+<section class="karte">
+  <h2>Lieber alles selbst machen?</h2>
+  <p>Das geht. Dann besorgst du alle Unterlagen eigenstaendig. Beachte: Es kann lange dauern, und dein Berater kann keine Haftung fuer die Zinskondition uebernehmen.</p>
+  <form method="post" action="/app/beschaffung/ablehnen" onsubmit="return confirm('Wirklich alles selbst besorgen? Wir erinnern dich woechentlich, falls du doch Hilfe willst.')">
+    <button class="knopf leicht">Ich besorge alles selbst</button>
+  </form>
+</section>
+{% endblock %}

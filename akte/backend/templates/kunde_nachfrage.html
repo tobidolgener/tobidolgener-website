@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titel %}Antwort vom Makler{% endblock %}
+{% block rolle %}kunde{% endblock %}
+{% block heim %}/app{% endblock %}
+{% block nav %}<a href="/app">Zurueck</a>{% endblock %}
+{% block inhalt %}
+<section class="karte">
+  <h1>Ist die Antwort vom Makler da?</h1>
+  {% if not angefragt %}<p>Im Moment ist nichts beim Makler offen.</p>{% endif %}
+  <ul class="liste">
+  {% for u in angefragt %}
+    <li class="zeile"><a href="/app/unterlage/{{ u.id }}"><span class="text"><strong>{{ u.bezeichnung }}</strong><br><small>Ja, ist da: antippen und hochladen</small></span><span class="pfeil">&rsaquo;</span></a></li>
+  {% endfor %}
+  </ul>
+</section>
+{% if angefragt %}
+<section class="karte">
+  <h2>Noch nichts bekommen?</h2>
+  <p>Dann hast du zwei Wege:</p>
+  {% if mailto %}
+  <p><a class="knopf" href="{{ mailto }}">Makler anmahnen (Mail oeffnen)</a></p>
+  <form method="post" action="/app/unterlage/{{ angefragt[0].id }}/makler-gesendet"><input type="hidden" name="mahnung" value="1"><button class="knopf leicht">Ich habe die Mahnung gesendet</button></form>
+  {% endif %}
+  <p><a class="knopf leicht" href="/app/beschaffung">Unterlagen besorgen lassen</a> oder selbst besorgen: dazu die Unterlage oben antippen.</p>
+</section>
+{% endif %}
+{% endblock %}

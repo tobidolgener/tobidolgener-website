@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block titel %}AKTE{% endblock %}</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AKTE">
+<meta name="theme-color" content="#1f4e5f">
+<link rel="stylesheet" href="/static/stil.css?v={{ E.VERSION }}">
+</head>
+<body class="{% block klasse %}{% endblock %}">
+<header class="kopf">
+  <a class="marke" href="{% block heim %}/{% endblock %}">AKTE</a>
+  <nav>{% block nav %}{% endblock %}</nav>
+</header>
+<main class="inhalt">
+{% block inhalt %}{% endblock %}
+</main>
+<footer class="fuss">{% block fuss %}{% endblock %}</footer>
+<script>window.AKTE = {pushOeffentlich: "{{ push_oeffentlich }}", rolle: "{% block rolle %}{% endblock %}"};</script>
+<script src="/static/app.js?v={{ E.VERSION }}"></script>
+</body>
+</html>

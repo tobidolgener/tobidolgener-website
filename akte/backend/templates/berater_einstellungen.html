@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titel %}Einstellungen{% endblock %}
+{% block rolle %}berater{% endblock %}
+{% block heim %}/berater{% endblock %}
+{% block nav %}<a href="/berater">Zurueck</a>{% endblock %}
+{% block inhalt %}
+{% if request.query_params.get('ok') %}<p class="hinweis gruen">Gespeichert.</p>{% endif %}
+<section class="karte">
+  <h1>Mein Profil</h1>
+  <form method="post" action="/berater/einstellungen" class="formular">
+    <label>Name<input type="text" name="name" value="{{ berater.name }}" required></label>
+    <label>E-Mail (Login und Benachrichtigungen)<input type="email" name="email" value="{{ berater.email }}" required></label>
+    <label>Telefon<input type="tel" name="telefon" value="{{ berater.telefon }}"></label>
+    <label>Preis fuer Beschaffung je Unterlage (EUR)<input type="text" name="preis_beschaffung" value="{{ '%.2f'|format(berater.preis_beschaffung) }}" inputmode="decimal"></label>
+    <label>Vertretung (sieht meine Vorgaenge)
+      <select name="vertreter_id"><option value="">keine</option>
+      {% for a in andere %}<option value="{{ a.id }}" {% if berater.vertreter_id == a.id %}selected{% endif %}>{{ a.name }}</option>{% endfor %}
+      </select></label>
+    <label>Neues Passwort (leer lassen = unveraendert)<input type="password" name="passwort" autocomplete="new-password"></label>
+    <button class="knopf">Speichern</button>
+  </form>
+  {% if not push_aktiv %}<p class="klein">Push in diesem Browser: <button class="knopf leicht klein" id="push-knopf" type="button">erlauben</button> <span id="push-hinweis"></span></p>{% endif %}
+</section>
+<section class="karte">
+  <h2>Musterbibliothek</h2>
+  <p class="klein">Vorlagen, die Kunden ausfuellen und unterschreiben koennen. Mit Katalogtyp erscheinen sie direkt bei der passenden Unterlage.</p>
+  <ul class="liste">
+  {% for m in muster %}
+    <li class="zeile"><span class="text"><strong>{{ m.titel }}</strong><br><small>{{ m.katalog_typ or 'allgemein' }} &middot; {{ m.beschreibung }}</small></span>
+      <form method="post" action="/berater/muster/{{ m.id }}/loeschen" class="inline" onsubmit="return confirm('Vorlage loeschen?')"><button class="knopf leicht klein">loeschen</button></form></li>
+  {% endfor %}
+  </ul>
+  <form method="post" action="/berater/muster" enctype="multipart/form-data" class="formular">
+    <label>Titel<input type="text" name="titel" required></label>
+    <label>Beschreibung<input type="text" name="beschreibung"></label>
+    <label>Katalogtyp<select name="katalog_typ"><option value="">allgemein</option>{% for t in katalog.TYPEN %}<option value="{{ t.schluessel }}">{{ t.name }}</option>{% endfor %}</select></label>
+    <label class="datei-knopf">PDF waehlen<input type="file" name="datei" accept="application/pdf" required></label>
+    <button class="knopf">Vorlage hochladen</button>
+  </form>
+</section>
+<section class="karte">
+  <h2>Weiteren Berater anlegen</h2>
+  <form method="post" action="/berater/berater/neu" class="formular">
+    <label>Name<input type="text" name="name" required></label>
+    <label>E-Mail<input type="email" name="email" required></label>
+    <label>Startpasswort<input type="text" name="passwort" required></label>
+    <button class="knopf leicht">Anlegen</button>
+  </form>
+</section>
+{% endblock %}
