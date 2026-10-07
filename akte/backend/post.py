@@ -61,7 +61,7 @@ def text_anmeldelink(kunde, link: str) -> tuple[str, str]:
 
 
 def text_berater_hinweis(berater, titel: str, text: str, link: str) -> tuple[str, str]:
-    return (f"AKTE: {titel}", f"Hallo {berater.name.split()[0]},\n\n{text}\n\n{link}\n")
+    return (f"Unterlagen: {titel}", f"Hallo {berater.name.split()[0]},\n\n{text}\n\n{link}\n")
 
 
 def text_kunde_hinweis(kunde, titel: str, text: str, link: str) -> tuple[str, str]:

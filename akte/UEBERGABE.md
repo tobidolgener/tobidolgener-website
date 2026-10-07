@@ -65,6 +65,17 @@ Diese Cloud-Session hatte keinen SSH-Zugang: das Skript ist geschrieben, aber no
     setzt den Haken "schriftliche Bestätigung liegt vor". Dann: ZIP mit nummerierten, sprechenden Dateinamen,
     Inhaltsverzeichnis, Freigabenachweis und Vollmachten für Europace.
 
+## Design (Qualitypool)
+- Farben aus der Palette, die Tobi sich am 28.04.2026 per Mail "farben" von seiner Qualitypool-Adresse geschickt hat:
+  Dunkelgrün #276653 (Kopf, Flächen), Grün #5cbc8c (Fortschritt), Creme #F8F5EE (Hintergrund),
+  Gelb #ffe600 (Handlungsknopf mit schwarzer Schrift, wie im Academy-Banner), Mint #70FFB6, Hellgelb #FFF79D.
+  Alle Werte stehen als Variablen oben in `static/stil.css`.
+- Wortmarke: aus der Mailsignatur (190 px breit, hochskaliert) als `static/qp-wortmarke*.png`. Die Originaldatei liegt
+  unter https://www.qualitypool.de/qp/uploads/2023/01/QP-Logo_RGB_black-4.png und sollte die Platzhalter ersetzen.
+- Schrift: Die Markenschrift ist nicht enthalten (Lizenz). Die App nutzt Sora/Poppins, falls installiert, sonst Systemschrift.
+  Keine Google-Fonts-Einbindung wegen DSGVO; die Schriftdatei bei Bedarf selbst unter `static/` ablegen.
+- Rot für Fehler ist nicht Teil der Palette und bewusst gedämpft gehalten.
+
 ## Status einer Unterlage
 fehlt · angefragt (Makler) · selbst · beauftragt (Berater) · hochgeladen · abgelehnt · wartet_freigabe ·
 akzeptiert · nicht_erforderlich. Übergänge nur in `main.py`.

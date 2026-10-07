@@ -1,38 +1,48 @@
-:root{--blau:#1f4e5f;--hell:#eef4f6;--rand:#d7e0e4;--text:#1b2a30;--grau:#5f7078;--gruen:#1d7a4a;--rot:#b3261e;--orange:#b8640a;--weiss:#fff}
+/* Qualitypool-Farben (Palette vom 27.04.2026): Dunkelgruen 276653, Gruen 5cbc8c, Creme F8F5EE,
+   Gelb ffe600, Mint 70FFB6, Hellgelb FFF79D. Schrift: Markenschrift nicht enthalten, Systemschrift. */
+:root{--gruen:#276653;--gruen2:#5cbc8c;--creme:#F8F5EE;--gelb:#ffe600;--mint:#70FFB6;--hellgelb:#FFF79D;
+  --text:#14201c;--grau:#5b6b66;--rand:#e3ded3;--weiss:#fff;--rot:#b3261e;--rotflaeche:#fbe9e7;--orange:#9a5a00}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--hell);color:var(--text);line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
-.kopf{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blau);color:#fff;padding-top:calc(12px + env(safe-area-inset-top))}
-.kopf .marke{color:#fff;text-decoration:none;font-weight:700;letter-spacing:.08em}
+body{margin:0;font-family:"Sora","Poppins","Aptos",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--creme);color:var(--text);line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+.kopf{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--gruen);color:#fff;padding-top:calc(12px + env(safe-area-inset-top))}
+.kopf .marke{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700}
+.kopf .marke img{height:22px;width:auto;display:block}
+.kopf .marke span{font-weight:400;opacity:.85;font-size:.9rem;border-left:1px solid rgba(255,255,255,.4);padding-left:10px}
 .kopf nav a{color:#fff;opacity:.9;margin-left:14px;text-decoration:none;font-size:.95rem}
 .inhalt{max-width:640px;margin:0 auto;padding:16px}
 body.breit .inhalt{max-width:1100px}
-.karte{background:var(--weiss);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+.karte{background:var(--weiss);border:1px solid var(--rand);border-radius:14px;padding:18px;margin-bottom:16px}
 .karte.mitte{text-align:center}
-.karte.aufgabe{border-left:5px solid var(--orange)}
-h1{font-size:1.4rem;margin:0 0 10px}h2{font-size:1.1rem;margin:18px 0 8px}h2 small{font-weight:400;color:var(--grau);font-size:.85rem}
+.karte.aufgabe{border-left:6px solid var(--gelb)}
+.karte.gruen-flaeche{background:var(--gruen);color:#fff;border-color:var(--gruen)}
+.karte.gruen-flaeche .klein,.karte.gruen-flaeche small{color:rgba(255,255,255,.8)}
+h1{font-size:1.45rem;margin:0 0 10px;font-weight:700;letter-spacing:-.01em}h2{font-size:1.1rem;margin:18px 0 8px}h2 small{font-weight:400;color:var(--grau);font-size:.85rem}
 p{margin:8px 0}.klein,small{font-size:.86rem;color:var(--grau)}
 .versteckt{display:none !important}
 .rot{color:var(--rot)}.gruen{color:var(--gruen)}.orange{color:var(--orange)}
-.hinweis{padding:10px 12px;border-radius:8px;background:var(--hell);border:1px solid var(--rand)}
-.hinweis.gruen{background:#e6f4ec;border-color:#b9dfc8;color:#14522f}
-.hinweis.rot{background:#fbe9e7;border-color:#f0b9b4;color:#7d1a14}
-.knopf{display:inline-block;background:var(--blau);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:1rem;font-weight:600;text-decoration:none;cursor:pointer;margin:4px 0}
-.knopf.leicht{background:#fff;color:var(--blau);border:2px solid var(--blau)}
+.hinweis{padding:10px 12px;border-radius:10px;background:var(--creme);border:1px solid var(--rand)}
+.hinweis.gruen{background:#e4f5ec;border-color:var(--gruen2);color:#1b4a3b}
+.hinweis.rot{background:var(--rotflaeche);border-color:#f0b9b4;color:#7d1a14}
+.knopf{display:inline-block;background:var(--gelb);color:#111;border:0;border-radius:10px;padding:12px 18px;font-size:1rem;font-weight:700;text-decoration:none;cursor:pointer;margin:4px 0;font-family:inherit}
+.knopf.leicht{background:#fff;color:var(--gruen);border:2px solid var(--gruen)}
+.knopf.gruen{background:var(--gruen);color:#fff}
 .knopf.klein{padding:6px 10px;font-size:.85rem;border-radius:8px}
 .knopf:disabled{opacity:.5}
+a{color:var(--gruen)}
 form.inline{display:inline}
 .formular label{display:block;margin:10px 0 6px;font-weight:600;font-size:.95rem}
-.formular input[type=text],.formular input[type=email],.formular input[type=tel],.formular input[type=number],.formular input[type=password],.formular input[type=date],.formular select,.formular textarea,.karte input[type=text]{width:100%;padding:11px;border:1px solid var(--rand);border-radius:8px;font-size:1rem;margin-top:4px;background:#fff}
-.formular fieldset{border:1px solid var(--rand);border-radius:8px;padding:10px 12px;margin:12px 0}
+.formular input[type=text],.formular input[type=email],.formular input[type=tel],.formular input[type=number],.formular input[type=password],.formular input[type=date],.formular select,.formular textarea,.karte input[type=text]{width:100%;padding:11px;border:1px solid var(--rand);border-radius:8px;font-size:1rem;margin-top:4px;background:#fff;font-family:inherit}
+.formular input:focus,.formular select:focus{outline:2px solid var(--gruen2);border-color:var(--gruen2)}
+.formular fieldset{border:1px solid var(--rand);border-radius:10px;padding:10px 12px;margin:12px 0}
 .formular legend{font-weight:700;padding:0 6px}
 .gruppe{border-bottom:1px dashed var(--rand);padding-bottom:8px;margin-bottom:8px}
 .gruppe.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0}
 label.wahl{display:flex;align-items:center;gap:10px;font-weight:500;padding:8px 0}
-label.wahl input{width:auto;margin:0}
+label.wahl input{width:auto;margin:0;accent-color:var(--gruen)}
 .zeile-form{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .zeile-form input[type=text],.zeile-form select{width:auto;flex:1}
-.datei-knopf{display:inline-block;border:2px dashed var(--blau);border-radius:10px;padding:12px;color:var(--blau);font-weight:600;cursor:pointer;margin:6px 0;text-align:center;width:100%}
+.datei-knopf{display:inline-block;border:2px dashed var(--gruen);border-radius:10px;padding:12px;color:var(--gruen);font-weight:600;cursor:pointer;margin:6px 0;text-align:center;width:100%;background:#fff}
 .datei-knopf.klein{padding:6px 10px;font-size:.85rem;width:auto;border-width:1px}
 .datei-knopf input{display:none}
 .liste{list-style:none;padding:0;margin:0}
@@ -41,36 +51,36 @@ label.wahl input{width:auto;margin:0}
 .liste .zeile a{display:flex;align-items:center;gap:12px;padding:12px 4px;color:inherit;text-decoration:none;width:100%}
 .liste .zeile .text{flex:1}
 .liste .zeile .pfeil{color:var(--grau);font-size:1.4rem}
-.punkt{width:12px;height:12px;border-radius:50%;background:#c4ccd0;flex:none}
-.status-akzeptiert .punkt{background:var(--gruen)}
+.punkt{width:12px;height:12px;border-radius:50%;background:#d6d1c6;flex:none}
+.status-akzeptiert .punkt{background:var(--gruen2)}
 .status-abgelehnt .punkt{background:var(--rot)}
-.status-angefragt .punkt,.status-selbst .punkt{background:var(--orange)}
-.status-hochgeladen .punkt,.status-wartet_freigabe .punkt,.status-beauftragt .punkt{background:var(--blau)}
-.balken{height:10px;background:var(--hell);border-radius:5px;overflow:hidden;border:1px solid var(--rand)}
-.balken div{height:100%;background:var(--gruen)}
+.status-angefragt .punkt,.status-selbst .punkt{background:var(--gelb)}
+.status-hochgeladen .punkt,.status-wartet_freigabe .punkt,.status-beauftragt .punkt{background:var(--gruen)}
+.balken{height:10px;background:var(--creme);border-radius:5px;overflow:hidden;border:1px solid var(--rand)}
+.balken div{height:100%;background:var(--gruen2)}
 .countdown{font-size:1.05rem}
-.fehlerliste{background:#fbe9e7;border:1px solid #f0b9b4;border-radius:8px;padding:10px 14px}
+.fehlerliste{background:var(--rotflaeche);border:1px solid #f0b9b4;border-radius:10px;padding:10px 14px}
 .fehlerliste h2{margin-top:4px;color:#7d1a14}
 .fehlerliste ol{margin:6px 0 6px 18px;padding:0}
 .wahlliste label.wahl{justify-content:space-between}
 .wahlliste label.wahl span:first-of-type{flex:1}
 .preis{font-weight:600}
 .summe{font-size:1.05rem}
-.unterschrift{border:2px solid var(--blau);border-radius:10px;background:#fff;touch-action:none}
+.unterschrift{border:2px solid var(--gruen);border-radius:10px;background:#fff;touch-action:none}
 .unterschrift canvas{width:100%;height:auto;display:block}
 .vorschau{display:flex;flex-wrap:wrap;gap:6px}
 .vorschau img{width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid var(--rand)}
 .tabelle{width:100%;border-collapse:collapse;font-size:.92rem}
 .tabelle th,.tabelle td{text-align:left;padding:8px 6px;border-top:1px solid var(--rand);vertical-align:top}
 .tabelle th{border-top:0;color:var(--grau);font-weight:600;font-size:.82rem}
-.tabelle tr.rot td{background:#fbe9e7}.tabelle tr.orange td{background:#fdf1e3}
+.tabelle tr.rot td{background:var(--rotflaeche)}.tabelle tr.orange td{background:var(--hellgelb)}
 .tabelle.klein{font-size:.8rem}
-.tabelle .unsicher{border:2px solid var(--orange)}
-.tabelle select,.tabelle input[type=text]{padding:5px;font-size:.85rem;border:1px solid var(--rand);border-radius:6px;max-width:220px}
+.tabelle .unsicher{border:2px solid var(--gelb)}
+.tabelle select,.tabelle input[type=text]{padding:5px;font-size:.85rem;border:1px solid var(--rand);border-radius:6px;max-width:220px;font-family:inherit}
 .tabelle .aktionen form{margin:2px 0}
 .tabelle ul.fehler{margin:4px 0 0 16px;padding:0;color:var(--rot)}
-.marke-klein{display:inline-block;background:var(--hell);border:1px solid var(--rand);border-radius:6px;padding:1px 6px;font-size:.75rem;margin:1px 2px}
-.marke-klein.gruen{background:#e6f4ec;border-color:#b9dfc8}
+.marke-klein{display:inline-block;background:var(--creme);border:1px solid var(--rand);border-radius:6px;padding:1px 6px;font-size:.75rem;margin:1px 2px}
+.marke-klein.gruen{background:var(--mint);border-color:var(--gruen2);color:#14201c}
 .spalten{display:grid;gap:16px}
 @media(min-width:800px){.spalten{grid-template-columns:1fr 1fr}}
 .fuss{text-align:center;color:var(--grau);font-size:.8rem;padding:16px}

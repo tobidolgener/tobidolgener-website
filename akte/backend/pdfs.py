@@ -33,14 +33,24 @@ def _umbruch(c, text: str, x: float, y: float, breite: float, zeilenhoehe: float
     return y
 
 
+GRUEN = (0x27 / 255, 0x66 / 255, 0x53 / 255)  # Qualitypool-Dunkelgruen
+
+
 def _kopf(c, titel: str) -> float:
     b, h = A4
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(20 * mm, h - 25 * mm, titel)
+    c.setFillColorRGB(*GRUEN)
+    c.rect(0, h - 18 * mm, b, 18 * mm, stroke=0, fill=1)
+    c.setFillColorRGB(1, 1, 1)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(20 * mm, h - 11.5 * mm, "Qualitypool")
     c.setFont("Helvetica", 9)
-    c.drawRightString(b - 20 * mm, h - 25 * mm, f"Stand: {date.today().strftime('%d.%m.%Y')}")
-    c.line(20 * mm, h - 28 * mm, b - 20 * mm, h - 28 * mm)
-    return h - 40 * mm
+    c.drawRightString(b - 20 * mm, h - 11.5 * mm, f"Stand: {date.today().strftime('%d.%m.%Y')}")
+    c.setFillColorRGB(0, 0, 0)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(20 * mm, h - 30 * mm, titel)
+    c.setStrokeColorRGB(*GRUEN)
+    c.line(20 * mm, h - 33 * mm, b - 20 * mm, h - 33 * mm)
+    return h - 44 * mm
 
 
 def vollmacht_verkaeufer(vorgang, kunde, berater, verkaeufer, typen: list[str]) -> bytes:
@@ -69,7 +79,7 @@ def vollmacht_verkaeufer(vorgang, kunde, berater, verkaeufer, typen: list[str]) 
     )
     _umbruch(c, text, x, y, breite)
     c.setFont("Helvetica", 7.5)
-    c.drawString(x, 15 * mm, f"Erstellt mit AKTE fuer Vorgang {vorgang.id}. Bitte unterschrieben als PDF in der App hochladen.")
+    c.drawString(x, 15 * mm, f"Qualitypool Unterlagen-App, Vorgang {vorgang.id}. Bitte unterschrieben als PDF in der App hochladen.")
     c.save()
     return puffer.getvalue()
 
@@ -119,7 +129,7 @@ def auftrag_und_vollmacht(vorgang, kunde, berater, unterlagen: list, betrag: flo
     c.setFont("Helvetica", 9)
     c.drawString(x, y - 4 * mm, f"{kunde.name}, elektronisch unterschrieben am {jetzt().strftime('%d.%m.%Y %H:%M')}")
     c.setFont("Helvetica", 7.5)
-    c.drawString(x, 15 * mm, f"Erstellt mit AKTE fuer Vorgang {vorgang.id}. Unterschrift in der App erfasst.")
+    c.drawString(x, 15 * mm, f"Qualitypool Unterlagen-App, Vorgang {vorgang.id}. Unterschrift in der App erfasst.")
     c.save()
     return puffer.getvalue()
 

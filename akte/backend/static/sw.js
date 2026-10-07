@@ -2,7 +2,7 @@
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener('push', (e) => {
-  let d = { titel: 'AKTE', text: '', url: '/' };
+  let d = { titel: 'Qualitypool', text: '', url: '/' };
   try { d = Object.assign(d, e.data.json()); } catch (_) { d.text = e.data ? e.data.text() : ''; }
   e.waitUntil(self.registration.showNotification(d.titel, { body: d.text, icon: '/static/icon-192.png', badge: '/static/icon-192.png', data: { url: d.url } }));
 });

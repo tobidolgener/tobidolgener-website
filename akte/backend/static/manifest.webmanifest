@@ -1,11 +1,11 @@
 {
-  "name": "AKTE - Unterlagen fuer deine Baufinanzierung",
-  "short_name": "AKTE",
+  "name": "Qualitypool Unterlagen",
+  "short_name": "Unterlagen",
   "start_url": "/app",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#eef4f6",
-  "theme_color": "#1f4e5f",
+  "background_color": "#F8F5EE",
+  "theme_color": "#276653",
   "lang": "de",
   "icons": [
     {"src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png"},
