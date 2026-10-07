@@ -25,8 +25,11 @@ Ohne `ANTHROPIC_API_KEY` ordnet eine Schlagwort-Heuristik die Bankliste zu, und 
 `./ausrollen.sh` von einem Rechner mit dem Key `~/.ssh/reika-portal-hetzner`. Fünf Schritte wie bei MILLER:
 Selbsttest lokal, rsync nach `/opt/akte`, venv + systemd (`akte.service`, `akte-zeitplan.timer` stündlich),
 Selbsttest auf dem Server, Neustart, Abdruck-Beweis per `/version`.
-Vorher einmalig auf dem Server: Postgres-Datenbank `akte` anlegen, `/etc/akte.env` nach `deploy/akte.env.beispiel`
-ausfüllen, Caddy-Block aus `deploy/Caddyfile.akte` einhängen, `python push.py schluessel` für VAPID.
+Beim ersten Lauf fehlt `/etc/akte.env`; dann startet `ausrollen.sh` auf dem Server `deploy/einrichten.sh`: Systempakete,
+Postgres-Datenbank `akte` (oder SQLite als Rückfall), `/etc/akte.env` mit Geheimnissen und VAPID-Schlüsseln,
+Caddy-Block für die Domain. Geheimnisse gibt man dem ersten Lauf als Umgebungsvariablen mit:
+`ANTHROPIC_API_KEY=... AKTE_SMTP_HOST=smtp.gmail.com AKTE_SMTP_USER=... AKTE_SMTP_PASSWORT=... ./ausrollen.sh`.
+Das Skript druckt am Ende Berater-Login, Startpasswort und Buchungsschlüssel.
 Port 8410 ist eine Annahme, auf dem Server prüfen (MILLER hat 8402).
 Diese Cloud-Session hatte keinen SSH-Zugang: das Skript ist geschrieben, aber noch nie gelaufen.
 
@@ -70,8 +73,7 @@ Diese Cloud-Session hatte keinen SSH-Zugang: das Skript ist geschrieben, aber no
   Dunkelgrün #276653 (Kopf, Flächen), Grün #5cbc8c (Fortschritt), Creme #F8F5EE (Hintergrund),
   Gelb #ffe600 (Handlungsknopf mit schwarzer Schrift, wie im Academy-Banner), Mint #70FFB6, Hellgelb #FFF79D.
   Alle Werte stehen als Variablen oben in `static/stil.css`.
-- Wortmarke: aus der Mailsignatur (190 px breit, hochskaliert) als `static/qp-wortmarke*.png`. Die Originaldatei liegt
-  unter https://www.qualitypool.de/qp/uploads/2023/01/QP-Logo_RGB_black-4.png und sollte die Platzhalter ersetzen.
+- Logo: vom CEO geliefert (07.10.2026), freigestellt als `static/qp-logo*.png` (mit Unterzeile) und `static/qp-wortmarke*.png` (Kopf).
 - Schrift: Die Markenschrift ist nicht enthalten (Lizenz). Die App nutzt Sora/Poppins, falls installiert, sonst Systemschrift.
   Keine Google-Fonts-Einbindung wegen DSGVO; die Schriftdatei bei Bedarf selbst unter `static/` ablegen.
 - Rot für Fehler ist nicht Teil der Palette und bewusst gedämpft gehalten.
