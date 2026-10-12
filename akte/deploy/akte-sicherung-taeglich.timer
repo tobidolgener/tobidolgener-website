@@ -1,0 +1,10 @@
+[Unit]
+Description=AKTE Sicherung taeglich 04:25 UTC (clerk 03:40, james 03:55, miller 04:10)
+
+[Timer]
+OnCalendar=*-*-* 04:25:00 UTC
+Unit=akte-sicherung@taeglich.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

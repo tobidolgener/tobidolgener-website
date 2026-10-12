@@ -1,0 +1,10 @@
+[Unit]
+Description=AKTE Rueckholprobe montags 05:20 UTC
+
+[Timer]
+OnCalendar=Mon *-*-* 05:20:00 UTC
+Unit=akte-sicherung@rueckholprobe.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

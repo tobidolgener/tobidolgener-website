@@ -78,6 +78,29 @@ Diese Cloud-Session hatte keinen SSH-Zugang: das Skript ist geschrieben, aber no
   Keine Google-Fonts-Einbindung wegen DSGVO; die Schriftdatei bei Bedarf selbst unter `static/` ablegen.
 - Rot für Fehler ist nicht Teil der Palette und bewusst gedämpft gehalten.
 
+## Sicherung (Bauauftrag Architekt-Chat, 12.10.2026)
+- `backend/sicherung.py`: `taeglich` baut ein Paket aus Datenbank-Dump (pg_dump oder SQLite) **und** Dateibaum
+  (`daten/vorgang`, `daten/muster`), Kopf mit Zeilen je Tabelle, Dateien mit Groesse und SHA-256, Abzug des Dumps.
+  AES-GCM mit eigenem `AKTE_SICHERUNG_KEY` (nicht `AKTE_GEHEIMNIS`). Ein veraendertes Paket wird abgelehnt.
+- `rueckholprobe` holt das juengste Paket, entschluesselt, zaehlt die Zeilen im Dump gegen den Kopf, prueft **jede**
+  Datei nach Groesse und Hash, und ist rot bei: Paket aelter als 30 h, Pflichttabelle fehlt, Zeilen weichen ab,
+  Datei leer oder fehlt, Datenbank kennt Dateien aber das Paket keine. Fehler gehen per Push und Mail an alle Berater.
+- Pflichttabellen: `berater, kunde, vorgang, unterlage, vollmacht, ereignis, ausgang` plus `faceid`, `faceid_kunde`,
+  sobald sie im Datenmodell sind (automatisch, siehe `PFLICHT_WUNSCH`).
+- Storage Box: `AKTE_STORAGEBOX_ZIEL=u653836@u653836.your-storagebox.de`, Port 23, `STORAGEBOX_KEY=/root/.ssh/storagebox`,
+  Ordner `akte-backups`. Eingeschraenkte Shell: nur `ls -lt --time-style=+%s`, zerlegt wird in `StorageBox.liste()`.
+  Ein Pfad mit `/` am Anfang als Ziel nimmt einen lokalen Ordner (Selbsttest).
+- Units: `akte-sicherung@.service` (Vorlage, laeuft als root), `akte-sicherung-taeglich.timer` 04:25 UTC,
+  `akte-sicherung-probe.timer` montags 05:20 UTC. `ausrollen.sh` kopiert und aktiviert sie und traegt die
+  Sicherungsvariablen in `/etc/akte.env` nach, falls sie fehlen.
+- Von Hand (als root, sonst faellt alles still auf eine leere SQLite zurueck):
+  `set -a; . /etc/akte.env; set +a; cd /opt/akte/backend && .venv/bin/python sicherung.py taeglich` und `... rueckholprobe`.
+- Gates: `was-die-box-verlaesst-ist-nie-klartext`, `die-rueckholprobe-merkt-eine-leere-sicherung`,
+  `eine-alte-sicherung-gilt-nicht-als-frische`, dazu Rundlauf und Ohne-Box. `pruefung/gegenprobe.py` baut sechs
+  Stellen zurueck und verlangt Rot; `ausrollen.sh` fuehrt sie vor jedem Ausrollen aus (`AKTE_OHNE_GEGENPROBE=1` ueberspringt).
+- Nach der ersten bestandenen Rueckholprobe dem Architekt-Chat melden, damit die Wache `akte-backups: 30` und die
+  beiden Timer eintraegt. `/opt/wache/` nicht anfassen.
+
 ## Status einer Unterlage
 fehlt · angefragt (Makler) · selbst · beauftragt (Berater) · hochgeladen · abgelehnt · wartet_freigabe ·
 akzeptiert · nicht_erforderlich. Übergänge nur in `main.py`.

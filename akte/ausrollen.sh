@@ -15,6 +15,10 @@ PY="${AKTE_PYTHON:-python3}"
 echo "== 1/5 Selbsttest lokal =="
 if [ -x "$HIER/backend/.venv/bin/python" ]; then PY="$HIER/backend/.venv/bin/python"; fi
 ( cd "$HIER/backend" && "$PY" selftest.py ) || { echo "ABBRUCH: Selbsttest rot"; exit 1; }
+if [ -z "${AKTE_OHNE_GEGENPROBE:-}" ]; then
+  echo "== 1b/5 Gegenprobe (Gates muessen bei Rueckbau rot werden) =="
+  ( cd "$HIER/backend" && "$PY" pruefung/gegenprobe.py ) || { echo "ABBRUCH: ein Gate misst nichts"; exit 1; }
+fi
 ABDRUCK_LOKAL=$( cd "$HIER/backend" && "$PY" -c "import main; print(main.ABDRUCK)" )
 COMMIT=$(git -C "$HIER" rev-parse --short HEAD 2>/dev/null || echo "ohne-git")
 
@@ -29,8 +33,8 @@ rsync -az -e "ssh -i $SSH_KEY" "$HIER/requirements.txt" "$HIER/deploy/" "$SERVER
 echo "== 3/5 venv und Abhaengigkeiten =="
 $SSH "cd $ZIEL/backend && [ -d .venv ] || python3 -m venv .venv; \
       .venv/bin/pip install -q --upgrade pip && .venv/bin/pip install -q -r $ZIEL/requirements.txt; \
-      cp $ZIEL/akte.service $ZIEL/akte-zeitplan.service $ZIEL/akte-zeitplan.timer /etc/systemd/system/; \
-      chown -R akte:akte $ZIEL; systemctl daemon-reload; systemctl enable -q akte akte-zeitplan.timer"
+      cp $ZIEL/akte.service $ZIEL/akte-zeitplan.service $ZIEL/akte-zeitplan.timer $ZIEL/akte-sicherung@.service $ZIEL/akte-sicherung-taeglich.timer $ZIEL/akte-sicherung-probe.timer /etc/systemd/system/; \
+      chown -R akte:akte $ZIEL; systemctl daemon-reload; systemctl enable -q akte akte-zeitplan.timer akte-sicherung-taeglich.timer akte-sicherung-probe.timer"
 
 if ! $SSH "test -f /etc/akte.env"; then
   echo "== 3a/5 Erste Einrichtung auf dem Server (Datenbank, Geheimnisse, Push-Schluessel, Caddy) =="
@@ -45,7 +49,9 @@ echo "== 3b/5 Selbsttest auf dem Server =="
 $SSH "cd $ZIEL/backend && sudo -u akte env AKTE_DATEN=/tmp/akte-selftest .venv/bin/python selftest.py | tail -3" || { echo "ABBRUCH: Selbsttest auf dem Server rot"; exit 1; }
 
 echo "== 4/5 Dienst neu starten =="
-$SSH "systemctl restart akte && systemctl start akte-zeitplan.timer && sleep 2 && systemctl is-active akte && echo 'Zeitplan: '\$(systemctl is-enabled akte-zeitplan.timer)"
+$SSH "systemctl restart akte && systemctl start akte-zeitplan.timer akte-sicherung-taeglich.timer akte-sicherung-probe.timer && sleep 2 && systemctl is-active akte && echo 'Zeitplan: '\$(systemctl is-enabled akte-zeitplan.timer)' | Sicherung: '\$(systemctl is-enabled akte-sicherung-taeglich.timer)' | Rueckholprobe: '\$(systemctl is-enabled akte-sicherung-probe.timer)"
+# Sicherungsvariablen nachtragen, falls /etc/akte.env aus einer Zeit vor der Sicherung stammt
+$SSH "grep -q AKTE_SICHERUNG_KEY /etc/akte.env || { printf '\n# Sicherung (nachgetragen %s)\nAKTE_SICHERUNG_KEY=%s\nAKTE_STORAGEBOX_ZIEL=u653836@u653836.your-storagebox.de\nAKTE_STORAGEBOX_PFAD=akte-backups\nSTORAGEBOX_KEY=/root/.ssh/storagebox\n' \$(date -I) \$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))') >> /etc/akte.env; echo 'Sicherungsvariablen in /etc/akte.env nachgetragen'; }"
 
 echo "== 5/5 Beweis am laufenden Dienst (nicht am Build-Log) =="
 GELIEFERT=$(curl -s --max-time 15 "$URL/version" | "$PY" -c "import sys,json; print(json.load(sys.stdin)['abdruck'])" 2>/dev/null || echo "keine-antwort")

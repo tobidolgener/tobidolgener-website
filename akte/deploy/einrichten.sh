@@ -9,7 +9,7 @@ ENV=/etc/akte.env
 
 echo "-- Systempakete"
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y -qq python3-venv python3-pip rsync ocrmypdf tesseract-ocr-deu >/dev/null 2>&1 || \
+apt-get install -y -qq python3-venv python3-pip rsync postgresql-client ocrmypdf tesseract-ocr-deu >/dev/null 2>&1 || \
   echo "   Hinweis: apt-Pakete konnten nicht alle installiert werden (ocrmypdf ist optional)."
 
 echo "-- Datenbank"
@@ -58,6 +58,12 @@ ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
 AKTE_KI_MODELL=${AKTE_KI_MODELL:-claude-opus-5-5}
 
 AKTE_BUCHUNG_SCHLUESSEL=$BUCHUNG
+
+# Sicherung: eigener Schluessel (nicht AKTE_GEHEIMNIS), Hetzner Storage Box wie bei MILLER/JAMES/CLERK
+AKTE_SICHERUNG_KEY=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
+AKTE_STORAGEBOX_ZIEL=${AKTE_STORAGEBOX_ZIEL:-u653836@u653836.your-storagebox.de}
+AKTE_STORAGEBOX_PFAD=akte-backups
+STORAGEBOX_KEY=${STORAGEBOX_KEY:-/root/.ssh/storagebox}
 
 AKTE_SCAN_MIN_SCHAERFE=60
 AKTE_SCAN_MIN_HELLIGKEIT=70

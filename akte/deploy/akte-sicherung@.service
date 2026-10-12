@@ -1,0 +1,10 @@
+[Unit]
+Description=AKTE Sicherung (%i)
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+# root: liest /etc/akte.env und /root/.ssh/storagebox; schreibt nichts nach /opt/akte ausser Logbuch in der DB
+WorkingDirectory=/opt/akte/backend
+EnvironmentFile=/etc/akte.env
+ExecStart=/opt/akte/backend/.venv/bin/python sicherung.py %i

@@ -4,12 +4,14 @@ Aufruf: python selftest.py            (alle Gates)
         AKTE_NUR=<gate> python selftest.py   (ein Gate)
 Jedes Gate ist eine Funktion mit @gate("satz-mit-bindestrichen"). Rot = Ausroll-Abbruch.
 """
+import hashlib
 import io
 import os
 import sys
 import tempfile
 import traceback
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from pathlib import Path
 
 os.environ.setdefault("AKTE_DATEN", tempfile.mkdtemp(prefix="akte-selftest-"))
 os.environ["DATABASE_URL"] = f"sqlite:///{os.environ['AKTE_DATEN']}/test.db"
@@ -593,6 +595,146 @@ def g_ki_rueckfall():
     assert p["passt"] is None and p["quelle"] == "manuell" and p["dateiname"].endswith("-muster.pdf")
     p = ki.unterlage_pruefen(b"kein pdf", "grundbuchauszug", "Grundbuchauszug", "Muster")
     assert p["passt"] is False
+
+
+# ------------------------------------------------------- Sicherung (Bauauftrag 12.10.2026)
+
+def _sicherung_umgebung():
+    import sicherung
+    os.environ["AKTE_SICHERUNG_KEY"] = "selbsttest-schluessel-nicht-produktiv"
+    ablage = sicherung.OrdnerBox(tempfile.mkdtemp(prefix="akte-box-"))
+    return sicherung, ablage
+
+
+def _vorgang_mit_datei() -> "Lauf":
+    L = Lauf()
+    L.kunde_anlegen(email=f"sicherung-{os.urandom(4).hex()}@example.org")
+    L.kunde_einloggen()
+    L.liste_hochladen()
+    L.kunde.post("/app/beteiligte", data={})
+    u = L.unterlage("personalausweis")
+    L.kunde.post(f"/app/unterlage/{u.id}/upload", files=[("dateien", ("a.pdf", pdf_mit_text(["Personalausweis Anna Muster", "gueltig bis 2031"]), "application/pdf"))])
+    return L
+
+
+@gate("was-die-box-verlaesst-ist-nie-klartext")
+def g_sicherung_klartext():
+    sicherung, ablage = _sicherung_umgebung()
+    _vorgang_mit_datei()
+    name, paket, kopf = sicherung.paket_bauen(db._engine, E.DATEN)
+    assert name.startswith("akte-") and name.endswith(".sich") and sicherung.MUSTER.match(name)
+    # bekannter Klartext darf nirgends im Paket stehen (auch nicht komprimiert erkennbar: tar-Magie, Tabellennamen)
+    for klartext in (b"Personalausweis", b"CREATE TABLE", b"kopf.json", b"datenbank.sql", b"example.org"):
+        assert klartext not in paket, f"Klartext {klartext!r} im Paket"
+    roh = sicherung.entschluesseln(paket, sicherung.schluessel())
+    assert b"datenbank.sql" in roh or roh[:2] == b"\x1f\x8b"
+    k2, tar = sicherung.paket_oeffnen(paket)
+    assert k2["zeilen"] == kopf["zeilen"] and "unterlage" in k2["zeilen"]
+    # ein Bit kippen -> Ablehnung, kein stilles Entpacken
+    kaputt = bytearray(paket)
+    kaputt[len(paket) // 2] ^= 0x01
+    try:
+        sicherung.entschluesseln(bytes(kaputt), sicherung.schluessel())
+        raise AssertionError("veraendertes Paket wurde angenommen")
+    except sicherung.SicherungsFehler as ex:
+        assert "abgelehnt" in str(ex)
+    # falscher Schluessel -> Ablehnung
+    try:
+        sicherung.entschluesseln(paket, hashlib.sha256(b"anderer").digest())
+        raise AssertionError("falscher Schluessel wurde angenommen")
+    except sicherung.SicherungsFehler:
+        pass
+
+
+@gate("sicherung-und-rueckholprobe-laufen-gruen-durch")
+def g_sicherung_rund():
+    sicherung, ablage = _sicherung_umgebung()
+    _vorgang_mit_datei()
+    b = sicherung.taeglich(db._engine, ablage, E.DATEN)
+    assert b.ok, b.text
+    assert len(ablage.liste()) == 1
+    p = sicherung.rueckholprobe(db._engine, ablage)
+    assert p.ok, (p.text, p.maengel)
+    assert "Dateien verifiziert" in p.text and not p.text.startswith("akte-x")
+    with db.sitzung() as s:
+        assert s.scalar(select(Ereignis).where(Ereignis.art == "sicherung", Ereignis.text.like("Rueckholprobe%"))) is not None
+    # Aufbewahrung: ein 40 Tage altes Paket wird beim naechsten Lauf entfernt
+    alt = "akte-" + (date.today() - timedelta(days=40)).strftime("%Y%m%d") + "-010000.sich"
+    (ablage.pfad / alt).write_bytes(b"x")
+    assert sicherung.taeglich(db._engine, ablage, E.DATEN).ok
+    assert alt not in [n for n, _ in ablage.liste()]
+
+
+@gate("die-rueckholprobe-merkt-eine-leere-sicherung")
+def g_sicherung_leer():
+    sicherung, ablage = _sicherung_umgebung()
+    _vorgang_mit_datei()
+    # Paket bauen, in dem die Dateien fehlen (leerer Dateibaum), obwohl die Datenbank welche kennt
+    leer = Path(tempfile.mkdtemp(prefix="akte-leer-"))
+    name, paket, kopf = sicherung.paket_bauen(db._engine, leer)
+    assert kopf["dateien"] == {}
+    (ablage.pfad / name).write_bytes(paket)
+    p = sicherung.rueckholprobe(db._engine, ablage)
+    assert not p.ok and any("keine verifiziert" in m for m in p.maengel), (p.text, p.maengel)
+    # Paket, in dem eine Datei null Bytes hat
+    (ablage.pfad / name).unlink()
+    nullbytes = Path(tempfile.mkdtemp(prefix="akte-null-"))
+    (nullbytes / "vorgang" / "1").mkdir(parents=True)
+    (nullbytes / "vorgang" / "1" / "unterlage_1_1.pdf").write_bytes(b"")
+    name, paket, kopf = sicherung.paket_bauen(db._engine, nullbytes)
+    (ablage.pfad / name).write_bytes(paket)
+    p = sicherung.rueckholprobe(db._engine, ablage)
+    assert not p.ok and any("leer (0 Bytes)" in m for m in p.maengel), p.maengel
+    # Paket, dessen Dump nicht zum Kopf passt (Zeilen weg) -> rot
+    (ablage.pfad / name).unlink()
+    name, paket, kopf = sicherung.paket_bauen(db._engine, E.DATEN)
+    roh = sicherung.entschluesseln(paket, sicherung.schluessel())
+    import tarfile as tf
+    quelle = tf.open(fileobj=io.BytesIO(roh), mode="r:gz")
+    neu = io.BytesIO()
+    with tf.open(fileobj=neu, mode="w:gz") as ziel:
+        for info in quelle.getmembers():
+            daten = quelle.extractfile(info).read()
+            if info.name == "datenbank.sql":
+                daten = b"-- leer\n"
+                info.size = len(daten)
+            ziel.addfile(info, io.BytesIO(daten))
+    (ablage.pfad / name).write_bytes(sicherung.verschluesseln(neu.getvalue(), sicherung.schluessel()))
+    p = sicherung.rueckholprobe(db._engine, ablage)
+    assert not p.ok and any("Abzug" in m for m in p.maengel) and any("Kopf sagt" in m for m in p.maengel), p.maengel
+
+
+@gate("eine-alte-sicherung-gilt-nicht-als-frische")
+def g_sicherung_alt():
+    sicherung, ablage = _sicherung_umgebung()
+    _vorgang_mit_datei()
+    assert sicherung.taeglich(db._engine, ablage, E.DATEN).ok
+    name = ablage.liste()[0][0]
+    zeit = sicherung.zeit_aus_name(name)
+    assert zeit and abs((zeit - db.jetzt()).total_seconds()) < 120
+    # 31 Stunden spaeter: rot mit klarer Ansage, kein Absturz
+    p = sicherung.rueckholprobe(db._engine, ablage, jetzt=zeit + timedelta(hours=31))
+    assert not p.ok and any("alt" in m and "Grenze" in m for m in p.maengel), p.maengel
+    # 20 Stunden spaeter: gruen
+    assert sicherung.rueckholprobe(db._engine, ablage, jetzt=zeit + timedelta(hours=20)).ok
+    # Ein Fremdname auf der Box verwirrt die Probe nicht
+    (ablage.pfad / "notizen.txt").write_bytes(b"x")
+    (ablage.pfad / "akte-kaputt.sich").write_bytes(b"x")
+    assert sicherung.rueckholprobe(db._engine, ablage, jetzt=zeit + timedelta(hours=1)).ok
+    assert sicherung.zeit_aus_name("miller-20261007-041011.sich") == datetime(2026, 10, 7, 4, 10, 11)
+
+
+@gate("ohne-storage-box-sind-sicherung-und-probe-rot-und-der-berater-erfaehrt-es")
+def g_sicherung_ohne_box():
+    sicherung, _ = _sicherung_umgebung()
+    os.environ.pop("AKTE_STORAGEBOX_ZIEL", None)
+    b = sicherung.taeglich(db._engine, None, E.DATEN)
+    assert not b.ok and "AKTE_STORAGEBOX_ZIEL" in b.text
+    with db.sitzung() as s:
+        assert s.scalar(select(Ausgang).where(Ausgang.betreff.like("%Sicherung FEHLGESCHLAGEN%"))) is not None
+    os.environ["AKTE_STORAGEBOX_ZIEL"] = tempfile.mkdtemp(prefix="akte-box-")
+    assert sicherung.taeglich(db._engine, None, E.DATEN).ok  # lokaler Ordner als Box
+    assert sicherung.rueckholprobe(db._engine, None).ok
 
 
 # ------------------------------------------------------------------- Lauf
