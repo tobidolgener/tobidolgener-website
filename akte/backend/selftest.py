@@ -724,6 +724,60 @@ def g_sicherung_alt():
     assert sicherung.zeit_aus_name("miller-20261007-041011.sich") == datetime(2026, 10, 7, 4, 10, 11)
 
 
+@gate("hochladen-gilt-erst-wenn-die-datei-auf-der-box-liegt")
+def g_sicherung_box_transport():
+    """StorageBox mit Befehlsattrappe: ls/rsync/rm werden gespielt, kein echtes SSH."""
+    sicherung, _ = _sicherung_umgebung()
+    _vorgang_mit_datei()
+    box_inhalt: dict[str, bytes] = {}
+    befehle: list[list[str]] = []
+    schreibt_wirklich = {"ja": True}
+
+    class Erg:
+        def __init__(self, code=0, out=b"", err=b""):
+            self.returncode, self.stdout, self.stderr = code, out, err
+
+    def attrappe(args, zeit=0):
+        befehle.append(args)
+        if args[0] == "ssh":
+            cmd = args[-1]
+            if cmd.startswith("ls -1"):
+                return Erg(0, "\n".join(box_inhalt).encode())
+            if cmd.startswith("rm "):
+                box_inhalt.pop(cmd.split("/")[-1], None)
+                return Erg(0)
+            return Erg(0)
+        if args[0] == "rsync":
+            quelle, ziel = args[-2], args[-1]
+            if ":" in ziel:  # hochladen
+                if schreibt_wirklich["ja"]:
+                    box_inhalt[ziel.split("/")[-1]] = Path(quelle).read_bytes()
+                return Erg(0)  # "Erfolg", auch wenn nichts geschrieben wurde
+            Path(ziel).write_bytes(box_inhalt[quelle.split("/")[-1]])
+            return Erg(0)
+        return Erg(1, b"", b"unbekannt")
+
+    sicherung._befehl = attrappe
+    try:
+        try:
+            sicherung.StorageBox("kein-ziel", "akte-backups", "/k")
+            raise AssertionError("ungueltiges Ziel angenommen")
+        except sicherung.SicherungsFehler:
+            pass
+        bx = sicherung.StorageBox("u653836@u653836.your-storagebox.de", "akte-backups", "/root/.ssh/storagebox")
+        assert sicherung.taeglich(db._engine, bx, E.DATEN).ok
+        assert any(a[0] == "rsync" for a in befehle) and not any("cat" in a[-1] for a in befehle if a[0] == "ssh")
+        assert all("-p23" in a for a in befehle if a[0] == "ssh")
+        assert sicherung.rueckholprobe(db._engine, bx).ok
+        # rsync meldet 0, aber die Box hat nichts geschrieben -> rot, nicht gruen
+        schreibt_wirklich["ja"] = False
+        box_inhalt.clear()
+        b = sicherung.taeglich(db._engine, bx, E.DATEN)
+        assert not b.ok and "fehlt nach dem Hochladen" in b.text, b.text
+    finally:
+        sicherung._befehl = lambda args, zeit=1800: __import__("subprocess").run(args, capture_output=True, timeout=zeit)
+
+
 @gate("ohne-storage-box-sind-sicherung-und-probe-rot-und-der-berater-erfaehrt-es")
 def g_sicherung_ohne_box():
     sicherung, _ = _sicherung_umgebung()

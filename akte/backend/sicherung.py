@@ -34,7 +34,10 @@ from sqlalchemy import inspect, text
 import einstellungen as E
 import db
 
+# Marke und Nonce-Laenge stehen EINMAL (MILLER-Befund 24.09.2026: von Hand abgezaehlte Positionen
+# haben beim Umbenennen der Marke jede Rueckholung unmoeglich gemacht).
 MAGIE = b"AKTE-SICH1"
+NONCE_LAENGE = 12
 MUSTER = re.compile(r"^akte-\d{8}-\d{6}\.sich$")
 HOECHSTALTER_STUNDEN = 30
 AUFBEWAHRUNG_TAGE = 30
@@ -62,14 +65,15 @@ def schluessel() -> bytes:
 
 
 def verschluesseln(daten: bytes, key: bytes) -> bytes:
-    nonce = os.urandom(12)
+    nonce = os.urandom(NONCE_LAENGE)
     return MAGIE + nonce + AESGCM(key).encrypt(nonce, daten, MAGIE)
 
 
 def entschluesseln(paket: bytes, key: bytes) -> bytes:
-    if not paket.startswith(MAGIE) or len(paket) < len(MAGIE) + 12 + 16:
+    a = len(MAGIE)
+    if not paket.startswith(MAGIE) or len(paket) < a + NONCE_LAENGE + 16:
         raise SicherungsFehler("Paket abgelehnt: kein AKTE-Sicherungspaket")
-    nonce, rest = paket[len(MAGIE):len(MAGIE) + 12], paket[len(MAGIE) + 12:]
+    nonce, rest = paket[a:a + NONCE_LAENGE], paket[a + NONCE_LAENGE:]
     try:
         return AESGCM(key).decrypt(nonce, rest, MAGIE)
     except Exception as ex:  # noqa: BLE001 - InvalidTag u. a.
@@ -97,45 +101,48 @@ class OrdnerBox:
         (self.pfad / name).unlink(missing_ok=True)
 
 
-class StorageBox:
-    """Hetzner Storage Box per SSH/SCP, Port 23. Eingeschraenkte Shell: kein find, kein sort, keine Pipes.
-    Nur `ls -lt --time-style=+%s`, zerlegt wird hier."""
-    def __init__(self, ziel: str, pfad: str, key: str, port: int = 23):
-        self.ziel, self.pfad, self.key, self.port = ziel, pfad.strip("/"), key, port
+def _befehl(args: list, zeit: int = 1800) -> subprocess.CompletedProcess:
+    """Die einzige Stelle, die Befehle ausfuehrt. Der Selbsttest ersetzt sie."""
+    return subprocess.run(args, capture_output=True, timeout=zeit)
 
-    def _ssh(self, *befehl: str) -> str:
-        return subprocess.run(["ssh", "-p", str(self.port), "-i", self.key, "-o", "BatchMode=yes",
-                               "-o", "ConnectTimeout=25", self.ziel, *befehl],
-                              check=True, capture_output=True, text=True, timeout=120).stdout
+
+class StorageBox:
+    """Hetzner Storage Box per SSH, Port 23. Eingeschraenkte Shell: kein find, kein sort, keine Pipes,
+    und `cat > datei` meldete Erfolg und schrieb nichts (MILLER, 22.09.2026). Deshalb rsync, und nach dem
+    Hochladen wird nachgesehen, ob die Datei DORT liegt."""
+    def __init__(self, ziel: str, pfad: str, key: str, port: int = 23):
+        if not re.fullmatch(r"[\w.-]+@[\w.-]+", ziel or "") or not re.fullmatch(r"[\w-]+", pfad or ""):
+            raise SicherungsFehler("Storage Box nicht eingerichtet (AKTE_STORAGEBOX_ZIEL / AKTE_STORAGEBOX_PFAD)")
+        self.ziel, self.pfad, self.key, self.port = ziel, pfad, key, port
+        self.ssh = ["ssh", f"-p{port}", "-i", key, "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
+                    "-o", "ConnectTimeout=25"]
+
+    def _lauf(self, args: list, fehler: str, zeit: int = 1800) -> subprocess.CompletedProcess:
+        r = _befehl(args, zeit)
+        if r.returncode != 0:
+            raise SicherungsFehler(f"{fehler}: {r.stderr.decode(errors='replace')[:300]}")
+        return r
 
     def liste(self) -> list[tuple[str, float]]:
-        try:
-            aus = self._ssh("ls", "-lt", "--time-style=+%s", self.pfad)
-        except subprocess.CalledProcessError as ex:
-            if "No such file" in (ex.stderr or ""):
-                self._ssh("mkdir", "-p", self.pfad)
+        r = _befehl(self.ssh + [self.ziel, f"ls -1 {self.pfad}"], 120)
+        if r.returncode != 0:
+            if b"No such file" in r.stderr:
+                _befehl(self.ssh + [self.ziel, f"mkdir -p {self.pfad}"], 60)
                 return []
-            raise
-        eintraege = []
-        for zeile in aus.splitlines():
-            teile = zeile.split()
-            if len(teile) >= 7 and teile[0].startswith("-"):
-                try:
-                    eintraege.append((teile[-1], float(teile[-2])))
-                except ValueError:
-                    continue
-        return eintraege
+            raise SicherungsFehler("Liste der Storage Box nicht lesbar: " + r.stderr.decode(errors="replace")[:300])
+        namen = [n for n in r.stdout.decode(errors="replace").split() if n]
+        return [(n, (zeit_aus_name(n) or datetime.fromtimestamp(0)).timestamp()) for n in namen]
 
     def hochladen(self, quelle: Path, name: str) -> None:
-        subprocess.run(["scp", "-P", str(self.port), "-i", self.key, "-o", "BatchMode=yes", str(quelle),
-                        f"{self.ziel}:{self.pfad}/{name}"], check=True, capture_output=True, timeout=1800)
+        self._lauf(["rsync", "-a", "--chmod=F600", "-e", " ".join(self.ssh), str(quelle),
+                    f"{self.ziel}:{self.pfad}/{name}"], "rsync zur Storage Box gescheitert")
 
     def holen(self, name: str, ziel: Path) -> None:
-        subprocess.run(["scp", "-P", str(self.port), "-i", self.key, "-o", "BatchMode=yes",
-                        f"{self.ziel}:{self.pfad}/{name}", str(ziel)], check=True, capture_output=True, timeout=1800)
+        self._lauf(["rsync", "-a", "-e", " ".join(self.ssh), f"{self.ziel}:{self.pfad}/{name}", str(ziel)],
+                   "rsync von der Storage Box gescheitert")
 
     def loeschen(self, name: str) -> None:
-        self._ssh("rm", f"{self.pfad}/{name}")
+        self._lauf(self.ssh + [self.ziel, f"rm {self.pfad}/{name}"], "Loeschen auf der Storage Box gescheitert", 120)
 
 
 def box():
@@ -145,7 +152,7 @@ def box():
         raise SicherungsFehler("AKTE_STORAGEBOX_ZIEL fehlt in der Umgebung")
     if ziel.startswith("/"):
         return OrdnerBox(str(Path(ziel) / pfad))
-    key = os.environ.get("STORAGEBOX_KEY", "/root/.ssh/storagebox")
+    key = os.environ.get("STORAGEBOX_KEY") or "/root/.ssh/storagebox"
     return StorageBox(ziel, pfad, key)
 
 
@@ -265,15 +272,28 @@ class Befund:
     maengel: list[str] = field(default_factory=list)
 
 
+SATZ = {
+    ("Sicherung", False): "Die taegliche Sicherung von AKTE hat nicht geklappt.",
+    ("Rueckholprobe", False): "Die Rueckholprobe von AKTE hat nicht geklappt. Die Sicherungen laufen weiter.",
+    ("Rueckholprobe", True): "Rueckholprobe der AKTE-Sicherung: in Ordnung.",
+}
+
+
 def _melden(titel: str, text_: str, ok: bool) -> None:
-    """Logbuch immer, Push/Mail an alle Berater bei Fehler."""
+    """Logbuch immer. Rueckholprobe meldet IMMER per Push (fester Satz, wer montags nichts hoert, weiss Bescheid).
+    Fehler gehen zusaetzlich per Mail an alle Berater."""
     try:
         with db.sitzung() as s:
             db.logbuch(s, "sicherung" if ok else "sicherung_fehler", f"{titel}: {text_}")
-            if not ok:
+            satz = SATZ.get((titel, ok))
+            if satz:
+                import push
                 from melden import berater_melden
                 for b in s.scalars(db.select(db.Berater).where(db.Berater.aktiv == True)).all():  # noqa: E712
-                    berater_melden(s, b, f"AKTE {titel} FEHLGESCHLAGEN", text_, "/berater")
+                    if ok:
+                        push.senden(s, "berater", b.id, "AKTE Sicherung", satz, "/berater")
+                    else:
+                        berater_melden(s, b, f"AKTE {titel} FEHLGESCHLAGEN", satz + " " + text_, "/berater")
             s.commit()
     except Exception as ex:  # noqa: BLE001 - Melden darf den Lauf nicht kippen
         print(f"(Meldung nicht moeglich: {ex})", file=sys.stderr)
@@ -285,17 +305,35 @@ def taeglich(engine=None, ablage=None, basis: Path | None = None, jetzt: datetim
     try:
         ablage = ablage or box()
         name, paket, kopf = paket_bauen(engine, basis)
-        with tempfile.TemporaryDirectory() as d:
-            p = Path(d) / name
-            p.write_bytes(paket)
-            ablage.hochladen(p, name)
-        # alte Staende entfernen
+        # Gegenprobe VOR dem Hochladen: laesst sich das frische Paket wieder oeffnen?
+        k2, _ = paket_oeffnen(paket)
+        if k2.get("abzug") != kopf["abzug"]:
+            raise SicherungsFehler("Das frische Paket laesst sich nicht wieder oeffnen")
+        # lokale Kopie (verschluesselt), dann auf die Box
+        lokal = Path(os.environ.get("AKTE_SICHERUNG_DIR") or "/var/backups/akte") if basis is None else (basis / "sicherung")
+        lokal.mkdir(parents=True, exist_ok=True)
+        try:
+            lokal.chmod(0o700)
+        except OSError:
+            pass
+        p = lokal / name
+        p.write_bytes(paket)
+        p.chmod(0o600)
+        ablage.hochladen(p, name)
+        # Ein Rueckgabewert 0 ist kein Beweis: nachsehen, ob die Datei DORT liegt
+        if name not in [n for n, _ in ablage.liste()]:
+            raise SicherungsFehler(f"{name} fehlt nach dem Hochladen auf der Box")
+        # alte Staende nach Frist entfernen (Box und lokal)
         geloescht = 0
         for alt, _ in ablage.liste():
             z = zeit_aus_name(alt)
             if MUSTER.match(alt) and z and jetzt - z > timedelta(days=AUFBEWAHRUNG_TAGE):
                 ablage.loeschen(alt)
                 geloescht += 1
+        for alt_p in lokal.glob("akte-*.sich"):
+            z = zeit_aus_name(alt_p.name)
+            if z and jetzt - z > timedelta(days=AUFBEWAHRUNG_TAGE):
+                alt_p.unlink(missing_ok=True)
         text_ = (f"{name}: {sum(kopf['zeilen'].values())} Zeilen in {len(kopf['zeilen'])} Tabellen, "
                  f"{len(kopf['dateien'])} Dateien, {len(paket) // 1024} KB, {geloescht} alte entfernt")
         _melden("Sicherung", text_, True)
